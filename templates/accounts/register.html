@@ -38,6 +38,7 @@
 
         <div class="col-md-7 right-panel">
             <div class="form-container">
+                {% include "includes/alerts.html" %}
                 <h2 class="form-title">Create Account</h2>
                 <p class="form-subtitle">Enter your details to begin your culinary journey.</p>
 
@@ -86,17 +87,21 @@
                     </div>
 
                     <button type="submit" class="btn-submit">Complete Enrollment</button>
+                     {{ form.email.errors }}
+                     {{ form.non_field_errors }}
+                     {{ form.password.errors }}
                 </form>
             </div>
         </div>
 
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function togglePassword(inputId, iconElement) {
             const input = document.getElementById(inputId);
             
-            // Toggle type
+            
             if (input.type === "password") {
                 input.type = "text";
                 iconElement.classList.remove("bi-eye-slash");
@@ -107,6 +112,10 @@
                 iconElement.classList.add("bi-eye-slash");
             }
         }
+        setTimeout(function(){
+            $('#message').fadeOut('slow')
+        },4000);
+
     </script>
 
 </body>

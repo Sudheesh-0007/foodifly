@@ -3,9 +3,13 @@ from . import views
 
 
 urlpatterns = [
+    path('', views.home_page, name='home_page'),
     path('register/',views.register,name='register'),
     path('login/',views.login,name='login'),
     path('logout/',views.logout,name='logout'),
 
-     
+    path('activate/<uidb64>/<token>/',views.activate,name='activate'),
+    path('forgotPassword/', views.forgotPassword, name='forgotPassword'),
+    path('resetPassword/', views.resetPassword, name='resetPassword'),
+    path('resetpassword_validate/<uidb64>/<token>/',views.resetpassword_validate,name='resetpassword_validate'),     
 ]

@@ -1,17 +1,52 @@
 from django import forms
 from .models import Account
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'placeholder' : '............',
+        'placeholder' : '. . . . . . . .  . .',
         'class' : 'custom-input'
     }))
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'placeholder' : '............'
+        'placeholder' : '. . . . . . . . . . . .'
     }))
+    
     class Meta:
         model = Account
         field =  fields = ['first_name','last_name','phone_number','email','password']
+
+    def clean(self):
+        cleaned_data = super(RegistrationForm,self).clean()
+        password     = cleaned_data.get('password')
+        confirm_password = cleaned_data.get('confirm_password')
+        phone = self.cleaned_data.get('phone_number')
+        first_name = self.cleaned_data.get('first_name')
+
+
+        if password != confirm_password:
+            raise forms.ValidationError("Password Does Not Match")
+        try:
+            validate_password(password)
+        except ValidationError as e:
+            self.add_error('password', e)
+
+        if not phone.isdigit():
+            raise forms.ValidationError("Phone number must contain only digits")
+
+        if len(phone) != 10:
+            raise forms.ValidationError("Phone number must be 10 digits")
+        
+        if phone and phone[0] not in ['6','7','8','9']:
+            raise forms.ValidationError("Enter valid Phone number")
+        
+        if not first_name.isalpha():
+            raise forms.ValidationError("First name should contain only letters")
+
+        if len(first_name) < 3:
+            raise forms.ValidationError("First name must be at least 3 characters")
+
+
 
     def __init__(self,*args,**kwargs):
         super(RegistrationForm,self).__init__(*args,**kwargs)
