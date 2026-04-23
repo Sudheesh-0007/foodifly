@@ -17,6 +17,13 @@ from django.core.mail import EmailMessage
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
+from django.dispatch import receiver
+from allauth.socialaccount.signals import pre_social_login
+ 
+
+
+
+
 
 # Create your views here.
 
@@ -69,7 +76,7 @@ def login(request):
 
         if user is not None:
             auth.login(request,user)
-            return redirect('home_page')
+            return redirect('home')
         else:
             messages.error(request,"Invalid login credentials")
             return redirect('login')
@@ -185,4 +192,14 @@ def resetPassword(request):
             messages.error(request,'password do not match!')
             return redirect('resetPassword')        
     else:
-        return render(request , 'accounts/resetPassword.html')    
+        return render(request , 'accounts/resetPassword.html')
+
+
+@receiver(pre_social_login)
+def activate_user_from_social(sender, request, sociallogin, **kwargs):
+   
+    user = sociallogin.user
+    
+    if user and user.id and not user.is_active:
+        user.is_active = True
+        user.save()   
