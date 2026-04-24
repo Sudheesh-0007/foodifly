@@ -1,0 +1,94 @@
+/* ==========================================================================
+   GLOBAL VARIABLES (Required for all pages)
+   ========================================================================== */
+:root {
+    --brand-green: #0a3a2a;
+    --brand-green-hover: #072a1e;
+    --brand-gold: #a88d59;
+    --bg-page: #f9f8f6; 
+    --bg-white: #ffffff;
+    --text-gray: #6c757d;
+    --text-dark: #333333;
+    --border-light: #f0f0f0;
+}
+
+/* ==========================================================================
+   SHARED TYPOGRAPHY
+   ========================================================================== */
+.brand-title-sm {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 1.8rem;
+    color: var(--brand-green) !important;
+}
+
+/* ==========================================================================
+   TOP NAVBAR
+   ========================================================================== */
+.nav-links a {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    color: var(--text-gray);
+    margin: 0 10px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--brand-green);
+}
+
+.nav-icons i {
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.nav-icons a:hover i {
+    color: var(--brand-green) !important;
+}
+
+/* Cart notification badge */
+.bg-gold {
+    background-color: var(--brand-gold) !important;
+    font-size: 0.55rem;
+    padding: 3px 5px;
+    color: white;
+}
+
+/* ==========================================================================
+   BOTTOM FOOTER
+   ========================================================================== */
+.brand-footer {
+    background-color: var(--brand-green);
+    color: white;
+}
+
+.footer-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--brand-gold);
+    font-size: 2rem;
+    font-style: italic;
+    font-weight: 600;
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.7rem;
+    letter-spacing: 1.5px;
+    font-weight: 500;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: var(--brand-gold);
+}
+
+.copyright {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+}

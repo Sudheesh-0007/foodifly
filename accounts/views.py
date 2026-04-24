@@ -202,4 +202,12 @@ def activate_user_from_social(sender, request, sociallogin, **kwargs):
     
     if user and user.id and not user.is_active:
         user.is_active = True
-        user.save()   
+        user.save()  
+
+
+
+
+@login_required(login_url='login')
+def user_dashboard(request):
+
+    return render(request, 'accounts/user_dashboard.html')
