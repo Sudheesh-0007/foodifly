@@ -29,14 +29,15 @@
                 <a href="#" class="text-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-person"></i>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm mt-2">
+                <ul class="dropdown-menu dropdown-menu-end">
                     {% if user.is_authenticated %}
-                        <li><a class="dropdown-item" href="{% url "dashboard" %}">Account</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a></li>
+                        <li><a class="dropdown-item" href="{% url 'dashboard' %}">Account</a></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a>
+                        </li>
                     {% else %}
                         <li><a class="dropdown-item" href="{% url 'login' %}">Sign In</a></li>
-                        <li><a class="dropdown-item" href="{% url 'register' %}">Create Account</a></li>
+                        <li><a class="dropdown-item" href="{% url 'register' %}">Register</a></li>
                     {% endif %}
                 </ul>
             </div>

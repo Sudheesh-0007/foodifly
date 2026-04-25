@@ -22,6 +22,11 @@ urlpatterns = [
     path('edit_email/', views.edit_email, name='edit_email'), 
 
     path('update_email_validate/<uidb64>/<token>/<str:encoded_email>/', views.update_email_validate, name='update_email_validate'),
+
+    path('address/', views.manage_addresses, name='address'),
+    path('add_address/', views.add_address, name='add_address'),
+    path('edit_address/<int:id>/', views.edit_address, name='edit_address'),
+    path('delete_address/<int:id>/', views.delete_address, name='delete_address'),
 ]
 
 

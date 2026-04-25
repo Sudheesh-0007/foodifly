@@ -1,0 +1,83 @@
+{% extends 'accounts/dashboard_base.html' %}
+{% load static %}
+
+{% block dashboard_css %}
+<link rel="stylesheet" href="{% static 'css/add_address.css' %}">
+{% endblock %}
+
+{% block dashboard_content %}
+{% include "includes/alerts.html" %}
+<h1 class="settings-page-title mb-2">Add Address</h1>
+
+<div class="row">
+    <div class="col-xl-10 col-lg-12">
+        <div class="address-form-card shadow-sm">
+            <form method="POST" action="">
+                {% csrf_token %}
+                
+                <div class="row g-2">
+                    
+                    <div class="col-md-6">
+                        <label class="custom-label">FIRST NAME</label>
+                        <input type="text" name="first_name" class="form-control custom-input" placeholder="e.g. Julian" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="custom-label">LAST NAME</label>
+                        <input type="text" name="last_name" class="form-control custom-input" placeholder="e.g. Beaufort" required>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="custom-label">ADDRESS</label>
+                        <input type="text" name="address_line_1" class="form-control custom-input" placeholder="123 Epicurean Way" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="custom-label">CITY</label>
+                        <input type="text" name="city" class="form-control custom-input" placeholder="London" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="custom-label">STATE</label>
+                        <input type="text" name="state" class="form-control custom-input" placeholder="London" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="custom-label">POSTAL CODE</label>
+                        <input type="text" name="postal_code" class="form-control custom-input" placeholder="SW1A 1AA" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="custom-label">PHONE NUMBER</label>
+                        <input type="text" name="phone" class="form-control custom-input" placeholder="Phone number" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="custom-label">COUNTRY</label>
+                        <select name="country" class="form-select custom-input" required>
+                            <option value="IN" selected>India</option>
+                            <option value="US">United States</option>
+                            <option value="IT">Italy</option>
+                            <option value="UK"></option>United Kingdom
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top-faint">
+                    
+                    <div class="form-check custom-checkbox-wrapper mb-0">
+                        <input class="form-check-input custom-checkbox" type="checkbox" name="is_default" id="defaultAddress">
+                        <label class="form-check-label text-muted" for="defaultAddress" style="font-size: 0.75rem; font-weight: 500;">
+                            Set as default delivery address
+                        </label>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3">
+                        <a href="{% url 'address' %}" class="btn-cancel text-uppercase">Cancel</a>
+                        <button type="submit" class="btn-save-address shadow-sm">
+                            <i class="bi bi-plus-circle me-1"></i> ADD
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

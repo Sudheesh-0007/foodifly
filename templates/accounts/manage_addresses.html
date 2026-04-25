@@ -6,73 +6,58 @@
 {% endblock %}
 
 {% block dashboard_content %}
+{% include "includes/alerts.html" %}
 <div class="d-flex justify-content-between align-items-start mb-4">
+    
     <div>
         <h1 class="settings-page-title mb-2">Manage Addresses</h1>
         <p class="text-muted" style="font-size: 0.95rem; max-width: 600px;">
             Select or manage your delivery locations to ensure your gourmet orders reach you exactly where you are.
         </p>
     </div>
-    <button class="btn btn-add-address shadow-sm">
+    <a href="{% url 'add_address' %}" class="btn btn-add-address shadow-sm text-decoration-none">
         <i class="bi bi-plus-circle me-2"></i> ADD NEW ADDRESS
-    </button>
+    </a>
 </div>
 
 <div class="row g-4">
     
+    {% for address in addresses %}
     <div class="col-xl-6 col-lg-12">
         <div class="address-card h-100">
             <div class="d-flex justify-content-between align-items-start mb-3">
                 <div class="d-flex align-items-center gap-2">
-                    <h4 class="address-card-title mb-0">Residence Milano</h4>
-                    <div class="home-icon-box"><i class="bi bi-house-door-fill"></i></div>
+                    <h4 class="address-card-title mb-0"> Delivery </h4>
+                    
+                    {% if address.is_default %}
+                        <div class="home-icon-box"><i class="bi bi-house-door-fill"></i></div>
+                    {% endif %}
                 </div>
+                
                 <div class="d-flex align-items-center gap-3">
-                    <span class="badge-primary-address">PRIMARY</span>
-                    <a href="#" class="action-icon text-gold" title="Edit"><i class="bi bi-pencil-fill"></i></a>
-                    <a href="#" class="action-icon text-muted" title="Delete"><i class="bi bi-trash"></i></a>
+                    {% if address.is_default %}
+                        <span class="badge-primary-address">PRIMARY</span>
+                    {% endif %}
+                    
+                    <a href="{% url 'edit_address' address.id %}" class="action-icon text-gold" title="Edit"><i class="bi bi-pencil-fill"></i></a>
+                    <a href="{% url 'delete_address' address.id %}" class="action-icon text-muted" title="Delete" onclick="return confirm('Are you sure you want to delete this delivery address?');"><i class="bi bi-trash"></i></a>
                 </div>
             </div>
 
-            <p class="address-name text-uppercase">JULIAN ROSSI</p>
+            <p class="address-name text-uppercase">{{ address.first_name }} {{ address.last_name }}</p>
             <p class="address-text">
-                Via Montenapoleone,<br>
-                12, Floor 4<br>
-                20121 Milano,<br>
-                PIN :680751<br>
-                <strong>Italy</strong>
+                {{ address.address_line_1 }},<br>
+                {% if address.district %}{{ address.district }},<br>{% endif %}
+                {{ address.city }}, {{ address.state }}<br>
+                PIN: {{ address.postal_code }}<br>
+                <strong>{{ address.country }}</strong>
             </p>
             <p class="address-phone mt-3 mb-0">
-                <i class="bi bi-telephone text-gold me-2"></i> +39 02 1234 5678
+                <i class="bi bi-telephone text-gold me-2"></i> {{ address.phone }}
             </p>
         </div>
     </div>
-
-    <div class="col-xl-6 col-lg-12">
-        <div class="address-card h-100">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <div class="d-flex align-items-center gap-2">
-                    <h4 class="address-card-title mb-0">Executive Office</h4>
-                </div>
-                <div class="d-flex align-items-center gap-3">
-                    <a href="#" class="action-icon text-gold" title="Edit"><i class="bi bi-pencil-fill"></i></a>
-                    <a href="#" class="action-icon text-muted" title="Delete"><i class="bi bi-trash"></i></a>
-                </div>
-            </div>
-
-            <p class="address-name text-uppercase">JULIAN ROSSI</p>
-            <p class="address-text">
-                Piazza del<br>
-                Duomo, 1<br>
-                20122 Milano,<br>
-                PIN :680751<br>
-                <strong>Italy</strong>
-            </p>
-            <p class="address-phone mt-3 mb-0">
-                <i class="bi bi-telephone text-gold me-2"></i> +39 02 8765 4321
-            </p>
-        </div>
-    </div>
+    {% endfor %}
 
     <div class="col-xl-6 col-lg-12">
         <div class="address-card dashed-card h-100 d-flex flex-column align-items-center justify-content-center text-center">
@@ -81,7 +66,7 @@
             </div>
             <h4 class="add-card-title mb-1">Add another delivery point</h4>
             <p class="add-card-subtitle mb-0">OFFICE, FAMILY OR FRIENDS</p>
-            <a href="#" class="stretched-link"></a>
+            <a href="{% url 'add_address' %}" class="stretched-link"></a>
         </div>
     </div>
 

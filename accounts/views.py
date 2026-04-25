@@ -1,9 +1,10 @@
 from django.shortcuts import render,redirect
 from .forms import RegistrationForm
-from .models import Account
+from .models import Account, UserProfile, Address
 from django.contrib import messages,auth
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 
 # VARIFICATION EMAIL PROCESS
 
@@ -23,7 +24,7 @@ from allauth.socialaccount.signals import pre_social_login
 from django.contrib.auth import update_session_auth_hash
  
 from .forms import UserForm, UserProfileForm
-from .models import UserProfile
+
 
 
 
@@ -87,15 +88,12 @@ def login(request):
     return render(request,'accounts/login.html')
 
 @login_required(login_url='login')
+@never_cache
 def logout(request):
     auth.logout(request)
     messages.success(request,"You are Logged Out")
 
     return redirect('login')
-
-@login_required(login_url='login')
-def home_page(request):
-    return HttpResponse("HOME PAGE 11")
 
 def activate(request,uidb64,token):
     try:
@@ -210,20 +208,24 @@ def activate_user_from_social(sender, request, sociallogin, **kwargs):
 
 
 @login_required(login_url='login')
+@never_cache
 def user_dashboard(request):
 
     return render(request, 'accounts/user_dashboard.html')
 
 @login_required(login_url='login')
+@never_cache
 def account_settings(request):
     return render(request, 'accounts/account_settings.html')
 
 @login_required(login_url='login')
+@never_cache
 def edit_profile(request):
     return render(request, 'accounts/edit_profile.html')
 
 
 @login_required(login_url='login')
+@never_cache
 def edit_email(request):
     if request.method == 'POST':
         
@@ -357,3 +359,99 @@ def edit_profile(request):
         'userprofile': userprofile,
     }
     return render(request, 'accounts/edit_profile.html', context)
+
+@login_required(login_url='login')
+def manage_addresses(request):
+
+    addresses = Address.objects.filter(user=request.user).order_by('-is_default', '-id')
+    
+    context = {
+        'addresses': addresses,
+    }
+    return render(request, 'accounts/manage_addresses.html', context)
+
+@login_required(login_url='login')
+def add_address(request):
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        address_line_1 = request.POST.get('address_line_1')
+        phone = request.POST.get('phone')
+        city = request.POST.get('city')
+        postal_code = request.POST.get('postal_code')
+        district = request.POST.get('district')
+        state = request.POST.get('state')
+        country = request.POST.get('country')
+        
+        is_default = request.POST.get('is_default') == 'on' 
+
+     
+        if not Address.objects.filter(user=request.user).exists():
+            is_default = True
+
+        if is_default:
+            Address.objects.filter(user=request.user, is_default=True).update(is_default=False)
+
+        address = Address.objects.create(
+            user=request.user,
+            first_name=first_name,
+            last_name=last_name,
+            address_line_1=address_line_1,
+            phone=phone,
+            city=city,
+            postal_code=postal_code,
+            district=district,
+            state=state,
+            country=country,
+            is_default=is_default
+        )
+        address.save()
+
+        messages.success(request, "New delivery address added successfully!")
+        return redirect('address')
+
+    return render(request, 'accounts/add_address.html')
+
+from django.shortcuts import render, redirect, get_object_or_404
+
+@login_required(login_url='login')
+def edit_address(request, id):
+    # Securely fetch the address, ensuring it actually belongs to the logged-in user!
+    address = get_object_or_404(Address, id=id, user=request.user)
+
+    if request.method == 'POST':
+        address.first_name = request.POST.get('first_name')
+        address.last_name = request.POST.get('last_name')
+        address.address_line_1 = request.POST.get('address_line_1')
+        address.phone = request.POST.get('phone')
+        address.city = request.POST.get('city')
+        address.postal_code = request.POST.get('postal_code')
+        address.district = request.POST.get('district')
+        address.state = request.POST.get('state')
+        address.country = request.POST.get('country')
+        
+        is_default = request.POST.get('is_default') == 'on' 
+
+        # If they check "Set as default", un-default all their other addresses first
+        if is_default:
+            Address.objects.filter(user=request.user, is_default=True).update(is_default=False)
+
+        address.is_default = is_default
+        address.save()
+
+        messages.success(request, "Delivery address updated successfully!")
+        return redirect('address')
+
+    context = {
+        'address': address,
+    }
+    return render(request, 'accounts/edit_address.html', context)
+
+@login_required(login_url='login')
+def delete_address(request, id):
+    address = get_object_or_404(Address, id=id, user=request.user)
+    
+    address.delete()
+    
+    messages.success(request, "Delivery address deleted successfully.")
+    return redirect('address')

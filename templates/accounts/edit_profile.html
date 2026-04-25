@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block dashboard_content %}
+{% include "includes/alerts.html" %}
 <h1 class="settings-page-title mb-4">Edit Profile</h1>
 
 <form method="POST" action="{% url 'edit_profile' %}" enctype="multipart/form-data">

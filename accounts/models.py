@@ -73,11 +73,28 @@ class Account(AbstractBaseUser):
         return True  
     
 class UserProfile(models.Model):
-    # USE your custom 'Account' model here instead of 'User'
+
     user = models.OneToOneField(Account, on_delete=models.CASCADE)
     
     profile_image = models.ImageField(upload_to='profile_pics/', default='default_avatar.png', blank=True)
-    # ... your other fields ...
 
     def __str__(self):
         return f'{self.user.email} Profile'
+
+
+
+class Address(models.Model):
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    phone = models.CharField(max_length=15)
+    address_line_1 = models.CharField(max_length=100)
+    city = models.CharField(max_length=50)
+    district = models.CharField(max_length=50, blank=True, null=True)
+    state = models.CharField(max_length=50)
+    postal_code = models.CharField(max_length=20)
+    country = models.CharField(max_length=50)
+    is_default = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - {self.city}"
