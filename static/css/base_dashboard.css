@@ -1,0 +1,79 @@
+/* --- EXACT PIXEL-PERFECT SIDEBAR --- */
+
+.sidebar-title {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: #0a3a2a; /* Brand green */
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.custom-sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem; /* Slight gap between links */
+}
+
+/* Base style for all links */
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 18px;
+    color: #555555; /* Muted gray for inactive text */
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    border-radius: 6px; /* Exact rounded corners from image */
+    transition: all 0.2s ease;
+}
+
+/* Icon specific styling */
+.sidebar-link i {
+    font-size: 1.2rem;
+    margin-right: 14px;
+    color: #555555;
+    transition: color 0.2s ease;
+}
+
+/* Hover State (Light gray background) */
+.sidebar-link:hover {
+    background-color: #f5f5f5;
+    color: #0a3a2a;
+}
+.sidebar-link:hover i {
+    color: #0a3a2a;
+}
+
+/* EXACT ACTIVE STATE (Dark green box, white text) */
+.sidebar-link.active {
+    background-color: #123f2f; /* Deep green */
+    color: #ffffff !important;
+    font-weight: 500;
+}
+.sidebar-link.active i {
+    color: #ffffff !important;
+}
+
+/* Divider Line */
+.sidebar-divider {
+    height: 1px;
+    background-color: #eaeaea;
+    margin: 1.2rem 0;
+}
+
+/* Logout Link Specifics */
+.sidebar-link.logout-link {
+    color: #d9534f !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+.sidebar-link.logout-link i {
+    color: #d9534f !important;
+}
+.sidebar-link.logout-link:hover {
+    background-color: rgba(217, 83, 79, 0.08); /* Light red hover */
+}

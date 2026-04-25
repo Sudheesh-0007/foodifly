@@ -1,5 +1,5 @@
 from django import forms
-from .models import Account
+from .models import Account,UserProfile
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
@@ -56,3 +56,23 @@ class RegistrationForm(forms.ModelForm):
         self.fields['email'].widget.attrs['placeholder'] = "Enter Email" 
         for field in self.fields :
             self.fields[field].widget.attrs['class'] = 'custom-input'
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ('first_name', 'last_name', 'phone_number')
+
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        # Automatically apply your custom CSS class to all text inputs
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control custom-input'
+
+class UserProfileForm(forms.ModelForm):
+    # Hide the default ugly file input so we can trigger it with your custom buttons
+    profile_image = forms.ImageField(required=False, error_messages={'invalid':("Image files only")}, widget=forms.FileInput(attrs={'class': 'd-none', 'id': 'profileImageInput'}))
+    
+    class Meta:
+        model = UserProfile
+        fields = ('profile_image',)

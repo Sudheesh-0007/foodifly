@@ -1,0 +1,36 @@
+{% extends 'accounts/dashboard_base.html' %}
+{% load static %}
+
+{% block dashboard_css %}
+<link rel="stylesheet" href="{% static 'css/account_settings.css' %}">
+{% endblock %}
+
+{% block dashboard_content %}
+    <h1 class="settings-page-title">Account settings</h1>
+
+    <div class="settings-card">
+        <div class="settings-card-header">
+            <h2 class="settings-card-title">Email & Password</h2>
+            <a href="{% url 'edit_email' %}" class="settings-edit-btn"><i class="bi bi-pencil"></i></a>
+        </div>
+        <div class="settings-card-body">
+            <p><strong>Email:</strong> {{ user.email|default:"sudheesh0027@gmail.com" }}</p>
+            <p class="mb-0"><strong>password:</strong> &bull; &bull; &bull; &bull; &bull; &bull; &bull; &bull;</p>
+        </div>
+    </div>
+
+    <div class="settings-card">
+        <div class="settings-card-header">
+            <h2 class="settings-card-title">Personal Details</h2>
+            <a href="{% url 'edit_profile' %}" class="settings-edit-btn"><i class="bi bi-pencil"></i></a>
+        </div>
+        <div class="settings-card-body">
+            <p><strong>Last Name:</strong> {{ user.last_name|title|default:"Manu" }}</p>
+            <p><strong>First Name:</strong> {{ user.first_name|title|default:"Man" }}</p>
+            <p class="mb-0"><strong>Phone:</strong> {{ user.phone_number|default:"9605876205" }}</p>
+        </div>
+    </div>
+
+    <a href="#" class="delete-account-btn">Delete my account</a>
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/base_dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/user_dashboard.css' %}">
+
+{% block dashboard_css %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+<main class="dashboard-page py-5">
+    <div class="container">
+        <div class="row g-5">
+            
+        <div class="col-lg-3 col-md-4 pe-lg-4">
+    <h2 class="sidebar-title">My Account</h2>
+    
+                    <div class="custom-sidebar-menu">
+                        <a href="{% url 'dashboard' %}" class="sidebar-link {% if request.path == '/accounts/dashboard/' %}active{% endif %}">
+                            <i class="bi bi-grid-1x2"></i> Account Overview
+                        </a>
+                        
+                        <a href="#" class="sidebar-link">
+                            <i class="bi bi-box-seam"></i> My orders
+                        </a>
+                        <a href="#" class="sidebar-link">
+                            <i class="bi bi-heart"></i> Wishlist
+                        </a>
+                        <a href="#" class="sidebar-link">
+                            <i class="bi bi-geo-alt"></i> Addresses
+                        </a>
+                        <a href="#" class="sidebar-link">
+                            <i class="bi bi-wallet2"></i> Wallet
+                        </a>
+                        <a href="#" class="sidebar-link">
+                            <i class="bi bi-ticket-perforated"></i> My Coupons
+                        </a>
+                        
+                        <a href="{% url "account_settings" %}" class="sidebar-link {% if request.path == '/accounts/settings/' %}active{% endif %}">
+                            <i class="bi bi-gear"></i> Account Settings
+                        </a>
+                        
+                        <div class="sidebar-divider"></div>
+                        
+                        <a href="{% url 'logout' %}" class="sidebar-link logout-link">
+                            <i class="bi bi-box-arrow-right"></i> LOGOUT
+                        </a>
+                    </div>
+                </div>
+
+            <div class="col-lg-9 col-md-8 ps-lg-5">
+                {% block dashboard_content %}
+                {% endblock %}
+            </div>
+            
+        </div>
+    </div>
+</main>
+{% endblock %}

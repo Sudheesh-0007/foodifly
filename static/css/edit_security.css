@@ -1,0 +1,86 @@
+/* --- Edit Email / Security ULTRA-COMPACT UI --- */
+
+.settings-page-title {
+    font-family: 'Playfair Display', serif;
+    color: #0a3a2a;
+    font-size: 2rem; /* Shrunk title */
+    font-weight: 600;
+    margin-bottom: 0.8rem !important; /* Tiny gap under main title */
+    letter-spacing: -0.5px;
+}
+
+.security-card {
+    background-color: #ffffff;
+    border: 1px solid #eaeaea;
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem; /* Drastically reduced internal padding */
+    box-shadow: none; 
+}
+
+.security-card-title {
+    font-family: 'Inter', sans-serif;
+    color: #111111;
+    font-size: 1.05rem; /* Smaller card headers */
+    font-weight: 600;
+}
+
+/* Beige Input Fields */
+.custom-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem; 
+    color: #8c7344; 
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 0.2rem; /* Practically touching the input box */
+    display: block;
+}
+
+.custom-input {
+    background-color: #f9f8f6; 
+    border: 1px solid #efefef;
+    border-radius: 4px;
+    padding: 6px 12px; /* Very tight input padding */
+    height: 36px; /* Forces short, compact boxes */
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem; 
+    color: #333333;
+    transition: all 0.2s ease;
+}
+
+.custom-input::placeholder {
+    color: #999999;
+}
+
+.custom-input:focus {
+    background-color: #ffffff;
+    border-color: #0a3a2a;
+    box-shadow: 0 0 0 2px rgba(10, 58, 42, 0.1); 
+}
+
+/* Save / Update Buttons */
+.btn-save {
+    background-color: #0a3a2a;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.85rem; /* Smaller text */
+    padding: 6px 16px; /* Slim, short buttons */
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.btn-save:hover {
+    background-color: #12543e;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .settings-page-title {
+        font-size: 1.6rem;
+    }
+    .security-card {
+        padding: 1rem;
+    }
+}

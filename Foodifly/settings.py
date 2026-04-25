@@ -104,12 +104,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8, 
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+    {
+        'NAME': 'accounts.validators.AlphanumericPasswordValidator',
     },
 ]
 
@@ -134,11 +140,19 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
+
+MEDIA_URL = '/media/'
+# Use BASE_DIR and pathlib's slash operator (which matches your static files setup)
+MEDIA_ROOT = BASE_DIR / 'media'
+
 from django.contrib.messages import constants as messages
 
+# Maps Django message tags to Bootstrap 5 classes
 MESSAGE_TAGS = {
-    messages.ERROR: "danger",
-   
+    messages.ERROR: 'danger',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.INFO: 'info',
 }
 #SMTP configuration
 EMAIL_HOST  = 'smtp.gmail.com'
@@ -155,11 +169,12 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # 1. How users log in
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_USERNAME_REQUIRED = False
+
 
 # 2. Bypass intermediary pages
 SOCIALACCOUNT_LOGIN_ON_GET = True

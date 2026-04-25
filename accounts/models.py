@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
 
+
 class MyAccountManager(BaseUserManager):
     def create_user(self,first_name,last_name,username,email,password=None):
         if not email:
@@ -69,4 +70,14 @@ class Account(AbstractBaseUser):
     
 
     def has_module_perms(self,add_label):
-        return True   
+        return True  
+    
+class UserProfile(models.Model):
+    # USE your custom 'Account' model here instead of 'User'
+    user = models.OneToOneField(Account, on_delete=models.CASCADE)
+    
+    profile_image = models.ImageField(upload_to='profile_pics/', default='default_avatar.png', blank=True)
+    # ... your other fields ...
+
+    def __str__(self):
+        return f'{self.user.email} Profile'

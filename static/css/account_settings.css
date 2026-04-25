@@ -1,0 +1,81 @@
+/* --- Account Settings - Proportioned & Compact UI --- */
+
+.settings-page-title {
+    font-family: 'Playfair Display', serif;
+    color: #0a3a2a; 
+    font-size: 2.2rem; /* Scaled down from 3.2rem */
+    font-weight: 600;
+    margin-bottom: 1.5rem; /* Tighter gap below the title */
+    letter-spacing: -0.5px;
+}
+
+/* The Cards - Tighter Padding */
+.settings-card {
+    background-color: #ffffff;
+    border: 1px solid #eaeaea; 
+    border-radius: 4px;
+    padding: 1.5rem 2rem; /* Significantly reduced padding for a better fit */
+    margin-bottom: 1.2rem; /* Pulled the cards closer together */
+    box-shadow: none; 
+}
+
+/* Card Header (Title + Pencil Icon) */
+.settings-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem; /* Tighter gap between header and text */
+}
+
+.settings-card-title {
+    font-family: 'Playfair Display', serif;
+    color: #0a3a2a;
+    font-size: 1.3rem; /* Scaled down from 1.8rem */
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Outline Pencil Icon */
+.settings-edit-btn {
+    color: #555555;
+    font-size: 1.1rem; /* Slightly smaller icon */
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.settings-edit-btn:hover {
+    color: #0a3a2a;
+}
+
+/* Card Body Text - Standardized Reading Size */
+.settings-card-body p {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem; /* Scaled down to standard web reading size */
+    color: #333333;
+    margin-bottom: 0.8rem; /* Tighter line spacing */
+    display: flex; /* Helps align the text cleanly */
+}
+
+.settings-card-body p strong {
+    font-weight: 600;
+    color: #111111;
+    width: 90px; /* Aligns the colons perfectly in a column */
+    flex-shrink: 0;
+}
+
+/* Delete Account Link */
+.delete-account-btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: #555555;
+    font-size: 0.85rem; /* Smaller, less distracting link */
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.delete-account-btn:hover {
+    text-decoration: underline;
+    color: #d9534f; /* Red on hover */
+}

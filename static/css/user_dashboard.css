@@ -1,66 +1,3 @@
-/* Dashboard Specific Styles */
-.dashboard-page {
-    /* Assumes --bg-page (#f9f8f6) and --brand-green (#0a3a2a) are in base_layout.css */
-    background-color: var(--bg-page, #f9f8f6); 
-    min-height: 80vh;
-}
-
-/* --- Sidebar Typography & Menu --- */
-.sidebar-title {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    color: var(--brand-green, #0a3a2a);
-    font-size: 1.8rem;
-    font-weight: 600;
-}
-
-.sidebar-menu {
-    border-radius: 8px;
-    background-color: transparent;
-}
-
-.sidebar-menu .list-group-item {
-    border: none;
-    background-color: transparent;
-    padding: 14px 16px;
-    font-size: 0.9rem;
-    color: #6c757d;
-    font-weight: 400;
-    border-radius: 6px !important;
-    margin-bottom: 4px;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-}
-
-.sidebar-menu .list-group-item i {
-    font-size: 1.1rem;
-}
-
-.sidebar-menu .list-group-item:hover {
-    background-color: rgba(10, 58, 42, 0.04);
-    color: var(--brand-green, #0a3a2a);
-}
-
-.sidebar-menu .list-group-item.active {
-    background-color: var(--brand-green, #0a3a2a);
-    color: white;
-    font-weight: 500;
-    box-shadow: 0 4px 10px rgba(10, 58, 42, 0.15);
-}
-
-.logout-link {
-    color: #d9534f !important;
-    text-transform: uppercase;
-    font-size: 0.8rem !important;
-    letter-spacing: 0.5px;
-    margin-top: 10px;
-}
-
-.logout-link:hover {
-    background-color: rgba(217, 83, 79, 0.08) !important;
-}
-
 /* --- Content Cards --- */
 .content-card {
     background-color: #ffffff;
@@ -152,4 +89,26 @@
 
 .address-box:hover {
     background-color: #f3f1ed;
+}
+/* --- Edit Profile Button on Dashboard --- */
+/* --- Minimal Edit Profile Button --- */
+.minimal-edit-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #6c757d; /* Muted gray so it doesn't distract */
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.2s ease;
+}
+
+.minimal-edit-btn i {
+    font-size: 0.85rem;
+}
+
+/* Turns dark green and underlines smoothly on hover */
+.minimal-edit-btn:hover {
+    color: #0a3a2a; 
+    text-decoration: underline;
 }

@@ -19,9 +19,11 @@ from django.core.exceptions import ValidationError
 
 from django.dispatch import receiver
 from allauth.socialaccount.signals import pre_social_login
+
+from django.contrib.auth import update_session_auth_hash
  
-
-
+from .forms import UserForm, UserProfileForm
+from .models import UserProfile
 
 
 
@@ -211,3 +213,147 @@ def activate_user_from_social(sender, request, sociallogin, **kwargs):
 def user_dashboard(request):
 
     return render(request, 'accounts/user_dashboard.html')
+
+@login_required(login_url='login')
+def account_settings(request):
+    return render(request, 'accounts/account_settings.html')
+
+@login_required(login_url='login')
+def edit_profile(request):
+    return render(request, 'accounts/edit_profile.html')
+
+
+@login_required(login_url='login')
+def edit_email(request):
+    if request.method == 'POST':
+        
+        if 'new_email' in request.POST:
+            new_email = request.POST.get('new_email')
+
+            if new_email == request.user.email:
+                messages.info(request, "This is already your current email address.")
+                return redirect('edit_email')
+
+            if Account.objects.filter(email=new_email).exists():
+                messages.error(request, "This email address is already in use by another account.")
+                return redirect('edit_email')
+
+            user = request.user
+            current_site = get_current_site(request)
+            mail_subject = 'Verify your new email address'
+            
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            encoded_email = urlsafe_base64_encode(force_bytes(new_email))
+            
+            message = render_to_string('accounts/update_email_verification.html', {
+                'user': user,
+                'domain': current_site,
+                'uid': uid,
+                'token': token,
+                'encoded_email': encoded_email,
+            })
+            
+            send_email = EmailMessage(mail_subject, message, to=[new_email])
+            send_email.send()
+
+            messages.success(request, "A verification link has been sent to your new email address. Please click it to complete the update.")
+            return redirect('edit_email')
+     
+# password update
+
+        elif 'old_password' in request.POST:
+            old_password = request.POST.get('old_password')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+
+           
+            if not request.user.check_password(old_password):
+                messages.error(request, "Your old password was entered incorrectly.")
+                return redirect('edit_email')
+
+           
+            if new_password != confirm_password:
+                messages.error(request, "Your new passwords do not match.")
+                return redirect('edit_email')
+                
+            
+            if old_password == new_password:
+                messages.error(request, "Your new password must be different from your current one.")
+                return redirect('edit_email')
+
+           
+            try:
+                
+                validate_password(new_password, request.user)
+            except ValidationError as e:
+               
+                for error in e.messages:
+                    messages.error(request, error)
+                return redirect('edit_email')
+
+            
+            user = request.user
+            user.set_password(new_password)
+            user.save()
+
+            
+            update_session_auth_hash(request, user)
+
+            messages.success(request, "Your password has been successfully updated.")
+            return redirect('edit_email')
+
+    return render(request, 'accounts/edit_email.html')
+
+
+def update_email_validate(request, uidb64, token, encoded_email):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = Account._default_manager.get(pk=uid)
+        new_email = urlsafe_base64_decode(encoded_email).decode()
+    except(TypeError, ValueError, OverflowError, Account.DoesNotExist):
+        user = None
+
+
+    if user is not None and default_token_generator.check_token(user, token):
+        
+# check that no one else took the email while we were waiting
+        if Account.objects.filter(email=new_email).exists():
+            messages.error(request, "This email address was recently taken by another account.")
+            return redirect('account_settings')
+
+        user.email = new_email
+        user.username = new_email.split("@")[0]
+        user.save()
+        
+        messages.success(request, 'Your email address has been successfully updated!')
+        return redirect('account_settings')
+    else:
+        messages.error(request, "The email verification link is invalid or has expired.")
+        return redirect('account_settings')
+
+login_required(login_url='login')
+def edit_profile(request):
+    # Get or create the user profile
+    userprofile, created = UserProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        # Bind the POST data and FILES to the forms
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=userprofile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile has been successfully updated.')
+            return redirect('edit_profile')
+    else:
+        user_form = UserForm(instance=request.user)
+        profile_form = UserProfileForm(instance=userprofile)
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'userprofile': userprofile,
+    }
+    return render(request, 'accounts/edit_profile.html', context)

@@ -17,6 +17,11 @@ urlpatterns = [
     path('resetpassword_validate/<uidb64>/<token>/',views.resetpassword_validate,name='resetpassword_validate'), 
 
     path('dashboard/', views.user_dashboard, name='dashboard'),   
+    path('settings/', views.account_settings, name='account_settings'),
+    path('edit_profile/', views.edit_profile, name='edit_profile'),
+    path('edit_email/', views.edit_email, name='edit_email'), 
+
+    path('update_email_validate/<uidb64>/<token>/<str:encoded_email>/', views.update_email_validate, name='update_email_validate'),
 ]
 
 
