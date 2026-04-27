@@ -1,0 +1,139 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+
+{% block admin_content %}
+<div class="user-page-container">
+    <header class="mb-4">
+        {% include "includes/alerts.html" %}
+        <small class="text-gold fw-bold text-uppercase" style="letter-spacing: 1.5px; font-size: 0.7rem;">Administrative Suite</small>
+        <h1 class="fw-bold mt-1" style="color: #0a3a2a; font-size: 2.5rem;">User Directory</h1>
+    </header>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card stat-card border-0 shadow-sm p-4 rounded-4 bg-white">
+                <small class="text-muted fw-bold text-uppercase" style="font-size: 0.65rem;">Total Users</small>
+                <h2 class="fw-bold my-2 text-dark">{{ total_count|default:"0" }}</h2>
+                <small class="text-success fw-semibold"><i class="bi bi-graph-up"></i> +12% this month</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card border-0 shadow-sm p-4 rounded-4 text-white" style="background-color: #0a3a2a;">
+                <small class="text-white-50 fw-bold text-uppercase" style="font-size: 0.65rem;">Active Now</small>
+                <h2 class="fw-bold my-2">{{ active_count|default:"0" }}</h2>
+                <div class="d-flex align-items-center mt-2">
+                    <span class="small text-white-50">Sovereign Management Active</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+            <h6 class="fw-bold m-0 border-bottom border-dark border-3 pb-3">All Users</h6>
+            
+            <form action="{% url 'admin_user_management' %}" method="GET" class="d-flex align-items-center gap-2">
+                <div class="position-relative">
+                    <input type="text" name="keyword" value="{{ keyword|default:'' }}" class="form-control border-0 bg-light px-3 py-2" placeholder="Search email or name..." style="width: 300px; border-radius: 10px;">
+                    {% if keyword %}
+                    <a href="{% url 'admin_user_management' %}" class="position-absolute top-50 end-0 translate-middle-y me-2 text-muted text-decoration-none">
+                        <i class="bi bi-x-circle-fill"></i>
+                    </a>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-dark rounded-3 px-4">Search</button>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="small text-muted text-uppercase">
+                    <tr>
+                        <th class="border-0">Name</th>
+                        <th class="border-0">Email</th>
+                        <th class="border-0">Phone</th>
+                        <th class="border-0">Status</th>
+                        <th class="border-0 text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                       <td>
+                            <div class="d-flex flex-column justify-content-center">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-person-circle me-2 text-muted" style="font-size: 1.2rem;"></i>
+                                    <h6 class="mb-0 fw-bold" style="color: #0a3a2a;">{{ user.username }}</h6>
+                                </div>
+                                <small class="text-muted text-uppercase ms-4" style="font-size: 0.6rem; letter-spacing: 0.5px;">Member</small>
+                            </div>
+                        </td>
+                        <td class="text-muted">{{ user.email }}</td>
+                        <td class="text-muted">{{ user.phone_number|default:"9605876205" }}</td>
+                        <td>
+                            {% if user.is_active %}
+                            <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-2" style="font-size: 0.65rem;">ACTIVE</span>
+                            {% else %}
+                            <span class="badge bg-light text-muted px-3 py-2 rounded-2" style="font-size: 0.65rem;">INACTIVE</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'toggle_user_status' user.id %}" 
+                            class="btn {% if user.is_active %}btn-danger-subtle text-danger{% else %}btn-success-subtle text-success{% endif %} border-0 rounded-3 px-3 py-2 small d-inline-flex align-items-center gap-2" 
+                            style="background-color: {% if user.is_active %}#fce4e4{% else %}#e4fcf0{% endif %}; text-decoration: none;">
+                                
+                                {% if user.is_active %}
+                                    Block <i class="bi bi-slash-circle"></i>
+                                {% else %}
+                                    Unblock <i class="bi bi-check-circle"></i>
+                                {% endif %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">No users found matching your search.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+       <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+            <p class="text-muted small mb-0">
+                Showing <strong>{{ users.start_index }}</strong> to <strong>{{ users.end_index }}</strong> of {{ total_count }} results
+            </p>
+            
+            {% if users.has_other_pages %}
+                <nav>
+                    <ul class="pagination pagination-sm mb-0">
+                        {% if users.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link border-0 text-dark bg-light rounded-2 me-1" href="?page={{ users.previous_page_number }}{% if keyword %}&keyword={{ keyword }}{% endif %}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% for i in users.paginator.page_range %}
+                            <li class="page-item {% if users.number == i %}active{% endif %}">
+                                <a class="page-link {% if users.number == i %}bg-dark border-dark text-white shadow-sm{% else %}border-0 text-muted{% endif %} rounded-2 mx-1 px-3" href="?page={{ i }}{% if keyword %}&keyword={{ keyword }}{% endif %}">
+                                    {{ i }}
+                                </a>
+                            </li>
+                        {% endfor %}
+
+                        {% if users.has_next %}
+                        <li class="page-item">
+                            <a class="page-link border-0 text-dark bg-light rounded-2 ms-1" href="?page={{ users.next_page_number }}{% if keyword %}&keyword={{ keyword }}{% endif %}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% else %}
+                <small class="text-muted fst-italic">Showing all results on one page</small>
+            {% endif %}
+        </div>
+    </div> </div> {% endblock %}

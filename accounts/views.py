@@ -208,10 +208,16 @@ def activate_user_from_social(sender, request, sociallogin, **kwargs):
 
 
 @login_required(login_url='login')
+@login_required(login_url='login')
 @never_cache
 def user_dashboard(request):
 
-    return render(request, 'accounts/user_dashboard.html')
+    default_address = Address.objects.filter(user=request.user, is_default=True).first()
+    
+    context = {
+        'default_address': default_address,
+    }
+    return render(request, 'accounts/user_dashboard.html', context)
 
 @login_required(login_url='login')
 @never_cache

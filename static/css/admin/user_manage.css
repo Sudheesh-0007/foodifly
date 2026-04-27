@@ -1,0 +1,33 @@
+.ms-n2 { margin-left: -10px !important; }
+
+.text-gold {
+    color: #c5a059 !important;
+}
+
+.stat-card h2 {
+    font-size: 1.8rem;
+    letter-spacing: -1px;
+}
+
+.table thead th {
+    padding-bottom: 20px;
+    letter-spacing: 0.5px;
+}
+
+.table tbody tr td {
+    padding: 1.2rem 0.75rem;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+/* Customizing the "Block" button to match the soft red/pink in image */
+.btn-danger-subtle {
+    background-color: #f8d7da !important;
+    color: #842029 !important;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.bg-warning-subtle {
+    background-color: #fff3cd !important;
+    color: #856404 !important;
+}

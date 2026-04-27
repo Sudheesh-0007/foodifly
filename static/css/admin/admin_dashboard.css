@@ -1,0 +1,122 @@
+/* --- GLOBAL ADMIN LAYOUT --- */
+:root {
+    --brand-green: #0a3a2a;
+    --brand-gold: #c5a059;
+    --bg-light: #f8f9fa;
+}
+
+body {
+    background-color: var(--bg-light);
+    font-family: 'Inter', sans-serif;
+}
+
+/* --- SIDEBAR STYLES --- */
+.admin-sidebar {
+    background-color: var(--brand-green) !important;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.text-gold {
+    color: var(--brand-gold) !important;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    font-weight: 600;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    padding: 12px 20px;
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.sidebar-link i {
+    margin-right: 15px;
+    font-size: 1.2rem;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar-link:hover, .sidebar-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    text-decoration: none;
+}
+
+.sidebar-link.active {
+    border-left: 4px solid var(--brand-gold);
+    font-weight: 600;
+}
+
+/* --- USER DIRECTORY & TABLE STYLES --- */
+.stat-card {
+    transition: transform 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.ms-n2 {
+    margin-left: -10px !important;
+}
+
+.table thead th {
+    background-color: #fff;
+    color: #adb5bd;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    border-bottom: 2px solid #f8f9fa;
+    padding: 1.5rem 0.75rem;
+}
+
+.table tbody td {
+    padding: 1.2rem 0.75rem;
+    border-bottom: 1px solid #f8f9fa;
+    vertical-align: middle;
+}
+
+/* Search Input Styling */
+.form-control:focus {
+    box-shadow: none;
+    border-color: var(--brand-green);
+}
+
+.btn-clear:hover {
+    color: #dc3545 !important;
+}
+
+/* Block Button Action */
+.btn-danger-subtle {
+    background-color: #fce4e4 !important;
+    color: #d9534f !important;
+    font-weight: 600;
+    border: none;
+    font-size: 0.85rem;
+}
+.pagination .page-link {
+    border-radius: 8px !important;
+    margin: 0 3px;
+    padding: 8px 12px;
+    font-weight: 600;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #0a3a2a !important; /* Matches your brand green */
+    border-color: #0a3a2a !important;
+}
+
+.pagination .page-link:hover {
+    background-color: #f8f9fa;
+}

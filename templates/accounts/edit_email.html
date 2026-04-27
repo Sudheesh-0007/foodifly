@@ -6,9 +6,9 @@
 {% endblock %}
 
 {% block dashboard_content %}
-{% include "includes/alerts.html" %}
-<h1 class="settings-page-title mb-2">Edit email</h1>
 
+<h1 class="settings-page-title mb-2">Edit email</h1>
+{% include "includes/alerts.html" %}
 <div class="security-card mb-2">
     <form method="POST" action="">
         {% csrf_token %}

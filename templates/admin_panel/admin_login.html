@@ -1,0 +1,37 @@
+{% extends 'admin_panel/blank_base.html' %} {% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin/admin_login.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="admin-login-wrapper d-flex align-items-center justify-content-center">
+    <div class="login-container text-center">
+        <h1 class="admin-brand mb-0">Foodifly Admin</h1>
+        <p class="admin-subtitle mb-4">Sovereign Management Portal Access</p>
+
+        <div class="login-card shadow-sm mx-auto">
+            {% include 'includes/alerts.html' %}
+
+            <form action="{% url 'admin_login' %}" method="POST">
+                {% csrf_token %} 
+                <div class="form-section text-start">
+                    <label class="input-label">ADMIN CREDENTIALS</label>
+                    <div class="input-group-custom mb-4 d-flex align-items-center">
+                        <input type="email" name="email" class="form-control-admin" placeholder="Email Address" required>
+                        <i class="bi bi-envelope text-muted pe-3"></i>
+                    </div>
+
+                    <label class="input-label">SECURITY KEY</label>
+                    <div class="input-group-custom mb-4 d-flex align-items-center">
+                        <input type="password" name="password" class="form-control-admin" placeholder="Password" required>
+                        <i class="bi bi-lock text-muted pe-3"></i>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-admin w-100">Enter Dashboard &rarr;</button>
+            </form>
+        </div>
+        <p class="management-footer mt-4 text-muted">Currently managing over 450+ restaurants globally.</p>
+    </div>
+</section>
+{% endblock %}

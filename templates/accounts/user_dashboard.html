@@ -45,13 +45,25 @@
                 </div>
             </div>
 
-            <div class="mt-2">
+<div class="mt-2">
                 <p class="detail-label">PRIMARY DELIVERY ADDRESS</p>
                 <div class="address-box d-flex align-items-start">
                     <i class="bi bi-house-door text-dark fs-5 me-3"></i>
                     <div>
-                        <p class="mb-1 text-dark fw-medium">Highland Manor, Apt 4C</p>
-                        <p class="mb-0 text-muted" style="font-size: 0.9rem;">742 Evergreen Terrace, Springfield, OR 97403</p>
+                        {% if default_address %}
+                            <p class="mb-1 text-dark fw-medium">{{ default_address.first_name }} {{ default_address.last_name }}</p>
+                            <p class="mb-0 text-muted" style="font-size: 0.9rem;">
+                                {{ default_address.address_line_1 }}<br>
+                                {% if default_address.district %}{{ default_address.district }}, {% endif %}
+                                {{ default_address.city }}, {{ default_address.state }} {{ default_address.postal_code }}<br>
+                                {{ default_address.country }}
+                            </p>
+                        {% else %}
+                            <p class="mb-1 text-dark fw-medium">No primary address set.</p>
+                            <p class="mb-0 text-muted" style="font-size: 0.9rem;">
+                                <a href="{% url 'address' %}" style="color: #a88d59; text-decoration: none; font-weight: 500;">Click here to add a delivery location</a>
+                            </p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
