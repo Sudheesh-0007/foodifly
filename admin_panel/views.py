@@ -74,7 +74,7 @@ def toggle_user_status(request, user_id):
     
     user.save()
     return redirect('admin_user_management')
-
+    
 def admin_logout(request):
     auth.logout(request)
     messages.success(request, 'You have been logged out of the Sovereign Management Portal.')

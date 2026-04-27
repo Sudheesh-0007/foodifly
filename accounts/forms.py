@@ -65,12 +65,11 @@ class UserForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
-        # Automatically apply your custom CSS class to all text inputs
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control custom-input'
 
 class UserProfileForm(forms.ModelForm):
-    # Hide the default ugly file input so we can trigger it with your custom buttons
+
     profile_image = forms.ImageField(required=False, error_messages={'invalid':("Image files only")}, widget=forms.FileInput(attrs={'class': 'd-none', 'id': 'profileImageInput'}))
     
     class Meta:

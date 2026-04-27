@@ -26,5 +26,5 @@ Follow these steps to get the project running on your local machine.
 
 ### 1. Clone the Repository
 ```bash
-git clone [https://github.com/yourusername/foodifly.git](https://github.com/yourusername/foodifly.git)
+git clone [https://https://github.com/Sudheesh-0007/foodifly)
 cd foodifly

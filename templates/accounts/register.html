@@ -65,7 +65,7 @@
                         <label for="email" class="custom-label">Email Address</label>
                         {{ form.email }}
                         <div class="verified-badge">
-                            <i class="bi bi-patch-check-fill"></i> VERIFIED
+                            {% comment %} <i class="bi bi-patch-check-fill"></i>  {% endcomment %}
                         </div>
                     </div>
 
@@ -78,13 +78,13 @@
                     <div class="input-wrapper">
                         <label for="password" class="custom-label">Password</label>
                         {{ form.password }}
-                        <i class="bi bi-eye-slash toggle-password" onclick="togglePassword('password', this)"></i>
+                        {% comment %} <i class="bi bi-eye-slash toggle-password" onclick="togglePassword('password', this)"></i> {% endcomment %}
                     </div>
 
                     <div class="input-wrapper">
                         <label for="confirmPassword" class="custom-label">Confirm Password</label>
                         {{ form.confirm_password }}
-                        <i class="bi bi-eye-slash toggle-password" onclick="togglePassword('confirmPassword', this)"></i>
+                        {% comment %} <i class="bi bi-eye-slash toggle-password" onclick="togglePassword('confirmPassword', this)"></i> {% endcomment %}
                     </div>
 
                     <button type="submit" class="btn-submit">Complete Enrollment</button>

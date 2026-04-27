@@ -6,7 +6,6 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 
-# VARIFICATION EMAIL PROCESS
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
