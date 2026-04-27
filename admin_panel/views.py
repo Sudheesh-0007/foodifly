@@ -9,9 +9,8 @@ from django.contrib.auth.decorators import login_required
 
 
 def admin_login(request):
-    # Change is_superuser to is_admin
     if request.user.is_authenticated:
-        if request.user.is_admin: # Changed here
+        if request.user.is_admin:
             return redirect('admin_user_management')
         else:
             auth.logout(request)
@@ -21,8 +20,8 @@ def admin_login(request):
         password = request.POST.get('password')
         user = auth.authenticate(email=email, password=password)
 
-        # Change is_superuser to is_admin
-        if user is not None and user.is_admin: # Changed here
+        
+        if user is not None and user.is_admin: 
             auth.login(request, user)
             return redirect('admin_user_management')
         else:
@@ -34,10 +33,10 @@ def admin_login(request):
 
 @login_required(login_url='admin_login')
 def admin_user_management(request):
-    # 1. Fetch all users, sorted by latest joined first
+
     users_list = Account.objects.all().order_by('-date_joined')
 
-    # 2. Search logic
+
     query = request.GET.get('keyword')
     if query:
         users_list = users_list.filter(
@@ -46,24 +45,24 @@ def admin_user_management(request):
             Q(email__icontains=query)
         )
 
-    # 3. Pagination (10 users per page)
+ 
     paginator = Paginator(users_list, 10)
     page = request.GET.get('page')
     
-    # Use get_page; it handles PageNotAnInteger and EmptyPage automatically!
+
     paged_users = paginator.get_page(page)
 
     context = {
-        'users': paged_users,  # We pass paged_users but NAME it 'users' for the HTML
+        'users': paged_users,  
         'keyword': query,
-        'total_count': Account.objects.count(), # For the white stats card
-        'active_count': Account.objects.filter(is_active=True).count(), # For the green stats card
+        'total_count': Account.objects.count(), 
+        'active_count': Account.objects.filter(is_active=True).count(),
     }
     return render(request, 'admin_panel/user_manage.html', context)
 
-# i. Block/Unblock Logic [cite: 3535, 4761]
+
 def toggle_user_status(request, user_id):
-    # Fetch the specific user
+
     user = get_object_or_404(Account, id=user_id)
     
     if user.is_active:
@@ -75,6 +74,7 @@ def toggle_user_status(request, user_id):
     
     user.save()
     return redirect('admin_user_management')
+
 def admin_logout(request):
     auth.logout(request)
     messages.success(request, 'You have been logged out of the Sovereign Management Portal.')

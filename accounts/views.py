@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from .forms import RegistrationForm
 from .models import Account, UserProfile, Address
 from django.contrib import messages,auth
@@ -118,15 +118,12 @@ def forgotPassword(request):
         if Account.objects.filter(email=email).exists():
             user = Account.objects.get(email__exact=email)
 
-            #reset password email
             current_site = get_current_site(request)
             mail_subject = 'Reset Your Password' 
             message      = render_to_string('accounts/reset_password_email.html',{
                 'user'  : user,
                 'domain': current_site,
-        # encoding the primary key for nobody can see the primary key        
                 'uid'   : urlsafe_base64_encode(force_bytes(user.pk)),
-               # evary user have their owen token 
                 'token'  : default_token_generator.make_token(user),
 
             })
@@ -325,7 +322,6 @@ def update_email_validate(request, uidb64, token, encoded_email):
 
     if user is not None and default_token_generator.check_token(user, token):
         
-# check that no one else took the email while we were waiting
         if Account.objects.filter(email=new_email).exists():
             messages.error(request, "This email address was recently taken by another account.")
             return redirect('account_settings')
@@ -342,11 +338,9 @@ def update_email_validate(request, uidb64, token, encoded_email):
 
 login_required(login_url='login')
 def edit_profile(request):
-    # Get or create the user profile
     userprofile, created = UserProfile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        # Bind the POST data and FILES to the forms
         user_form = UserForm(request.POST, instance=request.user)
         profile_form = UserProfileForm(request.POST, request.FILES, instance=userprofile)
 
@@ -418,11 +412,11 @@ def add_address(request):
 
     return render(request, 'accounts/add_address.html')
 
-from django.shortcuts import render, redirect, get_object_or_404
+
 
 @login_required(login_url='login')
 def edit_address(request, id):
-    # Securely fetch the address, ensuring it actually belongs to the logged-in user!
+    
     address = get_object_or_404(Address, id=id, user=request.user)
 
     if request.method == 'POST':
@@ -438,7 +432,6 @@ def edit_address(request, id):
         
         is_default = request.POST.get('is_default') == 'on' 
 
-        # If they check "Set as default", un-default all their other addresses first
         if is_default:
             Address.objects.filter(user=request.user, is_default=True).update(is_default=False)
 
