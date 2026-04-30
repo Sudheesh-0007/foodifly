@@ -8,6 +8,20 @@
         {% endfor %}
     </div>
 
+
+{% endif %}
+{% if user_form.errors %}
+    <div class="messages-container" style="max-width: 600px; margin: 0 auto;">
+        <div class="alert alert-danger text-center shadow-sm">
+            {% for field in user_form %}
+                {% for error in field.errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
     <script>
         setTimeout(function() {
             var alerts = document.querySelectorAll('.alert');
@@ -17,4 +31,3 @@
             });
         }, 4000); 
     </script>
-{% endif %}

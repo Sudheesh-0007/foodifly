@@ -12,21 +12,21 @@ urlpatterns = [
     path('logout/',views.logout,name='logout'),
 
     path('activate/<uidb64>/<token>/',views.activate,name='activate'),
-    path('forgotPassword/', views.forgotPassword, name='forgotPassword'),
-    path('resetPassword/', views.resetPassword, name='resetPassword'),
-    path('resetpassword_validate/<uidb64>/<token>/',views.resetpassword_validate,name='resetpassword_validate'), 
+    path('forgot-password/', views.forgotPassword, name='forgotPassword'),
+    path('reset-password/', views.resetPassword, name='resetPassword'),
+    path('reset-password-validate/<uidb64>/<token>/',views.resetpassword_validate,name='resetpassword_validate'), 
 
     path('dashboard/', views.user_dashboard, name='dashboard'),   
     path('settings/', views.account_settings, name='account_settings'),
-    path('edit_profile/', views.edit_profile, name='edit_profile'),
-    path('edit_email/', views.edit_email, name='edit_email'), 
+    path('edit-profile/', views.edit_profile, name='edit_profile'),
+    path('edit-email/', views.edit_email, name='edit_email'), 
 
-    path('update_email_validate/<uidb64>/<token>/<str:encoded_email>/', views.update_email_validate, name='update_email_validate'),
+    path('update-email-validate/<uidb64>/<token>/<str:encoded_email>/', views.update_email_validate, name='update_email_validate'),
 
     path('address/', views.manage_addresses, name='address'),
-    path('add_address/', views.add_address, name='add_address'),
-    path('edit_address/<int:id>/', views.edit_address, name='edit_address'),
-    path('delete_address/<int:id>/', views.delete_address, name='delete_address'),
+    path('add-address/', views.add_address, name='add_address'),
+    path('edit-address/<int:id>/', views.edit_address, name='edit_address'),
+    path('delete-address/<int:id>/', views.delete_address, name='delete_address'),
 ]
 
 

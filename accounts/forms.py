@@ -63,6 +63,30 @@ class UserForm(forms.ModelForm):
         model = Account
         fields = ('first_name', 'last_name', 'phone_number')
 
+    def clean(self):
+        cleaned_data = super().clean()
+        first_name = cleaned_data.get('first_name')
+        phone = cleaned_data.get('phone_number')
+
+        if first_name:
+            if not first_name.isalpha():
+                self.add_error('first_name', "Only letters allowed")
+
+            if len(first_name) < 3:
+                self.add_error('first_name', "Minimum 3 characters required")
+
+        if phone:
+            if not phone.isdigit():
+                self.add_error('phone_number', "Only digits allowed")
+
+            if len(phone) != 10:
+                self.add_error('phone_number', "Must be 10 digits")
+
+            if phone[0] not in ['6','7','8','9']:
+                self.add_error('phone_number', "Enter valid phone number")
+
+        return cleaned_data
+
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
         for field in self.fields:
