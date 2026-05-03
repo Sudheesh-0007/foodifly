@@ -1,0 +1,287 @@
+/* --- Global Typography & Colors --- */
+:root {
+    --brand-dark-green: #0a3a2a;
+    --brand-dark-green-hover: #12543e;
+    --brand-gold: #a88d59;
+    --text-dark: #111111;
+    --text-muted: #6c757d;
+    --bg-light: #f5f5f5;
+    --bg-white: #ffffff;
+    --border-color: #eaeaea;
+}
+
+/* Page Titles */
+.admin-page-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--brand-dark-green);
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    font-size: 2rem;
+}
+
+/* --- Buttons --- */
+.btn-add-category {
+    background-color: var(--brand-dark-green);
+    color: var(--bg-white);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-add-category:hover {
+    background-color: var(--brand-dark-green-hover);
+    color: var(--bg-white);
+    transform: translateY(-1px);
+}
+
+/* --- Statistics Cards --- */
+.stat-card {
+    background-color: var(--bg-white);
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    border: 1px solid var(--border-color);
+    height: 100%;
+    transition: box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+}
+
+.stat-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0;
+    line-height: 1;
+}
+
+.stat-icon-wrapper {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    background-color: #fcfcfc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: var(--border-color);
+}
+
+/* --- Data Table Container --- */
+.admin-table-card {
+    background-color: var(--bg-white);
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    border: 1px solid var(--border-color);
+}
+
+/* Table Tabs */
+.table-tabs {
+    display: flex;
+    gap: 2rem;
+}
+
+.tab-link {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.tab-link:hover, .tab-link.active {
+    color: var(--brand-dark-green);
+    border-bottom-color: var(--brand-dark-green);
+}
+
+/* --- Table Structure & Typography --- */
+.admin-table {
+    margin-bottom: 0;
+}
+
+.admin-table th {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: #888;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    padding-top: 0;
+}
+
+.admin-table td {
+    padding: 1.25rem 0.5rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #f8f9fa;
+    vertical-align: middle;
+}
+
+/* Row Hover Effect */
+.admin-table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.admin-table tbody tr:hover {
+    background-color: #fcfcfc;
+}
+
+/* Badges (Slugs & Status) */
+.count-badge {
+    background-color: #f8f9fa;
+    color: var(--text-dark);
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.75rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid #eee;
+}
+
+.status-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+/* Active Status Styling */
+.status-active {
+    background-color: #fdf5e6;
+    color: var(--brand-gold);
+}
+
+/* Draft/Inactive Status Styling */
+.status-draft {
+    background-color: #f0f0f0;
+    color: #6c757d;
+}
+
+/* Action Icons (Edit / Delete) */
+.action-btn {
+    font-size: 1.1rem;
+    transition: opacity 0.2s, transform 0.2s;
+    display: inline-block;
+}
+
+.action-btn:hover {
+    opacity: 0.7;
+    transform: scale(1.1);
+}
+
+.text-gold {
+    color: var(--brand-gold) !important;
+}
+
+/* Utility Overrides for text truncation */
+.text-truncate {
+    display: inline-block;
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+/* --- Search Bar Styling --- */
+.input-group .form-control {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    border-color: var(--border-color);
+    background-color: #fbfbfb;
+    color: var(--text-dark);
+}
+
+.input-group .input-group-text {
+    border-color: var(--border-color);
+    background-color: #fbfbfb;
+    transition: all 0.2s ease;
+}
+
+/* When the user clicks into the search box, highlight the border green */
+.input-group .form-control:focus {
+    background-color: var(--bg-white);
+    border-color: var(--brand-dark-green);
+    box-shadow: none;
+}
+
+.input-group .form-control:focus + .input-group-text {
+    background-color: var(--bg-white);
+    border-color: var(--brand-dark-green);
+}
+
+.input-group-text i {
+    color: #adb5bd; /* Subtle grey for the magnifying glass */
+}
+
+
+/* --- Pagination Styling --- */
+.admin-pagination {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+}
+
+.admin-pagination .page-link {
+    border: 1px solid var(--border-color);
+    color: var(--text-dark);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    background-color: var(--bg-white);
+    padding: 0; /* Reset bootstrap padding */
+}
+
+/* Hover effect for clickable page numbers */
+.admin-pagination a.page-link:hover {
+    background-color: var(--bg-light);
+    color: var(--brand-dark-green);
+    border-color: var(--brand-dark-green);
+}
+
+/* The current active page */
+.admin-pagination .page-link.active {
+    background-color: var(--brand-dark-green);
+    color: var(--bg-white);
+    border-color: var(--brand-dark-green);
+}
+
+/* Disabled arrows (e.g., trying to go previous on page 1) */
+.admin-pagination .page-link.disabled {
+    background-color: #f8f9fa;
+    color: #dee2e6 !important; 
+    border-color: var(--border-color);
+    cursor: not-allowed;
+}

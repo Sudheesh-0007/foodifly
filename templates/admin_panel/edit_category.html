@@ -1,0 +1,83 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+
+{% block admin_css %}
+<link rel="stylesheet" href="{% static 'css/admin/category.css' %}">
+{% endblock %}
+
+{% block admin_content %}
+<form action="{% url 'edit_category' category.slug %}" method="POST">
+    {% csrf_token %}
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <p class="text-muted text-uppercase mb-1" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;">
+                Catalog Architecture &gt; Category Management &gt; <span class="text-gold">Edit Category</span>
+            </p>
+            <h2 class="admin-page-title mb-0">Edit Category: {{ category.category_name }}</h2>
+            <p class="text-muted mt-2" style="font-size: 0.9rem;">Modify the details of this structural node.</p>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <a href="{% url 'category_management' %}" class="btn btn-light text-dark fw-bold px-4 py-2" style="font-size: 0.85rem;">Cancel</a>
+            <button type="submit" class="btn btn-save-category shadow-sm">
+                <i class="bi bi-check-lg me-1"></i> Update Category
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-9 col-lg-12">
+            <div class="admin-card">
+                
+                <div class="mb-4">
+                    <label class="custom-label">CATEGORY NAME</label>
+                    <input type="text" name="category_name" id="categoryNameInput" class="form-control custom-input" value="{{ category.category_name }}" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="custom-label">URL SLUG</label>
+                    <input type="text" name="slug" id="slugInput" class="form-control custom-input mb-1" value="{{ category.slug }}">
+                    <small class="text-muted" style="font-size: 0.75rem;">Modify this to change the page URL.</small>
+                </div>
+
+                <div class="mb-4">
+                    <label class="custom-label">DESCRIPTION</label>
+                    <textarea name="description" class="form-control custom-input" rows="6">{{ category.description }}</textarea>
+                </div>
+                
+                <div class="mb-5" style="max-width: 200px;">
+                    <label class="custom-label">STATUS</label>
+                    <select name="status" class="form-select custom-input text-muted">
+                        <option value="active" {% if category.is_active %}selected{% endif %}>Active</option>
+                        <option value="draft" {% if not category.is_active %}selected{% endif %}>Draft</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const nameInput = document.getElementById("categoryNameInput");
+        const slugInput = document.getElementById("slugInput");
+
+        if(nameInput && slugInput) {
+            nameInput.addEventListener("input", function() {
+                // Get the value of the name input
+                let title = nameInput.value;
+                
+                // Convert to slug format (lowercase, replace spaces with hyphens, remove special characters)
+                let slug = title.toLowerCase().trim()
+                    .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+                    .replace(/\s+/g, '-')        // collapse whitespace and replace by -
+                    .replace(/-+/g, '-');        // collapse dashes
+
+                // Instantly update the slug input box
+                slugInput.value = slug;
+            });
+        }
+    });
+</script>
+{% endblock %}

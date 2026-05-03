@@ -18,7 +18,7 @@
         <a href="{% url 'admin_user_management' %}" class="sidebar-link {% if 'users' in request.path %}active{% endif %}">
             <i class="bi bi-people"></i> User
         </a>
-        <a href="#" class="sidebar-link">
+        <a href="{% url "category_management"%}" class="sidebar-link">
             <i class="bi bi-layers"></i> Category
         </a>
         <a href="#" class="sidebar-link">

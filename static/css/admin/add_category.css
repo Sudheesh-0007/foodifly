@@ -1,0 +1,77 @@
+/* --- Global Typography & Colors --- */
+:root {
+    --brand-dark-green: #0a3a2a;
+    --brand-dark-green-hover: #12543e;
+    --brand-gold: #a88d59;
+    --text-dark: #111111;
+    --text-muted: #6c757d;
+    --bg-white: #ffffff;
+    --border-color: #eaeaea;
+}
+
+/* Page Titles */
+.admin-page-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--brand-dark-green);
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    font-size: 2rem;
+}
+
+/* --- Cards --- */
+.admin-card {
+    background-color: var(--bg-white);
+    border-radius: 10px;
+    padding: 1.8rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    border: 1px solid var(--border-color);
+    height: 100%;
+}
+
+/* --- Form Inputs --- */
+.custom-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.custom-input {
+    background-color: #fbfbfb;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    box-shadow: none;
+    transition: all 0.2s ease;
+}
+
+.custom-input:focus {
+    background-color: var(--bg-white);
+    border-color: var(--brand-dark-green);
+    box-shadow: 0 0 0 3px rgba(10, 58, 42, 0.08);
+}
+
+/* --- Buttons --- */
+.btn-save-category {
+    background-color: var(--brand-dark-green);
+    color: var(--bg-white);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+    border: none;
+}
+
+.btn-save-category:hover {
+    background-color: var(--brand-dark-green-hover);
+    color: var(--bg-white);
+    transform: translateY(-1px);
+}
