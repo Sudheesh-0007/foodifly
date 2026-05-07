@@ -220,10 +220,6 @@ def user_dashboard(request):
 def account_settings(request):
     return render(request, 'accounts/account_settings.html')
 
-@login_required(login_url='login')
-@never_cache
-def edit_profile(request):
-    return render(request, 'accounts/edit_profile.html')
 
 
 @login_required(login_url='login')

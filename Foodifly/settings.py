@@ -50,8 +50,13 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+
     'admin_panel',
     'category',
+    'store',
+
+    'cloudinary_storage', 
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -143,6 +148,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
@@ -181,8 +188,6 @@ ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
-
-# bypasing intermediary pages
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
 
@@ -195,3 +200,12 @@ SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+# Cloudinary Configuration
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'djf3afshd',
+    'API_KEY': '239655159157663',
+    'API_SECRET': 'BVo6fb_FB8dGvbLC3EJZNgZ-TVE'
+}
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10 MB limit
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760

@@ -45,6 +45,7 @@ class RegistrationForm(forms.ModelForm):
 
         if len(first_name) < 3:
             raise forms.ValidationError("First name must be at least 3 characters")
+        return cleaned_data
 
 
 

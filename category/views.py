@@ -7,6 +7,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 
 
+### CATEGORY SIDE
+
 @login_required(login_url='admin_login')
 def category_management(request):
     if not request.user.is_admin:
@@ -142,3 +144,4 @@ def soft_delete_category(request, category_slug):
     
     messages.success(request, f'Category "{category.category_name}" was moved to trash.')
     return redirect('category_management')
+

@@ -1,0 +1,267 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+
+{% block admin_css %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/admin/add_product.css' %}">
+{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="admin-page-title">Edit Product</h2>
+    </div>
+
+   {% include "includes/alerts.html" %}
+
+    <form method="POST" action="{% url 'edit_product' product.id %}" enctype="multipart/form-data" id="addProductForm">
+        {% csrf_token %}
+        
+        <!-- FIXED: Added 'align-items-start' to prevent columns from stretching -->
+        <div class="row g-4 align-items-start">
+            
+            <!-- Left Column -->
+            <div class="col-lg-8">
+                <div class="admin-card mb-4">
+                    <h5 class="card-title mb-4">Basic Information</h5>
+                    <div class="mb-3">
+                        <label class="custom-label">Product Name</label>
+                        <input type="text" name="name"  value="{{ product.name }}" id="id_product_name" class="form-control custom-input" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="custom-label">URL Slug</label>
+                        <input type="text" name="slug" id="id_slug" value="{{ product.slug }}" class="form-control custom-input" required readonly>
+                    </div>
+                    <!-- Category Selection -->
+            <div class="input-group">
+                <label>CATEGORY</label>
+               <select name="category" required>
+
+                {% for cat in categories %}
+
+                    <option
+                        value="{{ cat.id }}"
+                        {% if product.category.id == cat.id %}
+                            selected
+                        {% endif %}
+                    >
+
+                        {{ cat.category_name }}
+
+                    </option>
+
+                {% endfor %}
+
+            </select>
+            </div>
+                                <div class="mb-3">
+                                    <label class="custom-label">Description</label>
+                                    <textarea name="description" class="form-control custom-input" rows="5" required>{{ product.description }}</textarea>
+                                </div>
+                            </div>
+
+            <div class="admin-card mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="card-title mb-0">Product Variants</h5>
+                    <button type="button" class="btn btn-sm btn-outline-success" id="add-variant-btn">+ Add Variant</button>
+                </div>
+                
+                <div id="variants-container">
+                    <!-- Bulletproof Flexbox Variant Row -->
+{% for variant in variants %}
+
+<div class="d-flex align-items-end gap-3 variant-row mb-3">
+
+    <!-- VARIANT -->
+    <div class="flex-fill">
+
+        <label class="custom-label">
+            Variant
+        </label>
+
+        <input
+            type="text"
+            name="variant_values[]"
+            value="{{ variant.variant_value }}"
+            class="form-control custom-input"
+            required
+        >
+
+    </div>
+
+    <!-- PRICE -->
+    <div class="flex-fill">
+
+        <label class="custom-label">
+            Price
+        </label>
+
+        <input
+            type="number"
+            step="0.01"
+            name="variant_prices[]"
+            value="{{ variant.salePrice }}"
+            class="form-control custom-input"
+            required
+        >
+
+    </div>
+
+    <!-- STOCK -->
+    <div class="flex-fill">
+
+        <label class="custom-label">
+            Stock
+        </label>
+
+        <input
+            type="number"
+            name="variant_stocks[]"
+            value="{{ variant.stock }}"
+            class="form-control custom-input"
+            required
+        >
+
+    </div>
+
+    <!-- STATUS -->
+    <div style="min-width:140px;">
+
+        <label class="custom-label">
+            Status
+        </label>
+
+        <select
+            name="variant_status[]"
+            class="form-select custom-input"
+        >
+
+            <option
+                value="True"
+                {% if variant.is_active %}
+                    selected
+                {% endif %}
+            >
+                Active
+            </option>
+
+            <option
+                value="False"
+                {% if not variant.is_active %}
+                    selected
+                {% endif %}
+            >
+                Inactive
+            </option>
+
+        </select>
+
+    </div>
+
+    <!-- REMOVE BUTTON -->
+    <div>
+
+        <button
+            type="button"
+            class="btn btn-danger remove-variant-btn"
+        >
+            <i class="bi bi-trash"></i>
+        </button>
+
+    </div>
+
+</div>
+
+{% endfor %}
+                </div>
+            </div>
+
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-lg-4">
+                <div class="admin-card mb-4">
+                    <h5 class="card-title mb-4">Media (Min 3 Images)</h5>
+                    <div class="upload-box text-center" id="drop-zone" onclick="document.getElementById('image-input').click()">
+                        <i class="bi bi-cloud-arrow-up fs-1 text-muted"></i>
+                        <p class="mt-2 mb-1 text-muted">Click or drag multiple images here</p>
+                        <small class="text-warning">First image will be the primary thumbnail</small>
+                        <input type="file" name='images' id="image-input" multiple accept="image/*" class="d-none">
+                    </div>
+                    
+                        <div
+                            id="image-preview-container"
+                            class="mt-3 d-flex flex-wrap gap-2"
+                        >
+
+                            {% for image in gallery_images %}
+
+                                <div
+                                    class="preview-image-wrapper"
+                                    id="gallery-image-{{ image.id }}"
+                                >
+
+                                    <img
+                                        src="{{ image.image.url }}"
+                                        class="preview-thumbnail"
+                                    >
+
+                                    <button
+                                        type="button"
+                                        class="remove-image-btn existing-image-remove"
+                                        data-image-id="{{ image.id }}"
+                                    >
+                                        ×
+                                    </button>
+
+                                </div>
+                                <input
+                                    type="hidden"
+                                    name="deleted_images"
+                                    id="deleted-images-input"
+                                    value=""
+                                >
+
+                            {% endfor %}
+
+                        </div>
+                    
+                    <div id="hidden-inputs-container"></div>
+                </div>
+
+                <div class="admin-card">
+                    <h5 class="card-title mb-4"></h5>
+                    <div class="form-check form-switch mb-4">
+
+                    <button type="submit" class="btn btn-success w-100 py-2">Update Product</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Cropper Modal -->
+<div class="modal fade" id="cropperModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Crop Image <span id="crop-queue-status"></span></h5>
+            </div>
+            <div class="modal-body text-center">
+                <div class="img-container" style="max-height: 500px;">
+                    <img id="image-to-crop" src="" alt="Picture" style="max-width: 100%;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancel-crop-btn">Cancel Queue</button>
+                <button type="button" class="btn btn-success" id="crop-btn">Crop & Next</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block admin_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<script src="{% static 'js/admin/add_product.js' %}"></script>
+{% endblock %}

@@ -12,16 +12,14 @@ Foodifly is a premium, full-stack Django e-commerce web application designed for
 ## 🚀 Tech Stack
 * **Backend:** Python, Django
 * **Frontend:** HTML5, CSS3, Bootstrap 5, JavaScript
-* **Database:** PostgreSQL (or SQLite for local dev)
+* **Database:** PostgreSQL 
 * **Styling:** Custom CSS with luxury typography (Playfair Display, Inter)
 
-## 🛠️ Local Installation & Setup
 
-Follow these steps to get the project running on your local machine.
 
 ### Prerequisites
 * Python 3.x installed
-* PostgreSQL (optional, if you have migrated away from SQLite)
+* PostgreSQL 
 * Git
 
 ### 1. Clone the Repository
