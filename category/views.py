@@ -7,15 +7,21 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 
 
-### CATEGORY SIDE
-
 @login_required(login_url='admin_login')
 def category_management(request):
     if not request.user.is_admin:
         return redirect('home')
-    categories = Category.objects.filter(is_deleted=False).order_by('-id')
     
+    status = request.GET.get('status')
+    categories = Category.objects.all()
 
+    if status == 'deleted':
+
+        categories = categories.filter(is_deleted=True)
+    else:
+
+        categories = categories.filter(is_deleted=False)
+    
     search_query = request.GET.get('q', '')
     if search_query:
 
@@ -145,3 +151,18 @@ def soft_delete_category(request, category_slug):
     messages.success(request, f'Category "{category.category_name}" was moved to trash.')
     return redirect('category_management')
 
+@login_required(login_url='admin_login')
+def restore_category(request, slug):
+
+    if not request.user.is_admin:
+        return redirect('home')
+
+    category = get_object_or_404(Category,slug=slug)
+
+    category.is_deleted = False
+    category.is_active = True
+    category.save()
+
+    messages.success(request,"Category restored successfully.")
+
+    return redirect('category_management')

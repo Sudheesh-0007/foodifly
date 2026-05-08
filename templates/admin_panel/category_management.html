@@ -61,17 +61,57 @@
 <div class="admin-table-card">
     <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
         <div class="table-tabs">
-            <a href="{% url 'category_management' %}" class="tab-link active">All Categories</a>
-        </div>
+
+    <a
+        href="{% url 'category_management' %}"
+        class="tab-link {% if not request.GET.status %}active{% endif %}"
+    >
+        All Categories
+    </a>
+
+    <a
+        href="?status=deleted"
+        class="tab-link {% if request.GET.status == 'deleted' %}active{% endif %}"
+    >
+        Deleted
+    </a>
+
+</div>
         
-        <form action="{% url 'category_management' %}" method="GET" class="d-flex">
-            <div class="input-group input-group-sm" style="width: 250px;">
-                <input type="text" name="q" class="form-control border-end-0 shadow-none" placeholder="Search categories..." value="{{ search_query }}">
-                <button type="submit" class="input-group-text bg-white border-start-0 shadow-none">
-                    <i class="bi bi-search text-muted"></i>
-                </button>
-            </div>
-        </form>
+       <form action="{% url 'category_management' %}" method="GET" class="d-flex">
+
+    {% if request.GET.status %}
+
+        <input
+            type="hidden"
+            name="status"
+            value="{{ request.GET.status }}"
+        >
+
+    {% endif %}
+
+    <div class="input-group input-group-sm" style="width: 250px;">
+
+        <input
+            type="text"
+            name="q"
+            class="form-control border-end-0 shadow-none"
+            placeholder="Search categories..."
+            value="{{ search_query }}"
+        >
+
+        <button
+            type="submit"
+            class="input-group-text bg-white border-start-0 shadow-none"
+        >
+
+            <i class="bi bi-search text-muted"></i>
+
+        </button>
+
+    </div>
+
+</form>
     </div>
 
     <div class="table-responsive">
