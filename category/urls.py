@@ -9,9 +9,4 @@ urlpatterns = [
     path('category/restore/<slug:slug>/',views.restore_category,name='restore_category'),
 
 
-
-
-
-
-    
 ]

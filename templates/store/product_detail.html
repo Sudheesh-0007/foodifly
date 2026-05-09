@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+<nav aria-label="breadcrumb" class="mb-4">
+
+    <ol class="breadcrumb small text-uppercase fw-bold text-muted">
+
+        <li class="breadcrumb-item">
+
+            <a
+                href="{% url 'shop' %}"
+                class="text-decoration-none"
+            >
+                Shop
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item">
+
+            {{ product.category.category_name }}
+
+        </li>
+
+        <li class="breadcrumb-item active">
+
+            {{ product.name }}
+
+        </li>
+
+    </ol>
+
+</nav>
+
+    <div class="row g-5">
+        <div class="col-lg-7">
+            <div class="d-flex">
+                <div class="thumbnail-stack me-3 d-none d-md-block">
+
+    {% for image in gallery_images %}
+
+    <img
+        src="{{ image.image.url }}"
+        class="img-fluid mb-2 thumb-image {% if forloop.first %}border-active{% endif %}"
+        alt="{{ product.name }}"
+        onclick="changeImage(this)"
+    >
+
+    {% endfor %}
+
+</div>
+<div class="main-image-container position-relative flex-grow-1 overflow-hidden">
+
+    <span class="badge-artisanal">
+        ARTISANAL SELECTION
+    </span>
+
+    <img
+        id="main-product-image"
+        src="{{ product.image.url }}"
+        class="img-fluid w-100 rounded-1 zoom-image"
+        alt="{{ product.name }}"
+    >
+
+</div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <h1 class="product-title mb-2">
+
+                {{ product.name }}
+
+            </h1>
+                <div class="d-flex align-items-center mb-3">
+
+                    <span class="price-tag me-3">
+
+                        ₹<span id="product-price">
+
+                            {{ variants.first.salePrice }}
+
+                        </span>
+
+                    </span>
+
+                    <div class="stars text-warning small">
+
+                        ★★★★☆
+
+                        <span class="text-muted ms-1">
+
+                            (42 Reviews)
+
+                        </span>
+
+                    </div>
+
+                </div>
+                <p
+                    id="stock-status"
+                    class="fw-bold text-success mb-4"
+                >
+
+                    {% if variants.first.stock > 0 %}
+
+                        In Stock
+
+                    {% else %}
+
+                        Out Of Stock
+
+                    {% endif %}
+
+                </p>
+            <p class="product-description text-muted mb-4">
+                {{ product.description }}
+            </p>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold small text-uppercase">Select Weight</label>
+                <div class="d-flex gap-2 flex-wrap">
+
+{% for variant in variants %}
+
+<button
+    type="button"
+    class="btn {% if forloop.first %}btn-dark active{% else %}btn-outline-dark{% endif %} weight-btn variant-btn"
+
+    data-price="{{ variant.salePrice }}"
+
+    data-stock="{{ variant.stock }}"
+
+    {% if variant.stock <= 0 %}
+        disabled
+    {% endif %}
+>
+
+    {{ variant.variant_value }}
+
+    {% if variant.stock <= 0 %}
+
+        <small class="d-block">
+
+            Out Of Stock
+
+        </small>
+
+    {% endif %}
+
+</button>
+
+{% endfor %}
+
+</div>
+            </div>
+
+            <div class="d-flex gap-2 mb-4">
+                <button class="btn btn-success-dark flex-grow-1 py-3 fw-bold">ADD TO CART</button>
+                <button class="btn btn-outline-secondary px-3"><i class="bi bi-heart"></i></button>
+            </div>
+
+            <div class="features-row d-flex justify-content-between border-top pt-3">
+                <div class="small"><i class="bi bi-leaf"></i> <strong>ORGANIC</strong><br></div>
+                <div class="small"><i class="bi bi-truck"></i> <strong>FAST DELIVERY</strong><br>24-48h Controlled</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5 pt-5">
+        <div class="col-lg-6">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="section-heading">Customer Appreciation</h3>
+                <a href="#" class="small text-decoration-none text-brown fw-bold">WRITE A REVIEW</a>
+            </div>
+            
+            <div class="review-card p-4 mb-3">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <span class="avatar me-2">EM</span>
+                        <strong class="small">Eleanor M.</strong>
+                    </div>
+                    <div class="text-warning small">★★★★★</div>
+                </div>
+                <p class="fst-italic mt-3 mb-0">"The texture is incredible. It has those tiny salt-like crystals that only develop in properly aged cheddar."</p>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="story-box p-5 text-white h-100">
+                <h6 class="text-uppercase ls-wide small mb-4">The Secret of the Cave</h6>
+                <p class="display-6 fst-italic">
+                    {{ product.description }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/product_detail.js' %}"></script>
+{% endblock %}

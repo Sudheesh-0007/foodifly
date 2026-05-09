@@ -189,52 +189,87 @@
                         <input type="file" name='images' id="image-input" multiple accept="image/*" class="d-none">
                     </div>
                     
-                        <div
-                            id="image-preview-container"
-                            class="mt-3 d-flex flex-wrap gap-2"
-                        >
+<div
+    id="image-preview-container"
+    class="mt-3 d-flex flex-wrap gap-2"
+>
 
-                            {% for image in gallery_images %}
+    {% for image in gallery_images %}
 
-                                <div
-                                    class="preview-image-wrapper"
-                                    id="gallery-image-{{ image.id }}"
-                                >
+        <div
+            class="preview-image-wrapper"
+            id="gallery-image-{{ image.id }}"
+        >
 
-                                    <img
-                                        src="{{ image.image.url }}"
-                                        class="preview-thumbnail"
-                                    >
+            <img
+                src="{{ image.image.url }}"
+                class="preview-thumbnail"
+            >
 
-                                    <button
-                                        type="button"
-                                        class="remove-image-btn existing-image-remove"
-                                        data-image-id="{{ image.id }}"
-                                    >
-                                        ×
-                                    </button>
+            <button
+                type="button"
+                class="remove-image-btn existing-image-remove"
+                data-image-id="{{ image.id }}"
+            >
+                ×
+            </button>
 
-                                </div>
-                                <input
-                                    type="hidden"
-                                    name="deleted_images"
-                                    id="deleted-images-input"
-                                    value=""
-                                >
+        </div>
 
-                            {% endfor %}
+    {% endfor %}
 
-                        </div>
+</div>
+
+<input
+    type="hidden"
+    name="deleted_images"
+    id="deleted-images-input"
+    value=""
+>
                     
                     <div id="hidden-inputs-container"></div>
                 </div>
 
-                <div class="admin-card">
-                    <h5 class="card-title mb-4"></h5>
-                    <div class="form-check form-switch mb-4">
+              <div class="admin-card">
 
-                    <button type="submit" class="btn btn-success w-100 py-2">Update Product</button>
-                </div>
+    <h5 class="card-title mb-4">
+        Product Status
+    </h5>
+
+    <div class="form-check form-switch mb-4">
+
+        <input
+            class="form-check-input"
+            type="checkbox"
+            name="is_active"
+            id="is_active"
+
+            {% if product.isActive %}
+                checked
+            {% endif %}
+        >
+
+        <label
+            class="form-check-label"
+            for="is_active"
+        >
+
+            Publish Product
+
+        </label>
+
+    </div>
+
+    <button
+        type="submit"
+        class="btn btn-success w-100 py-2"
+    >
+
+        Update Product
+
+    </button>
+
+</div>
             </div>
         </div>
     </form>

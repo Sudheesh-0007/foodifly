@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q , Sum, Min
 from django.contrib import messages
-from .models import Product, Variant, ProductGallery
+from store.models import Product, Variant, ProductGallery
 from category.models import Category
 from django.utils.text import slugify
 
@@ -149,70 +149,194 @@ def edit_product(request, product_id):
     if not request.user.is_admin:
         return redirect('home')
 
-    product = get_object_or_404(Product, id=product_id)
+    # =========================
+    # GET PRODUCT
+    # =========================
 
-    categories = Category.objects.filter(is_deleted=False)
+    product = get_object_or_404(
+        Product,
+        id=product_id
+    )
+
+    categories = Category.objects.filter(
+        is_deleted=False
+    )
 
     variants = product.variants.all()
 
     gallery_images = product.gallery_images.all()
 
+    # =========================
+    # POST REQUEST
+    # =========================
+
     if request.method == 'POST':
+
+        # =========================
+        # BASIC PRODUCT INFO
+        # =========================
 
         product.name = request.POST.get('name')
 
         product.slug = request.POST.get('slug')
 
-        product.description = request.POST.get('description')
+        product.description = request.POST.get(
+            'description'
+        )
 
-        category_id = request.POST.get('category')
+        category_id = request.POST.get(
+            'category'
+        )
 
-        product.category = Category.objects.get(id=category_id)
+        product.category = Category.objects.get(
+            id=category_id
+        )
 
-        product.isActive = (request.POST.get('is_active') == 'on')
-        images = request.FILES.getlist('images')
+        product.isActive = (
+            request.POST.get('is_active') == 'on'
+        )
+
+        # =========================
+        # NEW IMAGES
+        # =========================
+
+        images = request.FILES.getlist(
+            'images'
+        )
+
+        # UPDATE MAIN PRODUCT IMAGE
+        # ONLY IF NEW IMAGE EXISTS
+
         if images:
-            product.image = images[0]
-        product.save()
-        product.variants.all().delete()
-        variant_values = request.POST.getlist('variant_values[]')
-        variant_prices = request.POST.getlist('variant_prices[]')
-        variant_stocks = request.POST.getlist('variant_stocks[]')
-        variant_statuses = request.POST.getlist('variant_status[]')
 
-        for value, price, stock, status in zip(variant_values,variant_prices,variant_stocks,variant_statuses,):
+            product.image = images[0]
+
+        # =========================
+        # UPDATE VARIANTS
+        # =========================
+
+        product.variants.all().delete()
+
+        variant_values = request.POST.getlist(
+            'variant_values[]'
+        )
+
+        variant_prices = request.POST.getlist(
+            'variant_prices[]'
+        )
+
+        variant_stocks = request.POST.getlist(
+            'variant_stocks[]'
+        )
+
+        variant_statuses = request.POST.getlist(
+            'variant_status[]'
+        )
+
+        for value, price, stock, status in zip(
+
+            variant_values,
+            variant_prices,
+            variant_stocks,
+            variant_statuses
+
+        ):
+
             Variant.objects.create(
+
                 product=product,
+
                 variant_value=value,
+
                 salePrice=price,
+
                 stock=stock,
+
                 is_active=(status == "True")
             )
-        has_active_variant = product.variants.filter(is_active=True).exists()
-        product.isActive = has_active_variant
-        product.save()   
+
+        # =========================
+        # DELETE SELECTED IMAGES
+        # =========================
+
+        deleted_images = request.POST.get(
+            'deleted_images'
+        )
+
+        if deleted_images:
+
+            deleted_image_ids = deleted_images.split(',')
+
+            ProductGallery.objects.filter(
+
+                id__in=deleted_image_ids,
+
+                product=product
+
+            ).delete()
+
+        # =========================
+        # ADD NEW GALLERY IMAGES
+        # =========================
 
         if images:
-            product.gallery_images.all().delete()
+
+            existing_count = product.gallery_images.count()
+
             for index, image in enumerate(images):
+
                 ProductGallery.objects.create(
+
                     product=product,
+
                     image=image,
-                    is_main=(index == 0)
+
+                    is_main=(
+                        existing_count == 0
+                        and index == 0
+                    )
                 )
 
-        messages.success(request,"Product updated successfully")
-        return redirect('admin_products')
+        # =========================
+        # SAVE PRODUCT
+        # =========================
+
+        product.save()
+
+        messages.success(
+
+            request,
+
+            "Product updated successfully"
+        )
+
+        return redirect(
+            'admin_products'
+        )
+
+    # =========================
+    # CONTEXT
+    # =========================
 
     context = {
 
         'product': product,
+
         'categories': categories,
+
         'variants': variants,
+
         'gallery_images': gallery_images,
     }
 
-    return render(request,'admin_panel/edit_product.html',context)
+    return render(
+
+        request,
+
+        'admin_panel/edit_product.html',
+
+        context
+    )
 
 
 @login_required(login_url='admin_login')

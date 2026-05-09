@@ -151,7 +151,18 @@ cropBtn.addEventListener("click", function () {
 
 function renderPreviews() {
 
-    previewContainer.innerHTML = "";
+    // REMOVE ONLY NEW IMAGE PREVIEWS
+
+    const newPreviews = document.querySelectorAll(
+        ".new-image-preview"
+    );
+
+    newPreviews.forEach(preview => {
+
+        preview.remove();
+    });
+
+    // RENDER NEWLY ADDED IMAGES
 
     selectedFiles.forEach((file, index) => {
 
@@ -159,36 +170,50 @@ function renderPreviews() {
 
         reader.onload = function (event) {
 
-            const wrapper = document.createElement("div");
+            const wrapper =
+                document.createElement("div");
 
-            wrapper.className = "preview-image-wrapper";
+            wrapper.className =
+                "preview-image-wrapper new-image-preview";
 
-            const img = document.createElement("img");
+            const img =
+                document.createElement("img");
 
             img.src = event.target.result;
 
-            img.className = "preview-thumbnail";
+            img.className =
+                "preview-thumbnail";
 
-            const removeBtn = document.createElement("button");
+            const removeBtn =
+                document.createElement("button");
 
             removeBtn.innerHTML = "×";
 
-            removeBtn.className = "remove-image-btn";
+            removeBtn.className =
+                "remove-image-btn";
 
             removeBtn.type = "button";
 
-            removeBtn.addEventListener("click", () => {
+            removeBtn.addEventListener(
+                "click",
+                () => {
 
-                selectedFiles.splice(index, 1);
+                    selectedFiles.splice(
+                        index,
+                        1
+                    );
 
-                renderPreviews();
-            });
+                    renderPreviews();
+                }
+            );
 
             wrapper.appendChild(img);
 
             wrapper.appendChild(removeBtn);
 
-            previewContainer.appendChild(wrapper);
+            previewContainer.appendChild(
+                wrapper
+            );
         };
 
         reader.readAsDataURL(file);
@@ -416,4 +441,39 @@ document.addEventListener("click", function (e) {
             ".variant-row"
         ).remove();
     }
+});
+// ==============================
+// REMOVE EXISTING GALLERY IMAGE
+// ==============================
+
+const deletedImagesInput = document.getElementById(
+    "deleted-images-input"
+);
+
+document.querySelectorAll(
+    ".existing-image-remove"
+).forEach(button => {
+
+    button.addEventListener("click", function () {
+
+        const imageId = this.dataset.imageId;
+
+        // REMOVE IMAGE PREVIEW
+
+        document.getElementById(
+            `gallery-image-${imageId}`
+        ).remove();
+
+        // STORE DELETED IDS
+
+        let deletedImages =
+            deletedImagesInput.value
+            ? deletedImagesInput.value.split(",")
+            : [];
+
+        deletedImages.push(imageId);
+
+        deletedImagesInput.value =
+            deletedImages.join(",");
+    });
 });
