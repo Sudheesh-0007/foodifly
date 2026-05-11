@@ -74,8 +74,12 @@ def shop(request):
 
 def product_detail(request, slug):
 
-    product = get_object_or_404(Product.objects.filter(is_deleted=False, isBlocked=False, isActive=True),slug=slug,)
+    product = get_object_or_404(
+        Product.objects.filter(is_deleted=False, isBlocked=False, isActive=True),
+        slug=slug,
+    )
     variants = product.variants.filter(is_active=True)
+    selected_variant = variants.filter(stock__gt=0, is_active=True).first()
 
     if not variants.exists():
         return redirect("shop")
@@ -98,12 +102,19 @@ def product_detail(request, slug):
         )
         .distinct()[:4]
     )
-
+    # related_products = (
+    #     Product.objects.filter(
+    #         category=product.category, is_deleted=False, isBlocked=False, isActive=True
+    #     )
+    #     .exclude(id=product.id)
+    #     .annotate(starting_price=Min("variants__salePrice"))[:4]
+    # )
     context = {
         "product": product,
         "variants": variants,
         "gallery_images": gallery_images,
         "related_products": related_products,
+        "selected_variant": selected_variant,
     }
 
     return render(request, "store/product_detail.html", context)

@@ -133,7 +133,7 @@
 
                     ₹<span id="product-price">
 
-                        {{ variants.first.salePrice }}
+                       {{ selected_variant.salePrice }}
 
                     </span>
 
@@ -160,7 +160,7 @@
                 class="fw-bold text-success mb-4"
             >
 
-                {% if variants.first.stock > 0 %}
+               {% if selected_variant.stock > 0 %}
 
                     In Stock
 
@@ -196,38 +196,34 @@
 
                     {% for variant in variants %}
 
-                    <button
+<button
 
-                        type="button"
+    type="button"
 
-                        class="btn {% if forloop.first %}btn-dark active{% else %}btn-outline-dark{% endif %} weight-btn variant-btn"
+    class="btn {% if variant.id == selected_variant.id %}btn-dark active{% else %}btn-outline-dark{% endif %} weight-btn variant-btn"
 
-                        data-variant-id="{{ variant.id }}"
+    data-variant-id="{{ variant.id }}"
 
-                        data-price="{{ variant.salePrice }}"
+    data-price="{{ variant.salePrice }}"
 
-                        data-stock="{{ variant.stock }}"
+    data-stock="{{ variant.stock }}"
+>
 
-                        {% if variant.stock <= 0 %}
-                            disabled
-                        {% endif %}
-                    >
+    {{ variant.variant_value }}
 
-                        {{ variant.variant_value }}
+    {% if variant.stock <= 0 %}
 
-                        {% if variant.stock <= 0 %}
+    <small class="d-block">
 
-                        <small class="d-block">
+        Out Of Stock
 
-                            Out Of Stock
+    </small>
 
-                        </small>
+    {% endif %}
 
-                        {% endif %}
+</button>
 
-                    </button>
-
-                    {% endfor %}
+{% endfor %}
 
                 </div>
 
@@ -245,36 +241,33 @@
 
     <!-- ADD TO CART -->
 
-    <form
-        method="POST"
-        action="{% url 'add_cart' product.id %}"
-        class="flex-grow-1"
+<form
+    method="POST"
+    action="{% url 'add_cart' product.id %}"
+    class="flex-grow-1"
+>
+
+    {% csrf_token %}
+
+    <!-- SELECTED VARIANT -->
+
+    <input
+        type="hidden"
+        name="variant_id"
+        id="selected-variant-id"
+        value="{% if selected_variant %}{{ selected_variant.id }}{% endif %}"
     >
 
-        {% csrf_token %}
+<button
+    type="submit"
+    class="btn btn-dark add-to-cart-btn"
+>
 
-        <!-- SELECTED VARIANT -->
+    Add To Cart
 
-        <input
-            type="hidden"
-            name="variant_id"
-            id="selected-variant-id"
-            value="{{ variants.first.id }}"
-        >
+</button>
 
-        <button
-            type="submit"
-            class="btn btn-success-dark w-100 py-3 fw-bold"
-            id="add-to-cart-btn"
-        >
-
-            <i class="bi bi-bag-plus me-2"></i>
-
-            ADD TO CART
-
-        </button>
-
-    </form>
+</form>
 
     <!-- WISHLIST -->
 
@@ -295,7 +288,7 @@
             type="hidden"
             name="variant_id"
             id="wishlist-variant-id"
-            value="{{ variants.first.id }}"
+            value="{{ selected_variant.id }}"
         >
 
         <button
@@ -448,6 +441,86 @@
             </div>
 
         </div>
+        {% if related_products %}
+
+<section class="related-products-section py-5">
+
+    <div class="container">
+
+        <!-- TITLE -->
+
+        <div class="text-center mb-5">
+
+            <h2 class="related-title">
+
+                You May Also Like
+
+            </h2>
+
+        </div>
+
+        <div class="row g-4">
+
+            {% for related in related_products %}
+
+            <div class="col-md-3">
+
+                <div class="related-card h-100">
+
+                    <!-- IMAGE -->
+
+                    <a
+                        href="{% url 'product_detail' related.slug %}"
+                    >
+
+                        <img
+
+                            src="{{ related.image.url }}"
+
+                            class="img-fluid related-image"
+
+                            alt="{{ related.name }}"
+                        >
+
+                    </a>
+
+                    <!-- CONTENT -->
+
+                    <div class="pt-3">
+
+                        <h5 class="related-product-title">
+
+                            {{ related.name }}
+
+                        </h5>
+
+                        <p class="text-muted small">
+
+                            {{ related.description|truncatewords:10 }}
+
+                        </p>
+
+                        <div class="fw-bold">
+
+                            ₹{{ related.starting_price }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endif %}
 
     </div>
 

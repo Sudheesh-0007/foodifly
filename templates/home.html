@@ -41,70 +41,212 @@
         </div>
     </section>
 
-    <section class="container py-5 mt-5">
-        <div class="d-flex justify-content-between align-items-end mb-4">
-            <div>
-                <h2 class="section-title">New Arrivals</h2>
-                <p class="text-muted mb-0">The latest curated additions to elevate your culinary creations.</p>
-            </div>
-            <a href="#" class="view-all-link text-uppercase">View all products <i class="bi bi-chevron-right"></i></a>
+<section class="container py-5 mt-5">
+
+    <!-- SECTION HEADER -->
+
+    <div class="d-flex justify-content-between align-items-end mb-5">
+
+        <div>
+
+            <h2 class="section-title">
+
+                New Arrivals
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                The latest curated additions to elevate your culinary creations.
+
+            </p>
+
         </div>
+
+        <a
+            href="{% url 'shop' %}"
+            class="view-all-link text-uppercase"
+        >
+
+            View all products
+
+            <i class="bi bi-chevron-right"></i>
+
+        </a>
+
+    </div>
+
+    <!-- PRODUCTS -->
+
+    <div class="row g-4">
 
         {% for product in latest_products %}
 
-<div class="col-md-4 col-lg-3">
+        <div class="col-md-6 col-lg-3">
 
-    <a
-        href="#"
-        class="product-card text-decoration-none d-block"
-    >
-
-        <div class="img-wrapper rounded overflow-hidden mb-3">
-
-            <img
-                src="{{ product.image.url }}"
-                alt="{{ product.name }}"
-                class="img-fluid w-100 object-fit-cover"
-                style="height: 250px;"
+            <a
+                href="{% url 'product_detail' product.slug %}"
+                class="product-card text-decoration-none d-block h-100"
             >
 
-        </div>
+                <!-- IMAGE -->
 
-        <h3 class="product-title text-dark">
-            {{ product.name }}
-        </h3>
+                <div
+                    class="img-wrapper rounded overflow-hidden mb-3"
+                >
 
-        <p class="product-price text-gold fw-bold">
+                    {% if product.image %}
 
-            ₹{{ product.starting_price }}
+                    <img
+                        src="{{ product.image.url }}"
+                        alt="{{ product.name }}"
+                        class="img-fluid w-100 product-image"
+                    >
 
-        </p>
+                    {% else %}
 
-    </a>
+                    <img
+                        src="{% static 'images/default-product.jpg' %}"
+                        alt="Product"
+                        class="img-fluid w-100 product-image"
+                    >
 
-</div>
+                    {% endif %}
 
-{% endfor %}
-    </section>
-
-    <section class="container py-5 mt-4">
-        <div class="promo-banner bg-green text-white rounded overflow-hidden d-flex flex-column flex-md-row shadow">
-            <div class="promo-content p-5 d-flex flex-column justify-content-center col-md-6">
-                <span class="badge-gold-outline mb-3 d-inline-block align-self-start border-gold text-gold">EPICUREAN CLASSIC</span>
-                <h2 class="promo-title font-playfair mb-3">Wild Truffle<br><span class="text-gold italic-font">& Amber Honey</span></h2>
-                <p class="promo-desc mb-4" style="color: rgba(255,255,255,0.8);">Sourced from ancient forests, this decadent blend of organic amber honey infused with rich truffle extract offers the perfect balance of sweet and savory.</p>
-                <div class="d-flex align-items-center gap-4">
-                    <button class="btn btn-gold rounded-0 px-4 py-2 fw-bold text-uppercase">Add to cart</button>
-                    <div>
-                        <span class="d-block fs-4 fw-bold">$145.00</span>
-                    </div>
                 </div>
-            </div>
-            <div class="promo-image col-md-6 h-100">
-                <img src="https://images.unsplash.com/photo-1587049352847-8d4c0b4c3115?q=80&w=800&auto=format&fit=crop" alt="Amber Honey" class="img-fluid w-100 h-100 object-fit-cover">
-            </div>
+
+                <!-- CONTENT -->
+
+                <div class="product-content">
+
+                    <h3 class="product-title text-dark">
+
+                        {{ product.name }}
+
+                    </h3>
+
+                    <p class="product-price text-gold fw-bold mb-0">
+
+                        ₹{{ product.starting_price }}
+
+                    </p>
+
+                </div>
+
+            </a>
+
         </div>
-    </section>
+
+        {% empty %}
+
+        <div class="col-12 text-center">
+
+            <p class="text-muted">
+
+                No products available.
+
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% if featured_product %}
+
+<section class="container py-5 mt-4">
+
+    <div
+        class="promo-banner bg-green text-white rounded overflow-hidden d-flex flex-column flex-md-row shadow"
+    >
+
+        <!-- CONTENT -->
+
+        <div
+            class="promo-content p-5 d-flex flex-column justify-content-center col-md-6"
+        >
+
+            <span
+                class="badge-gold-outline mb-3 d-inline-block align-self-start border-gold text-gold"
+            >
+
+                FEATURED COLLECTION
+
+            </span>
+
+            <h2 class="promo-title font-playfair mb-3">
+
+                {{ featured_product.name }}
+
+            </h2>
+
+            <p
+                class="promo-desc mb-4"
+                style="color: rgba(255,255,255,0.8);"
+            >
+
+                {{ featured_product.description|truncatewords:30 }}
+
+            </p>
+
+            <div
+                class="d-flex align-items-center gap-4"
+            >
+
+                <a
+                    href="{% url 'product_detail' featured_product.slug %}"
+                    class="btn btn-gold rounded-0 px-4 py-2 fw-bold text-uppercase"
+                >
+
+                    Explore Product
+
+                </a>
+
+                <div>
+
+                    <span
+                        class="d-block fs-4 fw-bold"
+                    >
+
+                        ₹{{ featured_product.starting_price }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- IMAGE -->
+
+        <div
+            class="promo-image col-md-6 h-100"
+        >
+
+            {% if featured_product.image %}
+
+            <img
+
+                src="{{ featured_product.image.url }}"
+
+                alt="{{ featured_product.name }}"
+
+                class="img-fluid w-100 h-100 object-fit-cover"
+            >
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endif %}
 
     <section class="container py-5 mt-5">
         <div class="text-center mb-5">

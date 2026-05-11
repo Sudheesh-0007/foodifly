@@ -236,95 +236,163 @@ document.addEventListener("DOMContentLoaded", function () {
     // =========================
     // VARIANT CHANGE
     // =========================
+// =========================
+// VARIANT CHANGE
+// =========================
 
-    variantButtons.forEach(button => {
+const addToCartBtn =
+    document.querySelector(
+        ".add-to-cart-btn"
+    );
 
-        button.addEventListener(
+variantButtons.forEach(button => {
 
-            "click",
+    button.addEventListener(
 
-            function () {
+        "click",
 
-                // REMOVE ACTIVE
+        function () {
 
-                variantButtons.forEach(btn => {
+            // REMOVE ACTIVE
 
-                    btn.classList.remove(
-                        "btn-dark",
-                        "active"
-                    );
+            variantButtons.forEach(btn => {
 
-                    btn.classList.add(
-                        "btn-outline-dark"
-                    );
-                });
-
-                // ADD ACTIVE
-
-                this.classList.remove(
-                    "btn-outline-dark"
-                );
-
-                this.classList.add(
+                btn.classList.remove(
                     "btn-dark",
                     "active"
                 );
 
-                // UPDATE PRICE
+                btn.classList.add(
+                    "btn-outline-dark"
+                );
+            });
 
-                const price =
-                    this.dataset.price;
+            // ADD ACTIVE
 
-                priceElement.innerText =
-                    price;
+            this.classList.remove(
+                "btn-outline-dark"
+            );
 
-                // UPDATE STOCK
+            this.classList.add(
+                "btn-dark",
+                "active"
+            );
 
-                const stock =
-                    parseInt(
-                        this.dataset.stock
-                    );
+            // =========================
+            // UPDATE PRICE
+            // =========================
 
-                if (stock > 0) {
+            const price =
+                this.dataset.price;
 
-                    stockElement.innerText =
-                        "In Stock";
+            priceElement.innerText =
+                `₹${price}`;
 
-                    stockElement.classList.remove(
-                        "text-danger"
-                    );
+            // =========================
+            // UPDATE STOCK
+            // =========================
 
-                    stockElement.classList.add(
-                        "text-success"
-                    );
+            const stock =
+                parseInt(
+                    this.dataset.stock
+                );
 
-                } else {
+            if (stock > 0) {
 
-                    stockElement.innerText =
-                        "Out Of Stock";
+                stockElement.innerText =
+                    "In Stock";
 
-                    stockElement.classList.remove(
-                        "text-success"
-                    );
+                stockElement.classList.remove(
+                    "text-danger"
+                );
 
-                    stockElement.classList.add(
-                        "text-danger"
-                    );
-                }
+                stockElement.classList.add(
+                    "text-success"
+                );
 
-                // UPDATE VARIANT IDS
+                // ENABLE BUTTON
 
-                const variantId =
-                    this.dataset.variantId;
+                addToCartBtn.disabled =
+                    false;
 
-                selectedVariantInput.value =
-                    variantId;
+                addToCartBtn.innerText =
+                    "Add To Cart";
 
-                wishlistVariantInput.value =
-                    variantId;
+                addToCartBtn.classList.remove(
+                    "btn-secondary"
+                );
+
+                addToCartBtn.classList.add(
+                    "btn-dark"
+                );
+
+            } else {
+
+                stockElement.innerText =
+                    "Out Of Stock";
+
+                stockElement.classList.remove(
+                    "text-success"
+                );
+
+                stockElement.classList.add(
+                    "text-danger"
+                );
+
+                // DISABLE BUTTON
+
+                addToCartBtn.disabled =
+                    true;
+
+                addToCartBtn.innerText =
+                    "Out Of Stock";
+
+                addToCartBtn.classList.remove(
+                    "btn-dark"
+                );
+
+                addToCartBtn.classList.add(
+                    "btn-secondary"
+                );
             }
-        );
-    });
 
+            // =========================
+            // UPDATE VARIANT IDS
+            // =========================
+
+            const variantId =
+                this.dataset.variantId;
+
+            selectedVariantInput.value =
+                variantId;
+
+            wishlistVariantInput.value =
+                variantId;
+        }
+    );
+});
+
+
+// =========================
+// INITIALIZE ACTIVE VARIANT
+// =========================
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    function () {
+
+        const activeVariant =
+            document.querySelector(
+                ".variant-btn.active"
+            );
+
+        if (activeVariant) {
+
+            activeVariant.click();
+        }
+    }
+);
 
 });

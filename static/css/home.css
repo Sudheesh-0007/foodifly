@@ -197,3 +197,45 @@
 .letter-spacing-1 {
     letter-spacing: 1.5px;
 }
+.product-card{
+
+    transition: 0.3s ease;
+}
+
+.product-card:hover{
+
+    transform: translateY(-6px);
+}
+
+.product-image{
+
+    height: 320px;
+
+    object-fit: cover;
+
+    transition: 0.4s ease;
+}
+
+.product-card:hover .product-image{
+
+    transform: scale(1.05);
+}
+
+.img-wrapper{
+
+    background: #f8f5ef;
+}
+
+.product-title{
+
+    font-size: 22px;
+
+    font-family: "Playfair Display", serif;
+
+    margin-bottom: 10px;
+}
+
+.product-price{
+
+    font-size: 18px;
+}
