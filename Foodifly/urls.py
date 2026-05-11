@@ -15,5 +15,7 @@ urlpatterns = [
     path('admin-panel/',include('admin_panel.urls')),
     path('accounts/', include('allauth.urls')),
     path('admin-panel/categorys/', include('category.urls')),
-    path('/store/', include('store.urls')),
+    path('store/', include('store.urls')),
+    path('cart/', include('cart.urls')),
+    path('wishlist/', include('wishlist.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

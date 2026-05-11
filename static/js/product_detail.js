@@ -1,140 +1,330 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Handle Weight Button Selection
-    const weightBtns = document.querySelectorAll('.weight-btn');
-    weightBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            weightBtns.forEach(b => b.classList.remove('active', 'btn-dark'));
-            weightBtns.forEach(b => b.classList.add('btn-outline-dark'));
-            
-            this.classList.add('active', 'btn-dark');
-            this.classList.remove('btn-outline-dark');
-        });
-    });
+document.addEventListener("DOMContentLoaded", function () {
 
-    // Simple Thumbnail Swapping Logic
-    const thumbnails = document.querySelectorAll('.thumbnail-stack img');
-    const mainImg = document.querySelector('.main-image-container img');
+    // =========================
+    // PREMIUM TOAST
+    // =========================
+
+    function showToast(
+
+        message,
+
+        type = "success"
+
+    ) {
+
+        // REMOVE OLD TOAST
+
+        const oldToast =
+            document.querySelector(
+                ".global-toast"
+            );
+
+        if (oldToast) {
+
+            oldToast.remove();
+        }
+
+        // ICONS
+
+        let icon = "bi-check-circle-fill";
+
+        let title = "Success";
+
+        if (type === "error") {
+
+            icon = "bi-x-circle-fill";
+
+            title = "Error";
+        }
+
+        if (type === "warning") {
+
+            icon =
+                "bi-exclamation-triangle-fill";
+
+            title = "Warning";
+        }
+
+        // CREATE TOAST
+
+        const toast =
+            document.createElement("div");
+
+        toast.className =
+            `global-toast ${type}`;
+
+        toast.innerHTML = `
+
+            <div class="toast-content">
+
+                <div class="toast-icon">
+
+                    <i class="bi ${icon}"></i>
+
+                </div>
+
+                <div>
+
+                    <h6 class="toast-title">
+
+                        ${title}
+
+                    </h6>
+
+                    <p class="toast-message">
+
+                        ${message}
+
+                    </p>
+
+                </div>
+
+            </div>
+        `;
+
+        document.body.appendChild(
+            toast
+        );
+
+        // SHOW
+
+        setTimeout(() => {
+
+            toast.classList.add(
+                "show"
+            );
+
+        }, 100);
+
+        // HIDE
+
+        setTimeout(() => {
+
+            toast.classList.remove(
+                "show"
+            );
+
+            setTimeout(() => {
+
+                toast.remove();
+
+            }, 400);
+
+        }, 3000);
+    }
+
+    // =========================
+    // ELEMENTS
+    // =========================
+
+    const variantButtons = document.querySelectorAll(
+        ".variant-btn"
+    );
+
+    const priceElement = document.getElementById(
+        "product-price"
+    );
+
+    const stockElement = document.getElementById(
+        "stock-status"
+    );
+
+    const selectedVariantInput =
+        document.getElementById(
+            "selected-variant-id"
+        );
+
+    const wishlistVariantInput =
+        document.getElementById(
+            "wishlist-variant-id"
+        );
+
+    // =========================
+    // IMAGE THUMBNAIL SWITCH
+    // =========================
+
+    const thumbnails = document.querySelectorAll(
+        ".thumbnail-stack img"
+    );
+
+    const mainImg = document.getElementById(
+        "main-product-image"
+    );
 
     thumbnails.forEach(thumb => {
-        thumb.addEventListener('click', function() {
-            mainImg.src = this.src;
-            thumbnails.forEach(t => t.classList.remove('border-active'));
-            this.classList.add('border-active');
-        });
+
+        thumb.addEventListener(
+
+            "click",
+
+            function () {
+
+                mainImg.src = this.src;
+
+                thumbnails.forEach(t => {
+
+                    t.classList.remove(
+                        "border-active"
+                    );
+                });
+
+                this.classList.add(
+                    "border-active"
+                );
+            }
+        );
     });
-});
-const container = document.querySelector(
-    ".main-image-container"
-);
 
-const image = document.querySelector(
-    ".zoom-image"
-);
+    // =========================
+    // IMAGE ZOOM EFFECT
+    // =========================
 
-container.addEventListener("mousemove", (e) => {
+    const container = document.querySelector(
+        ".main-image-container"
+    );
 
-    const rect = container.getBoundingClientRect();
+    const image = document.querySelector(
+        ".zoom-image"
+    );
 
-    const x = e.clientX - rect.left;
+    if (container && image) {
 
-    const y = e.clientY - rect.top;
+        container.addEventListener(
 
-    const xPercent = (x / rect.width) * 100;
+            "mousemove",
 
-    const yPercent = (y / rect.height) * 100;
+            (e) => {
 
-    image.style.transformOrigin =
-        `${xPercent}% ${yPercent}%`;
+                const rect =
+                    container.getBoundingClientRect();
 
-    image.style.transform = "scale(2)";
-});
+                const x =
+                    e.clientX - rect.left;
 
-container.addEventListener("mouseleave", () => {
+                const y =
+                    e.clientY - rect.top;
 
-    image.style.transform = "scale(1)";
+                const xPercent =
+                    (x / rect.width) * 100;
 
-    image.style.transformOrigin = "center center";
-});
-// ==============================
-// VARIANT PRICE CHANGE
-// ==============================
+                const yPercent =
+                    (y / rect.height) * 100;
 
-const variantButtons = document.querySelectorAll(
-    ".variant-btn"
-);
+                image.style.transformOrigin =
+                    `${xPercent}% ${yPercent}%`;
 
-const priceElement = document.getElementById(
-    "product-price"
-);
-
-const stockElement = document.getElementById(
-    "stock-status"
-);
-
-variantButtons.forEach(button => {
-
-    button.addEventListener("click", function () {
-
-        // REMOVE ACTIVE STATE
-
-        variantButtons.forEach(btn => {
-
-            btn.classList.remove(
-                "btn-dark",
-                "active"
-            );
-
-            btn.classList.add(
-                "btn-outline-dark"
-            );
-        });
-
-        // ADD ACTIVE STATE
-
-        this.classList.remove(
-            "btn-outline-dark"
+                image.style.transform =
+                    "scale(2)";
+            }
         );
 
-        this.classList.add(
-            "btn-dark",
-            "active"
+        container.addEventListener(
+
+            "mouseleave",
+
+            () => {
+
+                image.style.transform =
+                    "scale(1)";
+
+                image.style.transformOrigin =
+                    "center center";
+            }
         );
+    }
 
-        // UPDATE PRICE
+    // =========================
+    // VARIANT CHANGE
+    // =========================
 
-        const price = this.dataset.price;
+    variantButtons.forEach(button => {
 
-        priceElement.innerText = price;
+        button.addEventListener(
 
-        // UPDATE STOCK
+            "click",
 
-        const stock = this.dataset.stock;
+            function () {
 
-        if (stock > 0) {
+                // REMOVE ACTIVE
 
-            stockElement.innerText =
-                "In Stock";
+                variantButtons.forEach(btn => {
 
-            stockElement.classList.remove(
-                "text-danger"
-            );
+                    btn.classList.remove(
+                        "btn-dark",
+                        "active"
+                    );
 
-            stockElement.classList.add(
-                "text-success"
-            );
+                    btn.classList.add(
+                        "btn-outline-dark"
+                    );
+                });
 
-        } else {
+                // ADD ACTIVE
 
-            stockElement.innerText =
-                "Out Of Stock";
+                this.classList.remove(
+                    "btn-outline-dark"
+                );
 
-            stockElement.classList.remove(
-                "text-success"
-            );
+                this.classList.add(
+                    "btn-dark",
+                    "active"
+                );
 
-            stockElement.classList.add(
-                "text-danger"
-            );
-        }
+                // UPDATE PRICE
+
+                const price =
+                    this.dataset.price;
+
+                priceElement.innerText =
+                    price;
+
+                // UPDATE STOCK
+
+                const stock =
+                    parseInt(
+                        this.dataset.stock
+                    );
+
+                if (stock > 0) {
+
+                    stockElement.innerText =
+                        "In Stock";
+
+                    stockElement.classList.remove(
+                        "text-danger"
+                    );
+
+                    stockElement.classList.add(
+                        "text-success"
+                    );
+
+                } else {
+
+                    stockElement.innerText =
+                        "Out Of Stock";
+
+                    stockElement.classList.remove(
+                        "text-success"
+                    );
+
+                    stockElement.classList.add(
+                        "text-danger"
+                    );
+                }
+
+                // UPDATE VARIANT IDS
+
+                const variantId =
+                    this.dataset.variantId;
+
+                selectedVariantInput.value =
+                    variantId;
+
+                wishlistVariantInput.value =
+                    variantId;
+            }
+        );
     });
+
+
 });

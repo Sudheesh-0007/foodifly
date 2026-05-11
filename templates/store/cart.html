@@ -1,0 +1,328 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/cart.css' %}"
+>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Inter:wght@300;400;600&display=swap"
+    rel="stylesheet"
+>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- HEADER -->
+
+    <header class="mb-5">
+        {% include "includes/alerts.html" %}
+
+        <h1 class="cart-title">
+            Your Selection
+        </h1>
+
+        <p class="text-muted fst-italic">
+
+            A curated collection of fine tastes awaiting your confirmation.
+
+        </p>
+
+    </header>
+
+    <div class="row g-5">
+
+        <!-- CART ITEMS -->
+
+        <div class="col-lg-8">
+
+            {% if cart_items %}
+
+                {% for item in cart_items %}
+
+                <div class="cart-item-card d-flex p-4 mb-4">
+
+                    <!-- PRODUCT IMAGE -->
+
+                    <div class="item-img-container">
+
+                        <img
+                            src="{{ item.product.image.url }}"
+                            alt="{{ item.product.product_name }}"
+                        >
+
+                    </div>
+
+                    <!-- PRODUCT DETAILS -->
+
+                    <div class="flex-grow-1 ps-4">
+
+                        <div class="d-flex justify-content-between align-items-start">
+
+                            <div>
+
+                                <h5 class="item-name">
+
+                                    {{ item.product.product_name }}
+
+                                </h5>
+
+                                <small class="text-muted">
+
+                                    Variant:
+                                    {{ item.variant.variant_value }}
+
+                                </small>
+
+                            </div>
+
+                            <span class="item-price">
+
+                                ₹{{ item.total_price }}
+
+                            </span>
+
+                        </div>
+
+                        <p class="item-meta text-muted small pe-md-5">
+
+                            {{ item.product.description|truncatewords:20 }}
+
+                        </p>
+
+                        <!-- STOCK STATUS -->
+
+                        {% if item.variant.stock <= 0 %}
+
+                        <div class="mb-3">
+
+                            <span class="badge bg-danger">
+
+                                Out Of Stock
+
+                            </span>
+
+                        </div>
+
+                        {% endif %}
+
+                        <!-- QUANTITY -->
+
+                        <div class="d-flex align-items-center mt-4">
+
+                            <div
+                                class="quantity-picker d-flex align-items-center me-4"
+                            >
+
+                                <!-- DECREASE -->
+
+                                <a
+                                    href="{% url 'decrease_cart_quantity' item.id %}"
+                                    class="qty-btn text-decoration-none"
+                                >
+
+                                    −
+
+                                </a>
+
+                                <!-- QUANTITY -->
+
+                                <span class="qty-val">
+
+                                    {{ item.quantity }}
+
+                                </span>
+
+                                <!-- INCREASE -->
+
+                                <a
+                                    href="{% url 'increase_cart_quantity' item.id %}"
+                                    class="qty-btn text-decoration-none"
+                                >
+
+                                    +
+
+                                </a>
+
+                            </div>
+
+                            <!-- REMOVE -->
+
+                            <a
+                                href="{% url 'remove_cart_item' item.id %}"
+                                class="btn-remove btn btn-link text-decoration-none p-0"
+                            >
+
+                                <i class="bi bi-trash3"></i>
+
+                                REMOVE
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            {% else %}
+
+            <!-- EMPTY CART -->
+
+            <div class="text-center py-5">
+
+                <h4 class="mb-3">
+
+                    Your cart is empty
+
+                </h4>
+
+                <a
+                    href="{% url 'shop' %}"
+                    class="btn btn-dark"
+                >
+
+                    Continue Shopping
+
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        <!-- SUMMARY -->
+
+        <div class="col-lg-4">
+
+            <div
+                class="summary-card p-5 sticky-top"
+                style="top: 2rem;"
+            >
+
+                <h2 class="summary-title mb-5">
+
+                    Summary
+
+                </h2>
+
+                <!-- SUBTOTAL -->
+
+                <div
+                    class="summary-row d-flex justify-content-between mb-3"
+                >
+
+                    <span>
+
+                        SUBTOTAL
+
+                    </span>
+
+                    <span>
+
+                        ₹{{ total }}
+
+                    </span>
+
+                </div>
+
+                <!-- TAX -->
+
+                <div
+                    class="summary-row d-flex justify-content-between mb-3"
+                >
+
+                    <span>
+
+                        TAX
+
+                    </span>
+
+                    <span>
+
+                        ₹{{ tax|floatformat:2 }}
+
+                    </span>
+
+                </div>
+
+                <!-- TOTAL ITEMS -->
+
+                <div
+                    class="summary-row d-flex justify-content-between mb-5"
+                >
+
+                    <span>
+
+                        ITEMS
+
+                    </span>
+
+                    <span>
+
+                        {{ quantity }}
+
+                    </span>
+
+                </div>
+
+                <!-- GRAND TOTAL -->
+
+                <div
+                    class="d-flex justify-content-between align-items-center mb-5 pt-4 border-top border-secondary"
+                >
+
+                    <span class="total-label fst-italic">
+
+                        Total
+
+                    </span>
+
+                    <span class="total-price">
+
+                        ₹{{ grand_total|floatformat:2 }}
+
+                    </span>
+
+                </div>
+
+                <!-- CHECKOUT -->
+
+                <a
+                    href="#"
+                    class="btn btn-acquire w-100 mb-2"
+                >
+
+                    COMPLETE ACQUISITION
+
+                </a>
+
+                <p
+                    class="text-center x-small text-muted text-uppercase ls-1"
+                >
+
+                    Secure Encrypted Transaction
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{% static 'js/cart.js' %}"></script>
+
+{% endblock %}

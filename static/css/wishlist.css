@@ -1,0 +1,119 @@
+:root {
+    --foodifly-green: #0a2d21;
+    --light-bg: #fdfbf7;
+    --accent-mint: #d1e7dd;
+}
+
+body {
+    background-color: var(--light-bg);
+    font-family: 'Inter', sans-serif;
+}
+
+.display-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    color: var(--foodifly-green);
+}
+
+/* Sidebar Styling */
+.account-heading {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--foodifly-green);
+}
+
+.account-nav .nav-link {
+    color: #666;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+.account-nav .nav-link i {
+    margin-right: 15px;
+    font-size: 1.1rem;
+}
+
+.account-nav .nav-link.active {
+    background-color: var(--foodifly-green);
+    color: white;
+}
+
+.logout-link {
+    color: #d9534f !important;
+    font-weight: 700;
+    font-size: 0.8rem !important;
+    letter-spacing: 1px;
+}
+
+/* Wishlist Cards */
+.wishlist-card {
+    background: white;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+.badge-region {
+    font-size: 0.65rem;
+    font-weight: 700;
+    background-color: #e9ecef;
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    color: #495057;
+}
+
+.region-italy { background-color: #e2f49d; }
+
+.item-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #111;
+}
+
+.btn-dark-green {
+    background-color: var(--foodifly-green);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: none;
+}
+
+.btn-dark-green:hover {
+    background-color: #051a13;
+    color: white;
+}
+
+.btn-close-wishlist {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: #ccc;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+/* Pagination */
+.custom-pagination .page-link {
+    border: 1px solid #eee;
+    margin: 0 5px;
+    color: #333;
+    border-radius: 50% !important;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-pagination .page-item.active .page-link {
+    background-color: var(--foodifly-green);
+    border-color: var(--foodifly-green);
+}

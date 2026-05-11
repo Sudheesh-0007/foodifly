@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'admin_panel',
     'category',
     'store',
+    'cart',
+    'wishlist',
 
     'cloudinary_storage', 
     'cloudinary',
@@ -82,6 +84,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'cart.context_processors.cart_counter',
+                
             ],
         },
     },

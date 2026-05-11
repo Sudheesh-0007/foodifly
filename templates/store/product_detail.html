@@ -1,207 +1,458 @@
 {% extends 'base.html' %}
+
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/product_detail.css' %}"
+>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap"
+    rel="stylesheet"
+>
+
 {% endblock %}
 
 {% block content %}
+
 <div class="container py-5">
-<nav aria-label="breadcrumb" class="mb-4">
+{% include "includes/alerts.html" %}
+    <!-- BREADCRUMB -->
 
-    <ol class="breadcrumb small text-uppercase fw-bold text-muted">
+    <nav aria-label="breadcrumb" class="mb-4">
 
-        <li class="breadcrumb-item">
+        <ol
+            class="breadcrumb small text-uppercase fw-bold text-muted"
+        >
 
-            <a
-                href="{% url 'shop' %}"
-                class="text-decoration-none"
-            >
-                Shop
-            </a>
+            <li class="breadcrumb-item">
 
-        </li>
+                <a
+                    href="{% url 'shop' %}"
+                    class="text-decoration-none"
+                >
 
-        <li class="breadcrumb-item">
+                    Shop
 
-            {{ product.category.category_name }}
+                </a>
 
-        </li>
+            </li>
 
-        <li class="breadcrumb-item active">
+            <li class="breadcrumb-item">
 
-            {{ product.name }}
+                {{ product.category.category_name }}
 
-        </li>
+            </li>
 
-    </ol>
+            <li class="breadcrumb-item active">
 
-</nav>
+                {{ product.name }}
+
+            </li>
+
+        </ol>
+
+    </nav>
 
     <div class="row g-5">
+
+        <!-- PRODUCT IMAGES -->
+
         <div class="col-lg-7">
+
             <div class="d-flex">
-                <div class="thumbnail-stack me-3 d-none d-md-block">
 
-    {% for image in gallery_images %}
+                <!-- THUMBNAILS -->
 
-    <img
-        src="{{ image.image.url }}"
-        class="img-fluid mb-2 thumb-image {% if forloop.first %}border-active{% endif %}"
-        alt="{{ product.name }}"
-        onclick="changeImage(this)"
-    >
+                <div
+                    class="thumbnail-stack me-3 d-none d-md-block"
+                >
 
-    {% endfor %}
+                    {% for image in gallery_images %}
 
-</div>
-<div class="main-image-container position-relative flex-grow-1 overflow-hidden">
+                    <img
+                        src="{{ image.image.url }}"
 
-    <span class="badge-artisanal">
-        ARTISANAL SELECTION
-    </span>
+                        class="img-fluid mb-2 thumb-image {% if forloop.first %}border-active{% endif %}"
 
-    <img
-        id="main-product-image"
-        src="{{ product.image.url }}"
-        class="img-fluid w-100 rounded-1 zoom-image"
-        alt="{{ product.name }}"
-    >
+                        alt="{{ product.name }}"
 
-</div>
+                        onclick="changeImage(this)"
+                    >
+
+                    {% endfor %}
+
+                </div>
+
+                <!-- MAIN IMAGE -->
+
+                <div
+                    class="main-image-container position-relative flex-grow-1 overflow-hidden"
+                >
+
+                    <span class="badge-artisanal">
+
+                        ARTISANAL SELECTION
+
+                    </span>
+
+                    <img
+                        id="main-product-image"
+
+                        src="{{ product.image.url }}"
+
+                        class="img-fluid w-100 rounded-1 zoom-image"
+
+                        alt="{{ product.name }}"
+                    >
+
+                </div>
+
             </div>
+
         </div>
 
+        <!-- PRODUCT DETAILS -->
+
         <div class="col-lg-5">
+
             <h1 class="product-title mb-2">
 
                 {{ product.name }}
 
             </h1>
-                <div class="d-flex align-items-center mb-3">
 
-                    <span class="price-tag me-3">
+            <!-- PRICE -->
 
-                        ₹<span id="product-price">
+            <div class="d-flex align-items-center mb-3">
 
-                            {{ variants.first.salePrice }}
+                <span class="price-tag me-3">
 
-                        </span>
+                    ₹<span id="product-price">
+
+                        {{ variants.first.salePrice }}
 
                     </span>
 
-                    <div class="stars text-warning small">
+                </span>
 
-                        ★★★★☆
+                <div class="stars text-warning small">
 
-                        <span class="text-muted ms-1">
+                    ★★★★☆
 
-                            (42 Reviews)
+                    <span class="text-muted ms-1">
+
+                        (42 Reviews)
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- STOCK -->
+
+            <p
+                id="stock-status"
+                class="fw-bold text-success mb-4"
+            >
+
+                {% if variants.first.stock > 0 %}
+
+                    In Stock
+
+                {% else %}
+
+                    Out Of Stock
+
+                {% endif %}
+
+            </p>
+
+            <!-- DESCRIPTION -->
+
+            <p class="product-description text-muted mb-4">
+
+                {{ product.description }}
+
+            </p>
+
+            <!-- VARIANTS -->
+
+            <div class="mb-4">
+
+                <label
+                    class="form-label fw-bold small text-uppercase"
+                >
+
+                    Select Weight
+
+                </label>
+
+                <div class="d-flex gap-2 flex-wrap">
+
+                    {% for variant in variants %}
+
+                    <button
+
+                        type="button"
+
+                        class="btn {% if forloop.first %}btn-dark active{% else %}btn-outline-dark{% endif %} weight-btn variant-btn"
+
+                        data-variant-id="{{ variant.id }}"
+
+                        data-price="{{ variant.salePrice }}"
+
+                        data-stock="{{ variant.stock }}"
+
+                        {% if variant.stock <= 0 %}
+                            disabled
+                        {% endif %}
+                    >
+
+                        {{ variant.variant_value }}
+
+                        {% if variant.stock <= 0 %}
+
+                        <small class="d-block">
+
+                            Out Of Stock
+
+                        </small>
+
+                        {% endif %}
+
+                    </button>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            <!-- CART + WISHLIST -->
+
+            <div class="d-flex gap-2 mb-4">
+
+                <!-- ADD TO CART -->
+
+<!-- CART + WISHLIST -->
+
+<div class="d-flex gap-2 mb-4">
+
+    <!-- ADD TO CART -->
+
+    <form
+        method="POST"
+        action="{% url 'add_cart' product.id %}"
+        class="flex-grow-1"
+    >
+
+        {% csrf_token %}
+
+        <!-- SELECTED VARIANT -->
+
+        <input
+            type="hidden"
+            name="variant_id"
+            id="selected-variant-id"
+            value="{{ variants.first.id }}"
+        >
+
+        <button
+            type="submit"
+            class="btn btn-success-dark w-100 py-3 fw-bold"
+            id="add-to-cart-btn"
+        >
+
+            <i class="bi bi-bag-plus me-2"></i>
+
+            ADD TO CART
+
+        </button>
+
+    </form>
+
+    <!-- WISHLIST -->
+
+    <form
+        method="POST"
+        action="{% url 'add_to_wishlist' %}"
+    >
+
+        {% csrf_token %}
+
+        <input
+            type="hidden"
+            name="product_id"
+            value="{{ product.id }}"
+        >
+
+        <input
+            type="hidden"
+            name="variant_id"
+            id="wishlist-variant-id"
+            value="{{ variants.first.id }}"
+        >
+
+        <button
+            type="submit"
+            class="btn btn-outline-secondary px-3 h-100"
+        >
+
+            <i class="bi bi-heart"></i>
+
+        </button>
+
+    </form>
+
+</div>
+   
+
+            <!-- FEATURES -->
+
+            <div
+                class="features-row d-flex justify-content-between border-top pt-3"
+            >
+
+                <div class="small">
+
+                    <i class="bi bi-leaf"></i>
+
+                    <strong>
+
+                        ORGANIC
+
+                    </strong>
+
+                    <br>
+
+                    100% Natural
+
+                </div>
+
+                <div class="small">
+
+                    <i class="bi bi-truck"></i>
+
+                    <strong>
+
+                        FAST DELIVERY
+
+                    </strong>
+
+                    <br>
+
+                    24-48h Controlled
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- REVIEWS + STORY -->
+
+    <div class="row mt-5 pt-5">
+
+        <!-- REVIEWS -->
+
+        <div class="col-lg-6">
+
+            <div
+                class="d-flex justify-content-between align-items-center mb-4"
+            >
+
+                <h3 class="section-heading">
+
+                    Customer Appreciation
+
+                </h3>
+
+                <a
+                    href="#"
+                    class="small text-decoration-none text-brown fw-bold"
+                >
+
+                    WRITE A REVIEW
+
+                </a>
+
+            </div>
+
+            <div class="review-card p-4 mb-3">
+
+                <div class="d-flex justify-content-between">
+
+                    <div class="d-flex align-items-center">
+
+                        <span class="avatar me-2">
+
+                            EM
 
                         </span>
 
+                        <strong class="small">
+
+                            Eleanor M.
+
+                        </strong>
+
+                    </div>
+
+                    <div class="text-warning small">
+
+                        ★★★★★
+
                     </div>
 
                 </div>
-                <p
-                    id="stock-status"
-                    class="fw-bold text-success mb-4"
+
+                <p class="fst-italic mt-3 mb-0">
+
+                    "The texture is incredible.
+                    It has those tiny salt-like crystals
+                    that only develop in properly aged cheddar."
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- STORY -->
+
+        <div class="col-lg-6">
+
+            <div class="story-box p-5 text-white h-100">
+
+                <h6
+                    class="text-uppercase ls-wide small mb-4"
                 >
 
-                    {% if variants.first.stock > 0 %}
+                    The Secret of the Cave
 
-                        In Stock
+                </h6>
 
-                    {% else %}
-
-                        Out Of Stock
-
-                    {% endif %}
-
-                </p>
-            <p class="product-description text-muted mb-4">
-                {{ product.description }}
-            </p>
-
-            <div class="mb-4">
-                <label class="form-label fw-bold small text-uppercase">Select Weight</label>
-                <div class="d-flex gap-2 flex-wrap">
-
-{% for variant in variants %}
-
-<button
-    type="button"
-    class="btn {% if forloop.first %}btn-dark active{% else %}btn-outline-dark{% endif %} weight-btn variant-btn"
-
-    data-price="{{ variant.salePrice }}"
-
-    data-stock="{{ variant.stock }}"
-
-    {% if variant.stock <= 0 %}
-        disabled
-    {% endif %}
->
-
-    {{ variant.variant_value }}
-
-    {% if variant.stock <= 0 %}
-
-        <small class="d-block">
-
-            Out Of Stock
-
-        </small>
-
-    {% endif %}
-
-</button>
-
-{% endfor %}
-
-</div>
-            </div>
-
-            <div class="d-flex gap-2 mb-4">
-                <button class="btn btn-success-dark flex-grow-1 py-3 fw-bold">ADD TO CART</button>
-                <button class="btn btn-outline-secondary px-3"><i class="bi bi-heart"></i></button>
-            </div>
-
-            <div class="features-row d-flex justify-content-between border-top pt-3">
-                <div class="small"><i class="bi bi-leaf"></i> <strong>ORGANIC</strong><br></div>
-                <div class="small"><i class="bi bi-truck"></i> <strong>FAST DELIVERY</strong><br>24-48h Controlled</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-5 pt-5">
-        <div class="col-lg-6">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="section-heading">Customer Appreciation</h3>
-                <a href="#" class="small text-decoration-none text-brown fw-bold">WRITE A REVIEW</a>
-            </div>
-            
-            <div class="review-card p-4 mb-3">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <span class="avatar me-2">EM</span>
-                        <strong class="small">Eleanor M.</strong>
-                    </div>
-                    <div class="text-warning small">★★★★★</div>
-                </div>
-                <p class="fst-italic mt-3 mb-0">"The texture is incredible. It has those tiny salt-like crystals that only develop in properly aged cheddar."</p>
-            </div>
-        </div>
-
-        <div class="col-lg-6">
-            <div class="story-box p-5 text-white h-100">
-                <h6 class="text-uppercase ls-wide small mb-4">The Secret of the Cave</h6>
                 <p class="display-6 fst-italic">
+
                     {{ product.description }}
+
                 </p>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
+
 <script src="{% static 'js/product_detail.js' %}"></script>
+
 {% endblock %}

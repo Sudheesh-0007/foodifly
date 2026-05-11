@@ -1,0 +1,319 @@
+{% extends 'accounts/dashboard_base.html' %}
+
+{% load static %}
+
+{% block dashboard_content %}
+
+<main class="col-lg-9">
+
+    <!-- HEADER -->
+
+    <header class="mb-5">
+{% include "includes/alerts.html" %}
+        <h1 class="display-title">
+
+            Curated Desires
+
+        </h1>
+
+        <p class="text-muted">
+
+            Your personal selection of the world's finest culinary treasures.
+
+        </p>
+
+    </header>
+
+    <!-- WISHLIST ITEMS -->
+
+    {% if wishlist_items %}
+
+       {% for item in wishlist_items %}
+
+<div
+    class="wishlist-card mb-4 p-4 position-relative"
+>
+
+    <!-- REMOVE BUTTON -->
+
+    <a
+        href="{% url 'remove_wishlist_item' item.id %}"
+        class="btn-close-wishlist"
+    >
+
+        <i class="bi bi-x"></i>
+
+    </a>
+
+    <div class="row align-items-center">
+
+        <!-- IMAGE -->
+
+        <div class="col-md-4">
+
+            {% if item.product.image %}
+
+            <img
+
+                src="{{ item.product.image.url }}"
+
+                class="img-fluid rounded shadow-sm"
+
+                alt="{{ item.product.product_name }}"
+            >
+
+            {% endif %}
+
+        </div>
+
+        <!-- CONTENT -->
+
+        <div class="col-md-8">
+
+            <!-- CATEGORY -->
+
+            <span class="badge-region mb-2">
+
+                {{ item.product.category.category_name|upper }}
+
+            </span>
+
+            <!-- PRODUCT NAME -->
+
+            <h3 class="item-title">
+
+                {{ item.product.product_name }}
+
+            </h3>
+
+            <!-- DESCRIPTION -->
+
+            <p class="item-text text-muted small">
+
+                {{ item.product.description|truncatewords:30 }}
+
+            </p>
+
+            <!-- STOCK -->
+
+            {% if item.variant.stock > 0 %}
+
+                <span class="badge bg-success mb-3">
+
+                    In Stock
+
+                </span>
+
+            {% else %}
+
+                <span class="badge bg-danger mb-3">
+
+                    Out Of Stock
+
+                </span>
+
+            {% endif %}
+
+            <!-- PRICE + BUTTON -->
+
+            <div
+                class="d-flex justify-content-between align-items-center mt-4"
+            >
+
+                <!-- PRICE -->
+
+                <div class="item-price">
+
+                    <span class="fw-bold">
+
+                        ₹{{ item.variant.salePrice }}
+
+                    </span>
+
+                    <span class="text-muted small">
+
+                        / {{ item.variant.variant_value }}
+
+                    </span>
+
+                </div>
+
+                <!-- ADD TO CART -->
+
+                {% if item.variant.stock > 0 %}
+
+                <form
+                    method="POST"
+                    action="{% url 'add_cart' item.product.id %}"
+                >
+
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="variant_id"
+                        value="{{ item.variant.id }}"
+                    >
+
+                    <button
+                        type="submit"
+                        class="btn btn-dark-green rounded-pill px-4 py-2"
+                    >
+
+                        Add to Cart
+
+                    </button>
+
+                </form>
+
+                {% else %}
+
+                <button
+                    class="btn btn-secondary rounded-pill px-4 py-2"
+                    disabled
+                >
+
+                    Out Of Stock
+
+                </button>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+    {% else %}
+
+    <!-- EMPTY STATE -->
+
+    <div class="text-center py-5">
+
+        <img
+            src="{% static 'img/empty_wishlist.png' %}"
+            width="180"
+            class="mb-4"
+        >
+
+        <h3 class="mb-3">
+
+            Your wishlist is empty
+
+        </h3>
+
+        <p class="text-muted mb-4">
+
+            Discover exquisite artisan products and save your favorites.
+
+        </p>
+
+        <a
+            href="{% url 'shop' %}"
+            class="btn btn-dark-green rounded-pill px-5 py-3"
+        >
+
+            Explore Collection
+
+        </a>
+
+    </div>
+
+    {% endif %}
+
+    <!-- PAGINATION -->
+
+    {% if wishlist_items.has_other_pages %}
+
+    <nav class="mt-5">
+
+        <ul
+            class="pagination justify-content-center custom-pagination"
+        >
+
+            <!-- PREVIOUS -->
+
+            {% if wishlist_items.has_previous %}
+
+            <li class="page-item">
+
+                <a
+                    class="page-link"
+                    href="?page={{ wishlist_items.previous_page_number }}"
+                >
+
+                    <i class="bi bi-chevron-left"></i>
+
+                </a>
+
+            </li>
+
+            {% endif %}
+
+            <!-- PAGE NUMBERS -->
+
+            {% for num in wishlist_items.paginator.page_range %}
+
+                {% if wishlist_items.number == num %}
+
+                    <li class="page-item active">
+
+                        <a class="page-link">
+
+                            {{ num }}
+
+                        </a>
+
+                    </li>
+
+                {% else %}
+
+                    <li class="page-item">
+
+                        <a
+                            class="page-link"
+                            href="?page={{ num }}"
+                        >
+
+                            {{ num }}
+
+                        </a>
+
+                    </li>
+
+                {% endif %}
+
+            {% endfor %}
+
+            <!-- NEXT -->
+
+            {% if wishlist_items.has_next %}
+
+            <li class="page-item">
+
+                <a
+                    class="page-link"
+                    href="?page={{ wishlist_items.next_page_number }}"
+                >
+
+                    <i class="bi bi-chevron-right"></i>
+
+                </a>
+
+            </li>
+
+            {% endif %}
+
+        </ul>
+
+    </nav>
+
+    {% endif %}
+
+</main>
+
+{% endblock %}
