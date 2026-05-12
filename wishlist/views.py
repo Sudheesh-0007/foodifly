@@ -4,9 +4,10 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from store.models import Product, Variant
 from .models import Wishlist, WishlistItem
+from utils.decorators import custom_login_required
 
 
-@login_required(login_url="login")
+@custom_login_required
 def add_to_wishlist(request):
 
     if request.method == "POST":
@@ -46,7 +47,7 @@ def add_to_wishlist(request):
 
 
 
-@login_required(login_url="login")
+@custom_login_required
 def wishlist_page(request):
 
     wishlist_items = (WishlistItem.objects.filter(wishlist__user=request.user).select_related("product", "variant", "product__category").order_by("-id"))
@@ -63,7 +64,7 @@ def wishlist_page(request):
 
 
 
-@login_required(login_url="login")
+@custom_login_required
 def remove_wishlist_item(request, item_id):
 
     wishlist_item = get_object_or_404(WishlistItem, id=item_id, wishlist__user=request.user)

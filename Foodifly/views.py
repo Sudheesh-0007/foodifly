@@ -16,7 +16,7 @@ def home(request):
             )
         )
         .distinct()
-        .order_by("-createdAt")[:5]
+        .order_by("-createdAt")[:4]
     )
     featured_product = (
         Product.objects.filter(
