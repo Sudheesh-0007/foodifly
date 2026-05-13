@@ -1,26 +1,48 @@
-{% extends 'base.html' %} {% load static %} {% block extra_css %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+
 <link rel="stylesheet" href="{% static 'css/store.css' %}" />
+
 <link
   href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;600&display=swap"
   rel="stylesheet"
 />
-{% endblock %} {% block content %}
+
+{% endblock %}
+
+{% block content %}
+
 <div class="container py-5">
+
   <header class="mb-5">
+
     <h1 class="shop-title">The Shop</h1>
+
     <p class="text-muted col-md-5">
       Curated essentials for the modern epicurean, sourced from the world's
       finest terroirs.
     </p>
+
   </header>
 
   <div class="row">
+
+    <!-- SIDEBAR -->
+
     <aside class="col-lg-3 pe-lg-5">
+
       <form method="GET" id="filter-form">
+
+        <!-- SEARCH -->
+
         <div class="filter-section mb-4">
+
           <h6 class="filter-label">SEARCH</h6>
 
           <div class="input-group">
+
             <input
               type="text"
               name="q"
@@ -31,150 +53,160 @@
 
             {% if request.GET.q %}
 
-            <a href="{% url 'shop' %}" class="btn btn-outline-secondary"> ✕ </a>
+            <a href="{% url 'shop' %}" class="btn btn-outline-secondary">
+              ✕
+            </a>
 
             {% endif %}
+
           </div>
+
         </div>
 
+        <!-- SORT -->
+
         <div class="filter-section mb-4">
+
           <h6 class="filter-label">SORT</h6>
 
           <div class="form-check">
+
             <input
               class="form-check-input"
               type="radio"
               name="sort"
               value="a_z"
-              {%
-              if
-              request.GET.sort=""
-              ="a_z"
-              %}
+              onchange="this.form.submit()"
+              {% if request.GET.sort == "a_z" %}
               checked
-              {%
-              endif
-              %}
+              {% endif %}
             />
 
-            <label class="form-check-label small"> Alphabetical (A-Z) </label>
+            <label class="form-check-label small">
+              Alphabetical (A-Z)
+            </label>
+
           </div>
 
           <div class="form-check">
+
             <input
               class="form-check-input"
               type="radio"
               name="sort"
               value="z_a"
-              {%
-              if
-              request.GET.sort=""
-              ="z_a"
-              %}
+              onchange="this.form.submit()"
+              {% if request.GET.sort == "z_a" %}
               checked
-              {%
-              endif
-              %}
+              {% endif %}
             />
 
-            <label class="form-check-label small"> Alphabetical (Z-A) </label>
+            <label class="form-check-label small">
+              Alphabetical (Z-A)
+            </label>
+
           </div>
 
           <div class="form-check">
+
             <input
               class="form-check-input"
               type="radio"
               name="sort"
               value="price_low"
-              {%
-              if
-              request.GET.sort=""
-              ="price_low"
-              %}
+              onchange="this.form.submit()"
+              {% if request.GET.sort == "price_low" %}
               checked
-              {%
-              endif
-              %}
+              {% endif %}
             />
 
-            <label class="form-check-label small"> Price Low → High </label>
+            <label class="form-check-label small">
+              Price Low → High
+            </label>
+
           </div>
 
           <div class="form-check">
+
             <input
               class="form-check-input"
               type="radio"
               name="sort"
               value="price_high"
-              {%
-              if
-              request.GET.sort=""
-              ="price_high"
-              %}
+              onchange="this.form.submit()"
+              {% if request.GET.sort == "price_high" %}
               checked
-              {%
-              endif
-              %}
+              {% endif %}
             />
 
-            <label class="form-check-label small"> Price High → Low </label>
+            <label class="form-check-label small">
+              Price High → Low
+            </label>
+
           </div>
 
           <div class="form-check">
+
             <input
               class="form-check-input"
               type="radio"
               name="sort"
               value="newest"
-              {%
-              if
-              request.GET.sort=""
-              ="newest"
-              %}
+              onchange="this.form.submit()"
+              {% if request.GET.sort == "newest" %}
               checked
-              {%
-              endif
-              %}
+              {% endif %}
             />
 
-            <label class="form-check-label small"> Newest First </label>
+            <label class="form-check-label small">
+              Newest First
+            </label>
+
           </div>
+
         </div>
+
+        <!-- CATEGORY -->
+
         <div class="filter-section mb-4">
-          <h6 class="filter-label">Category</h6>
+
+          <h6 class="filter-label">CATEGORY</h6>
 
           {% for category in categories %}
 
           <div class="form-check">
+
             <input
               class="form-check-input"
               type="radio"
               name="category"
               value="{{ category.slug }}"
-              {%
-              if
-              request.GET.category=""
-              ="category.slug"
-              %}
+              onchange="this.form.submit()"
+              {% if request.GET.category == category.slug %}
               checked
-              {%
-              endif
-              %}
+              {% endif %}
             />
 
             <label class="form-check-label small">
               {{ category.category_name }}
             </label>
+
           </div>
 
           {% endfor %}
+
         </div>
 
+        <!-- PRICE RANGE -->
+
         <div class="filter-section mb-4">
-          <h6 class="filter-label">Price Range</h6>
+
+          <h6 class="filter-label">PRICE RANGE</h6>
 
           <div class="row g-2">
+
             <div class="col-6">
+
               <input
                 type="number"
                 name="min_price"
@@ -182,9 +214,11 @@
                 placeholder="Min"
                 value="{{ request.GET.min_price }}"
               />
+
             </div>
 
             <div class="col-6">
+
               <input
                 type="number"
                 name="max_price"
@@ -192,36 +226,67 @@
                 placeholder="Max"
                 value="{{ request.GET.max_price }}"
               />
+
             </div>
+
           </div>
+
         </div>
 
-        <button type="submit" class="btn btn-apply w-100">APPLY FILTER</button>
-        <a href="{% url 'shop' %}"class="btn btn-outline-dark w-100 mt-3 clear-filter-btn">Clear Filters</a>
+        <!-- BUTTONS -->
+
+        <button type="submit" class="btn btn-apply w-100">
+          APPLY FILTER
+        </button>
+
+        <a
+          href="{% url 'shop' %}"
+          class="btn btn-outline-dark w-100 mt-3 clear-filter-btn"
+        >
+          Clear Filters
+        </a>
+
       </form>
+
     </aside>
+
+    <!-- PRODUCTS -->
+
     <main class="col-lg-9">
+
       <div class="row g-4">
+
         {% for product in products %}
 
         <div class="col-md-6 col-xl-4">
+
           <a
             href="{% url 'product_detail' product.slug %}"
             class="text-decoration-none text-dark"
           >
+
             <div class="product-card">
+
               <div class="img-wrapper mb-3">
+
                 <img
                   src="{{ product.image.url }}"
                   class="img-fluid"
                   alt="{{ product.name }}"
                 />
+
               </div>
 
               <div class="d-flex justify-content-between align-items-start">
-                <h5 class="item-name">{{ product.name }}</h5>
 
-                <span class="item-price"> ₹{{ product.starting_price }} </span>
+                <h5 class="item-name">
+                  {{ product.name }}
+                </h5>
+
+                <span class="item-price">
+                  ₹{{ product.starting_price }}
+                </span>
+
               </div>
 
               <p class="item-desc text-muted small">
@@ -229,61 +294,100 @@
               </p>
 
               <div class="item-rating text-warning x-small">
+
                 ★★★★★
 
-                <span class="text-muted"> ({{ product.reviewCount }}) </span>
+                <span class="text-muted">
+                  ({{ product.reviewCount }})
+                </span>
+
               </div>
+
             </div>
+
           </a>
+
         </div>
 
         {% empty %}
 
         <div class="col-12 text-center py-5">
+
           <h5>No products found.</h5>
+
         </div>
 
         {% endfor %}
+
       </div>
+
+      <!-- PAGINATION -->
+
+      {% if products.has_other_pages %}
+
       <nav class="mt-5">
-        {% if products.has_other_pages %}
 
-        <nav class="mt-5">
-          <ul class="pagination justify-content-center">
-            {% if products.has_previous %}
+        <ul class="pagination justify-content-center">
 
-            <li class="page-item">
-              <a
-                class="page-link"
-                href="?page={{ products.previous_page_number }}"
-              >
-                <i class="bi bi-chevron-left"></i>
-              </a>
-            </li>
+          {% if products.has_previous %}
 
-            {% endif %} {% for i in products.paginator.page_range %}
+          <li class="page-item">
 
-            <li
-              class="page-item {% if products.number == i %}active{% endif %}"
+            <a
+              class="page-link"
+              href="?page={{ products.previous_page_number }}&sort={{ request.GET.sort }}&category={{ request.GET.category }}&q={{ request.GET.q }}&min_price={{ request.GET.min_price }}&max_price={{ request.GET.max_price }}"
             >
-              <a class="page-link" href="?page={{ i }}"> {{ i }} </a>
-            </li>
 
-            {% endfor %} {% if products.has_next %}
+              <i class="bi bi-chevron-left"></i>
 
-            <li class="page-item">
-              <a class="page-link" href="?page={{ products.next_page_number }}">
-                <i class="bi bi-chevron-right"></i>
-              </a>
-            </li>
+            </a>
 
-            {% endif %}
-          </ul>
-        </nav>
+          </li>
 
-        {% endif %}
+          {% endif %}
+
+          {% for i in products.paginator.page_range %}
+
+          <li class="page-item {% if products.number == i %}active{% endif %}">
+
+            <a
+              class="page-link"
+              href="?page={{ i }}&sort={{ request.GET.sort }}&category={{ request.GET.category }}&q={{ request.GET.q }}&min_price={{ request.GET.min_price }}&max_price={{ request.GET.max_price }}"
+            >
+              {{ i }}
+            </a>
+
+          </li>
+
+          {% endfor %}
+
+          {% if products.has_next %}
+
+          <li class="page-item">
+
+            <a
+              class="page-link"
+              href="?page={{ products.next_page_number }}&sort={{ request.GET.sort }}&category={{ request.GET.category }}&q={{ request.GET.q }}&min_price={{ request.GET.min_price }}&max_price={{ request.GET.max_price }}"
+            >
+
+              <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+          </li>
+
+          {% endif %}
+
+        </ul>
+
       </nav>
+
+      {% endif %}
+
     </main>
+
   </div>
+
 </div>
+
 {% endblock %}

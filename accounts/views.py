@@ -13,15 +13,11 @@ from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
-
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-
 from django.dispatch import receiver
 from allauth.socialaccount.signals import pre_social_login
-
 from django.contrib.auth import update_session_auth_hash
- 
 from .forms import UserForm, UserProfileForm
 
 

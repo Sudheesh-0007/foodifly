@@ -34,7 +34,7 @@ def category_management(request):
     active_categories = categories.filter(is_active=True).count()
     archived_categories = categories.filter(is_active=False).count()
 
-    paginator = Paginator(categories, 10) 
+    paginator = Paginator(categories, 4) 
     page_number = request.GET.get('page')
     
     try:

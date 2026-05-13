@@ -67,7 +67,7 @@ def cart(request):
             total += item.total_price
             quantity += item.quantity
 
-        tax = (2 * total) / 10
+        tax =  total / 10
         grand_total = total + tax
 
     except ObjectDoesNotExist:
@@ -114,7 +114,9 @@ def decrease_cart_quantity(request, cart_item_id):
         cart_item.save()
 
     else:
-        cart_item.delete()
+
+         cart_item.delete()
+       
 
     return redirect("cart")
 

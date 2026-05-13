@@ -6,8 +6,9 @@ from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 
-
+@never_cache
 def admin_login(request):
     if request.user.is_authenticated:
         if request.user.is_admin:
@@ -30,7 +31,7 @@ def admin_login(request):
             
     return render(request, 'admin_panel/admin_login.html')
 
-
+@never_cache
 @login_required(login_url='admin_login')
 def admin_user_management(request):
 
@@ -74,7 +75,8 @@ def toggle_user_status(request, user_id):
     
     user.save()
     return redirect('admin_user_management')
-    
+
+@never_cache
 def admin_logout(request):
     auth.logout(request)
     messages.success(request, 'You have been logged out of the Sovereign Management Portal.')

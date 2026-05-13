@@ -174,8 +174,8 @@ MESSAGE_TAGS = {
 #SMTP 
 EMAIL_HOST  = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'sudheeshchandra8@gmail.com'
-EMAIL_HOST_PASSWORD = 'nrih bahz nswx zzvm'
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS   = True
 
 
@@ -207,9 +207,9 @@ LOGOUT_REDIRECT_URL = '/'
 
 # Cloudinary Configuration
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'djf3afshd',
-    'API_KEY': '239655159157663',
-    'API_SECRET': 'BVo6fb_FB8dGvbLC3EJZNgZ-TVE'
+    'CLOUD_NAME': os.getenv("CLOUDINARY_CLOUD_NAME"),
+    'API_KEY': os.getenv("CLOUDINARY_API_KEY"),
+    'API_SECRET': os.getenv("CLOUDINARY_API_SECRET"),
 }
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10 MB limit
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760
