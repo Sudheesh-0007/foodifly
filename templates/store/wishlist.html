@@ -9,7 +9,9 @@
     <!-- HEADER -->
 
     <header class="mb-5">
-{% include "includes/alerts.html" %}
+
+        {% include "includes/alerts.html" %}
+
         <h1 class="display-title">
 
             Curated Desires
@@ -28,166 +30,164 @@
 
     {% if wishlist_items %}
 
-       {% for item in wishlist_items %}
+        {% for item in wishlist_items %}
 
-<div
-    class="wishlist-card mb-4 p-4 position-relative"
->
+        <div
+            class="wishlist-card mb-4 p-4 position-relative"
+        >
 
-    <!-- REMOVE BUTTON -->
+            <!-- REMOVE BUTTON -->
 
-    <a
-        href="{% url 'remove_wishlist_item' item.id %}"
-        class="btn-close-wishlist"
-    >
-
-        <i class="bi bi-x"></i>
-
-    </a>
-
-    <div class="row align-items-center">
-
-        <!-- IMAGE -->
-
-        <div class="col-md-4">
-
-            {% if item.product.image %}
-
-            <img
-
-                src="{{ item.product.image.url }}"
-
-                class="img-fluid rounded shadow-sm"
-
-                alt="{{ item.product.product_name }}"
+            <a
+                href="{% url 'remove_wishlist_item' item.id %}"
+                class="btn-close-wishlist"
             >
 
-            {% endif %}
+                <i class="bi bi-x"></i>
 
-        </div>
+            </a>
 
-        <!-- CONTENT -->
+            <div class="row align-items-center g-4">
 
-        <div class="col-md-8">
+                <!-- IMAGE -->
 
-            <!-- CATEGORY -->
+                <div class="col-md-4">
 
-            <span class="badge-region mb-2">
+                    {% if item.product.image %}
 
-                {{ item.product.category.category_name|upper }}
+                    <img
+                        src="{{ item.product.image.url }}"
+                        class="img-fluid rounded shadow-sm w-100"
+                        alt="{{ item.product.product_name }}"
+                    >
 
-            </span>
-
-            <!-- PRODUCT NAME -->
-
-            <h3 class="item-title">
-
-                {{ item.product.product_name }}
-
-            </h3>
-
-            <!-- DESCRIPTION -->
-
-            <p class="item-text text-muted small">
-
-                {{ item.product.description|truncatewords:30 }}
-
-            </p>
-
-            <!-- STOCK -->
-
-            {% if item.variant.stock > 0 %}
-
-                <span class="badge bg-success mb-3">
-
-                    In Stock
-
-                </span>
-
-            {% else %}
-
-                <span class="badge bg-danger mb-3">
-
-                    Out Of Stock
-
-                </span>
-
-            {% endif %}
-
-            <!-- PRICE + BUTTON -->
-
-            <div
-                class="d-flex justify-content-between align-items-center mt-4"
-            >
-
-                <!-- PRICE -->
-
-                <div class="item-price">
-
-                    <span class="fw-bold">
-
-                        ₹{{ item.variant.salePrice }}
-
-                    </span>
-
-                    <span class="text-muted small">
-
-                        / {{ item.variant.variant_value }}
-
-                    </span>
+                    {% endif %}
 
                 </div>
 
-                <!-- ADD TO CART -->
+                <!-- CONTENT -->
 
-                {% if item.variant.stock > 0 %}
+                <div class="col-md-8">
 
-                <form
-                    method="POST"
-                    action="{% url 'add_cart' item.product.id %}"
-                >
+                    <!-- CATEGORY -->
 
-                    {% csrf_token %}
+                    <span class="badge-region mb-2 d-inline-block">
 
-                    <input
-                        type="hidden"
-                        name="variant_id"
-                        value="{{ item.variant.id }}"
+                        {{ item.product.category.category_name|upper }}
+
+                    </span>
+
+                    <!-- PRODUCT NAME -->
+
+                    <h3 class="item-title mb-3">
+
+                        {{ item.product.product_name }}
+
+                    </h3>
+
+                    <!-- DESCRIPTION -->
+
+                    <p class="item-text text-muted small mb-3">
+
+                        {{ item.product.description|truncatewords:30 }}
+
+                    </p>
+
+                    <!-- STOCK -->
+
+                    {% if item.variant.stock > 0 %}
+
+                    <span class="badge bg-success mb-3">
+
+                        In Stock
+
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge bg-danger mb-3">
+
+                        Out Of Stock
+
+                    </span>
+
+                    {% endif %}
+
+                    <!-- PRICE + BUTTON -->
+
+                    <div
+                        class="d-flex justify-content-between align-items-center flex-wrap gap-3 mt-4"
                     >
 
-                    <button
-                        type="submit"
-                        class="btn btn-dark-green rounded-pill px-4 py-2"
-                    >
+                        <!-- PRICE -->
 
-                        Add to Cart
+                        <div class="item-price">
 
-                    </button>
+                            <span class="fw-bold fs-5">
 
-                </form>
+                                ₹{{ item.variant.salePrice }}
 
-                {% else %}
+                            </span>
 
-                <button
-                    class="btn btn-secondary rounded-pill px-4 py-2"
-                    disabled
-                >
+                            <span class="text-muted small">
 
-                    Out Of Stock
+                                / {{ item.variant.variant_value }}
 
-                </button>
+                            </span>
 
-                {% endif %}
+                        </div>
+
+                        <!-- ADD TO CART -->
+
+                        {% if item.variant.stock > 0 %}
+
+                        <form
+                            method="POST"
+                            action="{% url 'add_cart' item.product.id %}"
+                        >
+
+                            {% csrf_token %}
+
+                            <input
+                                type="hidden"
+                                name="variant_id"
+                                value="{{ item.variant.id }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="btn btn-dark-green rounded-pill px-4 py-2"
+                            >
+
+                                Add to Cart
+
+                            </button>
+
+                        </form>
+
+                        {% else %}
+
+                        <button
+                            class="btn btn-secondary rounded-pill px-4 py-2"
+                            disabled
+                        >
+
+                            Out Of Stock
+
+                        </button>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
 
             </div>
 
         </div>
 
-    </div>
+        {% endfor %}
 
-</div>
-
-{% endfor %}
     {% else %}
 
     <!-- EMPTY STATE -->
@@ -197,7 +197,8 @@
         <img
             src="{% static 'img/empty_wishlist.png' %}"
             width="180"
-            class="mb-4"
+            class="mb-4 img-fluid"
+            alt="Empty Wishlist"
         >
 
         <h3 class="mb-3">
@@ -232,7 +233,7 @@
     <nav class="mt-5">
 
         <ul
-            class="pagination justify-content-center custom-pagination"
+            class="pagination justify-content-center custom-pagination flex-wrap"
         >
 
             <!-- PREVIOUS -->
@@ -260,30 +261,30 @@
 
                 {% if wishlist_items.number == num %}
 
-                    <li class="page-item active">
+                <li class="page-item active">
 
-                        <a class="page-link">
+                    <a class="page-link">
 
-                            {{ num }}
+                        {{ num }}
 
-                        </a>
+                    </a>
 
-                    </li>
+                </li>
 
                 {% else %}
 
-                    <li class="page-item">
+                <li class="page-item">
 
-                        <a
-                            class="page-link"
-                            href="?page={{ num }}"
-                        >
+                    <a
+                        class="page-link"
+                        href="?page={{ num }}"
+                    >
 
-                            {{ num }}
+                        {{ num }}
 
-                        </a>
+                    </a>
 
-                    </li>
+                </li>
 
                 {% endif %}
 

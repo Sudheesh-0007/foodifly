@@ -1,0 +1,81 @@
+:root {
+    --foodifly-dark: #0a2d21;
+    --foodifly-gold: #c5a47e;
+    --card-bg: #f8f7f2;
+}
+
+body { background-color: #fdfbf7; font-family: 'Inter', sans-serif; }
+
+.checkout-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    color: var(--foodifly-dark);
+}
+
+.section-subheading {
+    font-family: 'Playfair Display', serif;
+    color: var(--foodifly-dark);
+}
+
+/* Selectable Cards */
+.selectable-card {
+    background: var(--card-bg);
+    border: 1px solid #e0dfd5;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.selectable-card.active {
+    border-color: #333;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Custom Radio UI */
+.radio-circle {
+    width: 18px;
+    height: 18px;
+    border: 1px solid #999;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.active .radio-circle {
+    border-color: var(--foodifly-dark);
+    background: var(--foodifly-dark);
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+}
+
+/* Order Summary */
+.order-summary-card {
+    background-color: var(--foodifly-dark);
+    color: #fff;
+    border-radius: 16px;
+    position: sticky;
+    top: 2rem;
+}
+
+.summary-title { font-family: 'Playfair Display', serif; color: var(--foodifly-gold); }
+
+.summary-thumb {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: #15362b;
+}
+
+.text-gold { color: #8ba888; } /* Matching the muted discount color in image_bd5b1b.jpg */
+.display-5.text-gold { color: #c5a47e; }
+
+.x-small { font-size: 0.7rem; }
+.ls-1 { letter-spacing: 1px; }

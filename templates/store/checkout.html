@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-5">
+        <!-- Main Checkout Flow -->
+        <div class="col-lg-7">
+            <section class="mb-5">
+                <h1 class="checkout-title mb-1">Enter Shipping Address</h1>
+                <p class="text-muted small mb-4">Select a curated destination for your gourmet selection.</p>
+
+                <!-- Saved Addresses -->
+                <div class="address-selection">
+                    <div class="selectable-card active d-flex align-items-start p-3 mb-3">
+                        <div class="radio-circle me-3 mt-1"><div class="dot"></div></div>
+                        <div>
+                            <h6 class="mb-1 fw-bold">Julianne Sterling</h6>
+                            <p class="mb-0 text-muted small">42 Epicurean Way, Penthouse B, London, W1K 7JA</p>
+                        </div>
+                    </div>
+
+                    <div class="selectable-card d-flex align-items-start p-3 mb-3">
+                        <div class="radio-circle me-3 mt-1"></div>
+                        <div>
+                            <h6 class="mb-1 fw-bold">Julianne Sterling</h6>
+                            <p class="mb-0 text-muted small">The Summer Estate, 18 Vineyard Lane, Tuscany, 53017</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-link text-dark text-decoration-none p-0 small fw-bold">
+                    <i class="bi bi-plus-circle me-2"></i> Enter New Address
+                </button>
+            </section>
+
+            <section>
+                <h4 class="section-subheading mb-4">Shipping Method</h4>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="selectable-card method-card active p-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="fw-bold">Gourmet Express</span>
+                                <span class="fw-bold">£12.00</span>
+                            </div>
+                            <p class="text-muted x-small text-uppercase mb-0">Temperature Controlled • 24H</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="selectable-card method-card p-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="fw-bold">Standard Parcel</span>
+                                <span class="fw-bold">£5.00</span>
+                            </div>
+                            <p class="text-muted x-small text-uppercase mb-0">Eco-Packaging • 3-5 Days</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <div class="col-lg-5">
+            <div class="order-summary-card p-5">
+                <h3 class="summary-title mb-4">Order Summary</h3>
+                
+                <!-- Line Items -->
+                <div class="summary-items mb-4">
+                    <div class="d-flex mb-3 align-items-center">
+                        <img src="{% static 'img/cheese_sq.jpg' %}" class="summary-thumb" alt="Cheese">
+                        <div class="flex-grow-1 ms-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="small fw-bold">Aged Cave-Ripened Cheddar</span>
+                                <span class="small fw-bold">£18.50</span>
+                            </div>
+                            <span class="x-small text-muted text-uppercase">200g • Somerset</span>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-3 align-items-center">
+                        <img src="{% static 'img/oil_sq.jpg' %}" class="summary-thumb" alt="Oil">
+                        <div class="flex-grow-1 ms-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="small fw-bold">Cold-Pressed Tuscan Olive Oil</span>
+                                <span class="small fw-bold">£32.00</span>
+                            </div>
+                            <span class="x-small text-muted text-uppercase">500ml • Extra Virgin</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Totals -->
+                <div class="totals-section border-top border-secondary pt-4">
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span class="text-muted">Subtotal</span>
+                        <span>£75.40</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span class="text-gold">Gourmet Discount (-20%)</span>
+                        <span class="text-gold">-£15.08</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-4 small">
+                        <span class="text-muted">White-Glove Delivery</span>
+                        <span class="badge bg-secondary-subtle text-dark x-small">FREE</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-end pt-4 border-top border-secondary mb-5">
+                        <div>
+                            <span class="text-muted x-small text-uppercase">Total Amount</span>
+                            <h2 class="display-5 text-gold mb-0">£60.32</h2>
+                        </div>
+                        <div class="text-end x-small text-muted">
+                            VAT INCLUDED<br>INVOICE PROVIDED
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-center x-small text-muted text-uppercase ls-1">Secure Encrypted Transaction</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

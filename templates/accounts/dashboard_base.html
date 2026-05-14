@@ -1,64 +1,226 @@
 {% extends 'base.html' %}
+
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/base_dashboard.css' %}">
-<link rel="stylesheet" href="{% static 'css/user_dashboard.css' %}">
-<link rel="stylesheet" href="{% static 'css/wishlist.css' %}">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/base_dashboard.css' %}"
+>
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/user_dashboard.css' %}"
+>
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/wishlist.css' %}"
+>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;600&display=swap"
+    rel="stylesheet"
+>
+
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+>
 
 {% block dashboard_css %}{% endblock %}
+
 {% endblock %}
 
 {% block content %}
+
 <main class="dashboard-page py-5">
-    <div class="container">
+
+    <div class="container-fluid px-lg-5 px-3">
+
         <div class="row g-5">
-            
-        <div class="col-lg-3 col-md-4 pe-lg-4">
-    <h2 class="sidebar-title">My Account</h2>
-    
+
+            <!-- SIDEBAR -->
+
+            <div class="col-lg-3 col-md-4">
+
+                <div class="dashboard-sidebar sticky-top">
+
+                    <h2 class="sidebar-title mb-4">
+
+                        My Account
+
+                    </h2>
+
                     <div class="custom-sidebar-menu">
-                        <a href="{% url 'dashboard' %}" class="sidebar-link {% if request.path == '/accounts/dashboard/' %}active{% endif %}">
-                            <i class="bi bi-grid-1x2"></i> Account Overview
+
+                        <!-- DASHBOARD -->
+
+                        <a
+                            href="{% url 'dashboard' %}"
+                            class="sidebar-link {% if request.path == '/accounts/dashboard/' %}active{% endif %}"
+                        >
+
+                            <i class="bi bi-grid-1x2"></i>
+
+                            <span>
+
+                                Account Overview
+
+                            </span>
+
                         </a>
-                        
-                        <a href="#" class="sidebar-link">
-                            <i class="bi bi-box-seam"></i> My orders
+
+                        <!-- ORDERS -->
+
+                        <a
+                            href="#"
+                            class="sidebar-link"
+                        >
+
+                            <i class="bi bi-box-seam"></i>
+
+                            <span>
+
+                                My Orders
+
+                            </span>
+
                         </a>
-                        <a href="{% url "wishlist_page" %}" class="sidebar-link {% if request.path == '/wishlist/' %}active{% endif %}">
-                            <i class="bi bi-heart"></i> Wishlist
+
+                        <!-- WISHLIST -->
+
+                        <a
+                            href="{% url 'wishlist_page' %}"
+                            class="sidebar-link {% if request.path == '/wishlist/' %}active{% endif %}"
+                        >
+
+                            <i class="bi bi-heart"></i>
+
+                            <span>
+
+                                Wishlist
+
+                            </span>
+
                         </a>
-                        <a href="{% url 'address' %}" class="sidebar-link {% if request.path == '/accounts/address/' %}active{% endif %}">
-                            <i class="bi bi-geo-alt"></i> Addresses
+
+                        <!-- ADDRESSES -->
+
+                        <a
+                            href="{% url 'address' %}"
+                            class="sidebar-link {% if request.path == '/accounts/address/' %}active{% endif %}"
+                        >
+
+                            <i class="bi bi-geo-alt"></i>
+
+                            <span>
+
+                                Addresses
+
+                            </span>
+
                         </a>
-                        <a href="#" class="sidebar-link">
-                            <i class="bi bi-wallet2"></i> Wallet
+
+                        <!-- WALLET -->
+
+                        <a
+                            href="#"
+                            class="sidebar-link"
+                        >
+
+                            <i class="bi bi-wallet2"></i>
+
+                            <span>
+
+                                Wallet
+
+                            </span>
+
                         </a>
-                        <a href="#" class="sidebar-link">
-                            <i class="bi bi-ticket-perforated"></i> My Coupons
+
+                        <!-- COUPONS -->
+
+                        <a
+                            href="#"
+                            class="sidebar-link"
+                        >
+
+                            <i class="bi bi-ticket-perforated"></i>
+
+                            <span>
+
+                                My Coupons
+
+                            </span>
+
                         </a>
-                        
-                        <a href="{% url "account_settings" %}" class="sidebar-link {% if request.path == '/accounts/settings/' %}active{% endif %}">
-                            <i class="bi bi-gear"></i> Account Settings
+
+                        <!-- SETTINGS -->
+
+                        <a
+                            href="{% url 'account_settings' %}"
+                            class="sidebar-link {% if request.path == '/accounts/settings/' %}active{% endif %}"
+                        >
+
+                            <i class="bi bi-gear"></i>
+
+                            <span>
+
+                                Account Settings
+
+                            </span>
+
                         </a>
-                        
+
+                        <!-- DIVIDER -->
+
                         <div class="sidebar-divider"></div>
-                        
-                        <a href="{% url 'logout' %}" class="sidebar-link logout-link">
-                            <i class="bi bi-box-arrow-right"></i> LOGOUT
+
+                        <!-- LOGOUT -->
+
+                        <a
+                            href="{% url 'logout' %}"
+                            class="sidebar-link logout-link"
+                        >
+
+                            <i class="bi bi-box-arrow-right"></i>
+
+                            <span>
+
+                                Logout
+
+                            </span>
+
                         </a>
+
                     </div>
+
                 </div>
 
-            <div class="col-lg-9 col-md-8 ps-lg-5">
-                {% block dashboard_content %}
-                {% endblock %}
             </div>
-            
+
+            <!-- CONTENT -->
+
+            <div class="col-lg-9 col-md-8">
+
+                <div class="dashboard-content">
+
+                    {% block dashboard_content %}
+
+                    {% endblock %}
+
+                </div>
+
+            </div>
+
         </div>
+
     </div>
+
 </main>
+
 <script src="{% static 'js/product_detail.js' %}"></script>
+
 {% endblock %}

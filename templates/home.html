@@ -2,310 +2,596 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/home.css' %}"
+>
+
 {% endblock %}
 
 {% block content %}
-<main class="home-page">
-    
-<section class="container py-4">
-        <div class="hero-banner rounded overflow-hidden position-relative d-flex align-items-center shadow-lg" style="min-height: 600px; background-image: url('https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?q=80&w=1600&auto=format&fit=crop'); background-size: cover; background-position: center;">
-            
-            <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to right, rgba(10,58,42,0.95) 0%, rgba(10,58,42,0.8) 40%, rgba(0,0,0,0.1) 100%); z-index: 1;"></div>
 
-            <div class="hero-content position-relative p-4 p-md-5 col-lg-7 col-xl-6" style="z-index: 2;">
-                <span class="badge-gold-outline mb-3 d-inline-block">CURATOR'S CHOICE</span>
-                
-                <h1 class="hero-title text-white mb-4" style="font-size: 4rem;">The Essence of <br><span class="text-gold italic-font">Terroir</span></h1>
-                
-                <p class="hero-subtitle mb-5 text-light opacity-75 fs-5" style="line-height: 1.6;">Experience our award-winning Extra Virgin Olive Oil. Cold-pressed from centennial groves to bring unparalleled depth to your culinary masterpieces.</p>
-                
-                <a href="#" class="btn btn-gold px-5 py-3 text-uppercase fw-bold letter-spacing-1 rounded-0">Shop The Reserve</a>
-                
-                <div class="row mt-5 text-start border-top border-secondary pt-4">
+<main class="home-page">
+
+    <!-- HERO SECTION -->
+
+    <section class="container-fluid px-lg-5 px-3 py-4">
+
+        <div
+            class="hero-banner rounded overflow-hidden position-relative d-flex align-items-center shadow-lg"
+            style="
+                min-height: 600px;
+                background-image: url('https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?q=80&w=1600&auto=format&fit=crop');
+                background-size: cover;
+                background-position: center;
+            "
+        >
+
+            <!-- OVERLAY -->
+
+            <div
+                class="position-absolute top-0 start-0 w-100 h-100"
+                style="
+                    background: linear-gradient(
+                        to right,
+                        rgba(10,58,42,0.95) 0%,
+                        rgba(10,58,42,0.8) 40%,
+                        rgba(0,0,0,0.1) 100%
+                    );
+                    z-index: 1;
+                "
+            ></div>
+
+            <!-- CONTENT -->
+
+            <div
+                class="hero-content position-relative p-4 p-md-5 col-lg-7 col-xl-6"
+                style="z-index: 2;"
+            >
+
+                <span class="badge-gold-outline mb-3 d-inline-block">
+
+                    CURATOR'S CHOICE
+
+                </span>
+
+                <h1
+                    class="hero-title text-white mb-4"
+                    style="font-size: 4rem;"
+                >
+
+                    The Essence of
+
+                    <br>
+
+                    <span class="text-gold italic-font">
+
+                        Terroir
+
+                    </span>
+
+                </h1>
+
+                <p
+                    class="hero-subtitle mb-5 text-light opacity-75 fs-5"
+                    style="line-height: 1.6;"
+                >
+
+                    Experience our award-winning Extra Virgin Olive Oil.
+                    Cold-pressed from centennial groves to bring unparalleled
+                    depth to your culinary masterpieces.
+
+                </p>
+
+                <a
+                    href="#"
+                    class="btn btn-gold px-5 py-3 text-uppercase fw-bold letter-spacing-1 rounded-0"
+                >
+
+                    Shop The Reserve
+
+                </a>
+
+                <!-- STATS -->
+
+                <div
+                    class="row mt-5 text-start border-top border-secondary pt-4"
+                >
+
                     <div class="col-4">
-                        <h3 class="stat-number text-white fs-4 mb-1">100%</h3>
-                        <p class="stat-label text-light opacity-50 mb-0">SINGLE ESTATE</p>
+
+                        <h3 class="stat-number text-white fs-4 mb-1">
+
+                            100%
+
+                        </h3>
+
+                        <p class="stat-label text-light opacity-50 mb-0">
+
+                            SINGLE ESTATE
+
+                        </p>
+
                     </div>
+
                     <div class="col-4">
-                        <h3 class="stat-number text-white fs-4 mb-1">< 0.2%</h3>
-                        <p class="stat-label text-light opacity-50 mb-0">ACIDITY LEVEL</p>
+
+                        <h3 class="stat-number text-white fs-4 mb-1">
+
+                            &lt; 0.2%
+
+                        </h3>
+
+                        <p class="stat-label text-light opacity-50 mb-0">
+
+                            ACIDITY LEVEL
+
+                        </p>
+
                     </div>
+
                     <div class="col-4">
-                        <h3 class="stat-number text-white fs-4 mb-1">24h</h3>
-                        <p class="stat-label text-light opacity-50 mb-0">HARVEST TO PRESS</p>
+
+                        <h3 class="stat-number text-white fs-4 mb-1">
+
+                            24h
+
+                        </h3>
+
+                        <p class="stat-label text-light opacity-50 mb-0">
+
+                            HARVEST TO PRESS
+
+                        </p>
+
                     </div>
+
                 </div>
+
             </div>
 
         </div>
+
     </section>
 
-<section class="container py-5 mt-5">
+    <!-- NEW ARRIVALS -->
 
-    <!-- SECTION HEADER -->
+    <section class="container-fluid px-lg-5 px-3 py-5 mt-5">
 
-    <div class="d-flex justify-content-between align-items-end mb-5">
+        <!-- HEADER -->
 
-        <div>
-
-            <h2 class="section-title">
-
-                New Arrivals
-
-            </h2>
-
-            <p class="text-muted mb-0">
-
-                The latest curated additions to elevate your culinary creations.
-
-            </p>
-
-        </div>
-
-        <a
-            href="{% url 'shop' %}"
-            class="view-all-link text-uppercase"
+        <div
+            class="d-flex justify-content-between align-items-end mb-5 flex-wrap gap-3"
         >
 
-            View all products
+            <div>
 
-            <i class="bi bi-chevron-right"></i>
+                <h2 class="section-title">
 
-        </a>
+                    New Arrivals
 
-    </div>
+                </h2>
 
-    <!-- PRODUCTS -->
+                <p class="text-muted mb-0">
 
-    <div class="row g-4">
+                    The latest curated additions to elevate your culinary creations.
 
-        {% for product in latest_products %}
+                </p>
 
-        <div class="col-md-6 col-lg-3">
+            </div>
 
             <a
-                href="{% url 'product_detail' product.slug %}"
-                class="product-card text-decoration-none d-block h-100"
+                href="{% url 'shop' %}"
+                class="view-all-link text-uppercase"
             >
 
-                <!-- IMAGE -->
+                View all products
 
-                <div
-                    class="img-wrapper rounded overflow-hidden mb-3"
-                >
-
-                    {% if product.image %}
-
-                    <img
-                        src="{{ product.image.url }}"
-                        alt="{{ product.name }}"
-                        class="img-fluid w-100 product-image"
-                    >
-
-                    {% else %}
-
-                    <img
-                        src="{% static 'images/default-product.jpg' %}"
-                        alt="Product"
-                        class="img-fluid w-100 product-image"
-                    >
-
-                    {% endif %}
-
-                </div>
-
-                <!-- CONTENT -->
-
-                <div class="product-content">
-
-                    <h3 class="product-title text-dark">
-
-                        {{ product.name }}
-
-                    </h3>
-
-                    <p class="product-price text-gold fw-bold mb-0">
-
-                        ₹{{ product.starting_price }}
-
-                    </p>
-
-                </div>
+                <i class="bi bi-chevron-right"></i>
 
             </a>
 
         </div>
 
-        {% empty %}
+        <!-- PRODUCTS -->
 
-        <div class="col-12 text-center">
+        <div class="row g-4">
 
-            <p class="text-muted">
+            {% for product in latest_products %}
 
-                No products available.
-
-            </p>
-
-        </div>
-
-        {% endfor %}
-
-    </div>
-
-</section>
-
-{% if featured_product %}
-
-<section class="container py-5 mt-4">
-
-    <div
-        class="promo-banner bg-green text-white rounded overflow-hidden d-flex flex-column flex-md-row shadow"
-    >
-
-        <!-- CONTENT -->
-
-        <div
-            class="promo-content p-5 d-flex flex-column justify-content-center col-md-6"
-        >
-
-            <span
-                class="badge-gold-outline mb-3 d-inline-block align-self-start border-gold text-gold"
-            >
-
-                FEATURED COLLECTION
-
-            </span>
-
-            <h2 class="promo-title font-playfair mb-3">
-
-                {{ featured_product.name }}
-
-            </h2>
-
-            <p
-                class="promo-desc mb-4"
-                style="color: rgba(255,255,255,0.8);"
-            >
-
-                {{ featured_product.description|truncatewords:30 }}
-
-            </p>
-
-            <div
-                class="d-flex align-items-center gap-4"
-            >
+            <div class="col-sm-6 col-lg-3">
 
                 <a
-                    href="{% url 'product_detail' featured_product.slug %}"
-                    class="btn btn-gold rounded-0 px-4 py-2 fw-bold text-uppercase"
+                    href="{% url 'product_detail' product.slug %}"
+                    class="product-card text-decoration-none d-block h-100"
                 >
 
-                    Explore Product
+                    <!-- IMAGE -->
+
+                    <div
+                        class="img-wrapper rounded overflow-hidden mb-3"
+                    >
+
+                        {% if product.image %}
+
+                        <img
+                            src="{{ product.image.url }}"
+                            alt="{{ product.name }}"
+                            class="img-fluid w-100 product-image"
+                        >
+
+                        {% else %}
+
+                        <img
+                            src="{% static 'images/default-product.jpg' %}"
+                            alt="Product"
+                            class="img-fluid w-100 product-image"
+                        >
+
+                        {% endif %}
+
+                    </div>
+
+                    <!-- CONTENT -->
+
+                    <div class="product-content">
+
+                        <h3 class="product-title text-dark">
+
+                            {{ product.name }}
+
+                        </h3>
+
+                        <p class="product-price text-gold fw-bold mb-0">
+
+                            ₹{{ product.starting_price }}
+
+                        </p>
+
+                    </div>
 
                 </a>
 
-                <div>
+            </div>
 
-                    <span
-                        class="d-block fs-4 fw-bold"
-                    >
+            {% empty %}
 
-                        ₹{{ featured_product.starting_price }}
+            <div class="col-12 text-center">
 
-                    </span>
+                <p class="text-muted">
 
-                </div>
+                    No products available.
+
+                </p>
 
             </div>
 
-        </div>
-
-        <!-- IMAGE -->
-
-        <div
-            class="promo-image col-md-6 h-100"
-        >
-
-            {% if featured_product.image %}
-
-            <img
-
-                src="{{ featured_product.image.url }}"
-
-                alt="{{ featured_product.name }}"
-
-                class="img-fluid w-100 h-100 object-fit-cover"
-            >
-
-            {% endif %}
+            {% endfor %}
 
         </div>
 
-    </div>
-
-</section>
-
-{% endif %}
-
-    <section class="container py-5 mt-5">
-        <div class="text-center mb-5">
-            <h2 class="font-playfair fs-1 text-dark">The Gourmet Journal</h2>
-        </div>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="review-card p-4 rounded bg-white shadow-sm h-100">
-                    <div class="stars text-gold mb-3">★★★★★</div>
-                    <p class="review-text fst-italic mb-4">"The black truffles completely elevated my dinner party. Unrivaled quality and prompt delivery."</p>
-                    <div class="d-flex align-items-center">
-                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=50&auto=format&fit=crop" class="rounded-circle me-3" width="40" height="40" alt="User">
-                        <div>
-                            <h6 class="mb-0 fs-6 fw-bold">Elise Valerius</h6>
-                            <small class="text-muted" style="font-size: 0.65rem;">Oct 12, 2024</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="review-card p-4 rounded bg-white shadow-sm h-100">
-                    <div class="stars text-gold mb-3">★★★★★</div>
-                    <p class="review-text fst-italic mb-4">"Truly the best saffron I have ever cooked with. The aroma is intoxicating. A must-have pantry staple."</p>
-                    <div class="d-flex align-items-center">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=50&auto=format&fit=crop" class="rounded-circle me-3" width="40" height="40" alt="User">
-                        <div>
-                            <h6 class="mb-0 fs-6 fw-bold">Julian Proctor</h6>
-                            <small class="text-muted" style="font-size: 0.65rem;">Sept 28, 2024</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="review-card p-4 rounded bg-white shadow-sm h-100">
-                    <div class="stars text-gold mb-3">★★★★★</div>
-                    <p class="review-text fst-italic mb-4">"The packaging alone is a work of art. The vintage olive oil has a flavor profile that is simply unreal."</p>
-                    <div class="d-flex align-items-center">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=50&auto=format&fit=crop" class="rounded-circle me-3" width="40" height="40" alt="User">
-                        <div>
-                            <h6 class="mb-0 fs-6 fw-bold">Amelia Chen</h6>
-                            <small class="text-muted" style="font-size: 0.65rem;">Sept 15, 2024</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </section>
 
-    <section class="container py-5 mb-5">
-        <div class="newsletter-box bg-green text-center text-white p-5 rounded position-relative shadow" style="background-image: linear-gradient(rgba(10,58,42,0.9), rgba(10,58,42,0.9)), url('https://images.unsplash.com/photo-1615486171448-4fd13f5fb4eb?q=80&w=1000&auto=format&fit=crop'); background-size: cover; background-position: center;">
-            <div class="position-relative z-index-2">
-                <h2 class="font-playfair fs-1 mb-4">Join the Connoisseur Circle</h2>
-                <form class="d-flex justify-content-center gap-2 mx-auto" style="max-width: 500px;">
-                    <input type="email" class="form-control rounded-0 border-0 bg-white bg-opacity-25 text-white placeholder-light" placeholder="Your email address..." required>
-                    <button type="submit" class="btn btn-gold rounded-0 px-4 fw-bold">SUBSCRIBE</button>
-                </form>
+    <!-- FEATURED PRODUCT -->
+
+    {% if featured_product %}
+
+    <section class="container-fluid px-lg-5 px-3 py-5 mt-4">
+
+        <div
+            class="promo-banner bg-green text-white rounded overflow-hidden d-flex flex-column flex-md-row shadow"
+        >
+
+            <!-- CONTENT -->
+
+            <div
+                class="promo-content p-5 d-flex flex-column justify-content-center col-md-6"
+            >
+
+                <span
+                    class="badge-gold-outline mb-3 d-inline-block align-self-start border-gold text-gold"
+                >
+
+                    FEATURED COLLECTION
+
+                </span>
+
+                <h2 class="promo-title font-playfair mb-3">
+
+                    {{ featured_product.name }}
+
+                </h2>
+
+                <p
+                    class="promo-desc mb-4"
+                    style="color: rgba(255,255,255,0.8);"
+                >
+
+                    {{ featured_product.description|truncatewords:30 }}
+
+                </p>
+
+                <div
+                    class="d-flex align-items-center gap-4 flex-wrap"
+                >
+
+                    <a
+                        href="{% url 'product_detail' featured_product.slug %}"
+                        class="btn btn-gold rounded-0 px-4 py-2 fw-bold text-uppercase"
+                    >
+
+                        Explore Product
+
+                    </a>
+
+                    <div>
+
+                        <span
+                            class="d-block fs-4 fw-bold"
+                        >
+
+                            ₹{{ featured_product.starting_price }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
             </div>
+
+            <!-- IMAGE -->
+
+            <div class="promo-image col-md-6 h-100">
+
+                {% if featured_product.image %}
+
+                <img
+                    src="{{ featured_product.image.url }}"
+                    alt="{{ featured_product.name }}"
+                    class="img-fluid w-100 h-100 object-fit-cover"
+                >
+
+                {% endif %}
+
+            </div>
+
         </div>
+
+    </section>
+
+    {% endif %}
+
+    <!-- REVIEWS -->
+
+    <section class="container-fluid px-lg-5 px-3 py-5 mt-5">
+
+        <div class="text-center mb-5">
+
+            <h2 class="font-playfair fs-1 text-dark">
+
+                The Gourmet Journal
+
+            </h2>
+
+        </div>
+
+        <div class="row g-4">
+
+            <!-- REVIEW 1 -->
+
+            <div class="col-md-4">
+
+                <div class="review-card p-4 rounded bg-white shadow-sm h-100">
+
+                    <div class="stars text-gold mb-3">
+
+                        ★★★★★
+
+                    </div>
+
+                    <p class="review-text fst-italic mb-4">
+
+                        "The black truffles completely elevated my dinner party.
+                        Unrivaled quality and prompt delivery."
+
+                    </p>
+
+                    <div class="d-flex align-items-center">
+
+                        <img
+                            src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=50&auto=format&fit=crop"
+                            class="rounded-circle me-3"
+                            width="40"
+                            height="40"
+                            alt="User"
+                        >
+
+                        <div>
+
+                            <h6 class="mb-0 fs-6 fw-bold">
+
+                                Elise Valerius
+
+                            </h6>
+
+                            <small class="text-muted">
+
+                                Oct 12, 2024
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- REVIEW 2 -->
+
+            <div class="col-md-4">
+
+                <div class="review-card p-4 rounded bg-white shadow-sm h-100">
+
+                    <div class="stars text-gold mb-3">
+
+                        ★★★★★
+
+                    </div>
+
+                    <p class="review-text fst-italic mb-4">
+
+                        "Truly the best saffron I have ever cooked with.
+                        The aroma is intoxicating."
+
+                    </p>
+
+                    <div class="d-flex align-items-center">
+
+                        <img
+                            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=50&auto=format&fit=crop"
+                            class="rounded-circle me-3"
+                            width="40"
+                            height="40"
+                            alt="User"
+                        >
+
+                        <div>
+
+                            <h6 class="mb-0 fs-6 fw-bold">
+
+                                Julian Proctor
+
+                            </h6>
+
+                            <small class="text-muted">
+
+                                Sept 28, 2024
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- REVIEW 3 -->
+
+            <div class="col-md-4">
+
+                <div class="review-card p-4 rounded bg-white shadow-sm h-100">
+
+                    <div class="stars text-gold mb-3">
+
+                        ★★★★★
+
+                    </div>
+
+                    <p class="review-text fst-italic mb-4">
+
+                        "The packaging alone is a work of art.
+                        The vintage olive oil has a flavor profile that is unreal."
+
+                    </p>
+
+                    <div class="d-flex align-items-center">
+
+                        <img
+                            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=50&auto=format&fit=crop"
+                            class="rounded-circle me-3"
+                            width="40"
+                            height="40"
+                            alt="User"
+                        >
+
+                        <div>
+
+                            <h6 class="mb-0 fs-6 fw-bold">
+
+                                Amelia Chen
+
+                            </h6>
+
+                            <small class="text-muted">
+
+                                Sept 15, 2024
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- NEWSLETTER -->
+
+    <section class="container-fluid px-lg-5 px-3 py-5 mb-5">
+
+        <div
+            class="newsletter-box bg-green text-center text-white p-5 rounded position-relative shadow"
+            style="
+                background-image:
+                linear-gradient(
+                    rgba(10,58,42,0.9),
+                    rgba(10,58,42,0.9)
+                ),
+                url('https://images.unsplash.com/photo-1615486171448-4fd13f5fb4eb?q=80&w=1000&auto=format&fit=crop');
+
+                background-size: cover;
+                background-position: center;
+            "
+        >
+
+            <div class="position-relative z-index-2">
+
+                <h2 class="font-playfair fs-1 mb-4">
+
+                    Join the Connoisseur Circle
+
+                </h2>
+
+                <form
+                    class="d-flex justify-content-center gap-2 mx-auto flex-column flex-sm-row"
+                    style="max-width: 500px;"
+                >
+
+                    <input
+                        type="email"
+                        class="form-control rounded-0 border-0"
+                        placeholder="Your email address..."
+                        required
+                    >
+
+                    <button
+                        type="submit"
+                        class="btn btn-gold rounded-0 px-4 fw-bold"
+                    >
+
+                        SUBSCRIBE
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
     </section>
 
 </main>
+
 {% endblock %}

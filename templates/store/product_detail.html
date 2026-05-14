@@ -18,15 +18,15 @@
 
 {% block content %}
 
-<div class="container py-5">
-{% include "includes/alerts.html" %}
+<div class="container-fluid px-lg-5 px-3 py-5">
+
+    {% include "includes/alerts.html" %}
+
     <!-- BREADCRUMB -->
 
     <nav aria-label="breadcrumb" class="mb-4">
 
-        <ol
-            class="breadcrumb small text-uppercase fw-bold text-muted"
-        >
+        <ol class="breadcrumb small text-uppercase fw-bold text-muted">
 
             <li class="breadcrumb-item">
 
@@ -34,23 +34,17 @@
                     href="{% url 'shop' %}"
                     class="text-decoration-none"
                 >
-
                     Shop
-
                 </a>
 
             </li>
 
             <li class="breadcrumb-item">
-
                 {{ product.category.category_name }}
-
             </li>
 
             <li class="breadcrumb-item active">
-
                 {{ product.name }}
-
             </li>
 
         </ol>
@@ -67,20 +61,14 @@
 
                 <!-- THUMBNAILS -->
 
-                <div
-                    class="thumbnail-stack me-3 d-none d-md-block"
-                >
+                <div class="thumbnail-stack me-3 d-none d-md-block">
 
                     {% for image in gallery_images %}
 
                     <img
                         src="{{ image.image.url }}"
-
                         class="img-fluid mb-2 thumb-image {% if forloop.first %}border-active{% endif %}"
-
                         alt="{{ product.name }}"
-
-                        onclick="changeImage(this)"
                     >
 
                     {% endfor %}
@@ -89,23 +77,16 @@
 
                 <!-- MAIN IMAGE -->
 
-                <div
-                    class="main-image-container position-relative flex-grow-1 overflow-hidden"
-                >
+                <div class="main-image-container position-relative flex-grow-1 overflow-hidden">
 
                     <span class="badge-artisanal">
-
                         ARTISANAL SELECTION
-
                     </span>
 
                     <img
                         id="main-product-image"
-
                         src="{{ product.image.url }}"
-
                         class="img-fluid w-100 rounded-1 zoom-image"
-
                         alt="{{ product.name }}"
                     >
 
@@ -120,9 +101,7 @@
         <div class="col-lg-5">
 
             <h1 class="product-title mb-2">
-
                 {{ product.name }}
-
             </h1>
 
             <!-- PRICE -->
@@ -132,9 +111,7 @@
                 <span class="price-tag me-3">
 
                     ₹<span id="product-price">
-
-                       {{ selected_variant.salePrice }}
-
+                        {{ selected_variant.salePrice }}
                     </span>
 
                 </span>
@@ -144,9 +121,7 @@
                     ★★★★☆
 
                     <span class="text-muted ms-1">
-
                         (42 Reviews)
-
                     </span>
 
                 </div>
@@ -157,17 +132,13 @@
 
             <p
                 id="stock-status"
-                class="fw-bold text-success mb-4"
+                class="fw-bold {% if selected_variant.stock > 0 %}text-success{% else %}text-danger{% endif %} mb-4"
             >
 
-               {% if selected_variant.stock > 0 %}
-
+                {% if selected_variant.stock > 0 %}
                     In Stock
-
                 {% else %}
-
                     Out Of Stock
-
                 {% endif %}
 
             </p>
@@ -187,43 +158,34 @@
                 <label
                     class="form-label fw-bold small text-uppercase"
                 >
-
                     Select Weight
-
                 </label>
 
                 <div class="d-flex gap-2 flex-wrap">
 
                     {% for variant in variants %}
 
-<button
+                    <button
+                        type="button"
+                        class="btn {% if variant.id == selected_variant.id %}btn-dark active{% else %}btn-outline-dark{% endif %} weight-btn variant-btn"
+                        data-variant-id="{{ variant.id }}"
+                        data-price="{{ variant.salePrice }}"
+                        data-stock="{{ variant.stock }}"
+                    >
 
-    type="button"
+                        {{ variant.variant_value }}
 
-    class="btn {% if variant.id == selected_variant.id %}btn-dark active{% else %}btn-outline-dark{% endif %} weight-btn variant-btn"
+                        {% if variant.stock <= 0 %}
 
-    data-variant-id="{{ variant.id }}"
+                        <small class="d-block">
+                            Out Of Stock
+                        </small>
 
-    data-price="{{ variant.salePrice }}"
+                        {% endif %}
 
-    data-stock="{{ variant.stock }}"
->
+                    </button>
 
-    {{ variant.variant_value }}
-
-    {% if variant.stock <= 0 %}
-
-    <small class="d-block">
-
-        Out Of Stock
-
-    </small>
-
-    {% endif %}
-
-</button>
-
-{% endfor %}
+                    {% endfor %}
 
                 </div>
 
@@ -235,75 +197,66 @@
 
                 <!-- ADD TO CART -->
 
-<!-- CART + WISHLIST -->
+                <form
+                    method="POST"
+                    action="{% url 'add_cart' product.id %}"
+                    class="flex-grow-1"
+                >
 
-<div class="d-flex gap-2 mb-4">
+                    {% csrf_token %}
 
-    <!-- ADD TO CART -->
+                    <input
+                        type="hidden"
+                        name="variant_id"
+                        id="selected-variant-id"
+                        value="{% if selected_variant %}{{ selected_variant.id }}{% endif %}"
+                    >
 
-<form
-    method="POST"
-    action="{% url 'add_cart' product.id %}"
-    class="flex-grow-1"
->
+                    <button
+                        type="submit"
+                        class="btn btn-dark add-to-cart-btn w-100"
+                    >
 
-    {% csrf_token %}
+                        Add To Cart
 
-    <!-- SELECTED VARIANT -->
+                    </button>
 
-    <input
-        type="hidden"
-        name="variant_id"
-        id="selected-variant-id"
-        value="{% if selected_variant %}{{ selected_variant.id }}{% endif %}"
-    >
+                </form>
 
-<button
-    type="submit"
-    class="btn btn-dark add-to-cart-btn"
->
+                <!-- WISHLIST -->
 
-    Add To Cart
+                <form
+                    method="POST"
+                    action="{% url 'add_to_wishlist' %}"
+                >
 
-</button>
+                    {% csrf_token %}
 
-</form>
+                    <input
+                        type="hidden"
+                        name="product_id"
+                        value="{{ product.id }}"
+                    >
 
-    <!-- WISHLIST -->
+                    <input
+                        type="hidden"
+                        name="variant_id"
+                        id="wishlist-variant-id"
+                        value="{% if selected_variant %}{{ selected_variant.id }}{% endif %}"
+                    >
 
-    <form
-        method="POST"
-        action="{% url 'add_to_wishlist' %}"
-    >
+                    <button
+                        type="submit"
+                        class="btn btn-outline-secondary px-3 h-100"
+                    >
 
-        {% csrf_token %}
+                        <i class="bi bi-heart"></i>
 
-        <input
-            type="hidden"
-            name="product_id"
-            value="{{ product.id }}"
-        >
+                    </button>
 
-        <input
-            type="hidden"
-            name="variant_id"
-            id="wishlist-variant-id"
-            value="{{ selected_variant.id }}"
-        >
+                </form>
 
-        <button
-            type="submit"
-            class="btn btn-outline-secondary px-3 h-100"
-        >
-
-            <i class="bi bi-heart"></i>
-
-        </button>
-
-    </form>
-
-</div>
-   
+            </div>
 
             <!-- FEATURES -->
 
@@ -315,11 +268,7 @@
 
                     <i class="bi bi-leaf"></i>
 
-                    <strong>
-
-                        ORGANIC
-
-                    </strong>
+                    <strong>ORGANIC</strong>
 
                     <br>
 
@@ -331,11 +280,7 @@
 
                     <i class="bi bi-truck"></i>
 
-                    <strong>
-
-                        FAST DELIVERY
-
-                    </strong>
+                    <strong>FAST DELIVERY</strong>
 
                     <br>
 
@@ -362,9 +307,7 @@
             >
 
                 <h3 class="section-heading">
-
                     Customer Appreciation
-
                 </h3>
 
                 <a
@@ -385,23 +328,17 @@
                     <div class="d-flex align-items-center">
 
                         <span class="avatar me-2">
-
                             EM
-
                         </span>
 
                         <strong class="small">
-
                             Eleanor M.
-
                         </strong>
 
                     </div>
 
                     <div class="text-warning small">
-
                         ★★★★★
-
                     </div>
 
                 </div>
@@ -441,20 +378,23 @@
             </div>
 
         </div>
-        {% if related_products %}
+
+    </div>
+
+</div>
+
+<!-- RELATED PRODUCTS -->
+
+{% if related_products %}
 
 <section class="related-products-section py-5">
-
-    <div class="container">
-
-        <!-- TITLE -->
+    
+<div class="container-fluid px-lg-5 px-3">
 
         <div class="text-center mb-5">
 
             <h2 class="related-title">
-
                 You May Also Like
-
             </h2>
 
         </div>
@@ -463,28 +403,21 @@
 
             {% for related in related_products %}
 
-            <div class="col-md-3">
+            <div class="col-md-6 col-lg-3">
 
                 <div class="related-card h-100">
-
-                    <!-- IMAGE -->
 
                     <a
                         href="{% url 'product_detail' related.slug %}"
                     >
 
                         <img
-
                             src="{{ related.image.url }}"
-
                             class="img-fluid related-image"
-
                             alt="{{ related.name }}"
                         >
 
                     </a>
-
-                    <!-- CONTENT -->
 
                     <div class="pt-3">
 
@@ -521,10 +454,6 @@
 </section>
 
 {% endif %}
-
-    </div>
-
-</div>
 
 <script src="{% static 'js/product_detail.js' %}"></script>
 
