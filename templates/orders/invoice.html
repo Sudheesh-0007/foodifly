@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>
+        Foodifly Invoice
+    </title>
+
+    <style>
+
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            color: #1f2937;
+            margin: 0;
+            padding: 40px;
+            background-color: #ffffff;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .invoice-wrapper {
+            width: 100%;
+        }
+
+        .header {
+            border-bottom: 2px solid #0a2d21;
+            padding-bottom: 20px;
+            margin-bottom: 35px;
+        }
+
+        .brand {
+            font-size: 34px;
+            font-weight: bold;
+            color: #0a2d21;
+            margin: 0;
+        }
+
+        .tagline {
+            color: #6b7280;
+            margin-top: 4px;
+            font-size: 12px;
+        }
+
+        .invoice-title {
+            text-align: right;
+        }
+
+        .invoice-title h2 {
+            margin: 0;
+            font-size: 30px;
+            color: #0a2d21;
+        }
+
+        .invoice-meta {
+            margin-top: 8px;
+            color: #4b5563;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #0a2d21;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .address-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .product-table thead {
+            background-color: #0a2d21;
+            color: white;
+        }
+
+        .product-table th {
+            padding: 12px;
+            font-size: 12px;
+            text-align: left;
+            letter-spacing: 0.5px;
+        }
+
+        .product-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .summary-table {
+            width: 320px;
+            margin-left: auto;
+            margin-top: 25px;
+        }
+
+        .summary-table td {
+            padding: 8px 0;
+        }
+
+        .summary-label {
+            color: #4b5563;
+        }
+
+        .summary-value {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .grand-total-row td {
+            padding-top: 14px;
+            border-top: 2px solid #0a2d21;
+            font-size: 18px;
+            font-weight: bold;
+            color: #0a2d21;
+        }
+
+        .payment-badge {
+            display: inline-block;
+            background: #ecfdf5;
+            color: #065f46;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .footer {
+            margin-top: 60px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 20px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 11px;
+        }
+
+        .thank-you {
+            font-size: 18px;
+            color: #0a2d21;
+            margin-bottom: 10px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="invoice-wrapper">
+
+        <!-- HEADER -->
+
+        <table class="header">
+
+            <tr>
+
+                <td>
+
+                    <h1 class="brand">
+                        Foodifly
+                    </h1>
+
+                    <div class="tagline">
+                        Curated Gourmet Marketplace
+                    </div>
+
+                </td>
+
+                <td class="invoice-title">
+
+                    <h2>
+                        INVOICE
+                    </h2>
+
+                    <div class="invoice-meta">
+
+                        <div>
+                            Order ID:
+                            <strong>
+                                {{ order.order_number }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            Date:
+                            <strong>
+                                {{ order.created_at|date:"d M Y" }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        </table>
+
+        <!-- CUSTOMER DETAILS -->
+
+        <div class="section">
+
+            <div class="section-title">
+                Billing Details
+            </div>
+
+            <div class="address-box">
+
+                <strong>
+                    {{ order.user.first_name }}
+                    {{ order.user.last_name }}
+                </strong>
+
+                <br>
+
+                {{ order.address.address_line_1 }}
+
+                <br>
+
+                {{ order.address.city }},
+                {{ order.address.state }}
+
+                <br>
+
+                {{ order.address.country }}
+                -
+                {{ order.address.pincode }}
+
+                <br><br>
+
+                <strong>
+                    Payment Method:
+                </strong>
+
+                <div class="payment-badge">
+
+                    {{ order.payment_method }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ORDER ITEMS -->
+
+        <div class="section">
+
+            <div class="section-title">
+                Order Summary
+            </div>
+
+            <table class="product-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Product
+                        </th>
+
+                        <th>
+                            Variant
+                        </th>
+
+                        <th>
+                            Qty
+                        </th>
+
+                        <th>
+                            Price
+                        </th>
+
+                        <th>
+                            Total
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in order_items %}
+
+                    <tr>
+
+                        <td class="product-name">
+
+                            {{ item.product.name }}
+
+                        </td>
+
+                        <td>
+
+                            {{ item.variant.variant_value }}
+
+                        </td>
+
+                        <td>
+
+                            {{ item.quantity }}
+
+                        </td>
+
+                        <td>
+
+                            ₹{{ item.price }}
+
+                        </td>
+
+                        <td>
+
+                            ₹{{ item.total_price }}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            <!-- TOTALS -->
+
+            <table class="summary-table">
+
+                <tr>
+
+                    <td class="summary-label">
+                        Subtotal
+                    </td>
+
+                    <td class="summary-value">
+                        ₹{{ order.total_amount }}
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td class="summary-label">
+                        Tax
+                    </td>
+
+                    <td class="summary-value">
+                        ₹{{ order.tax }}
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td class="summary-label">
+                        Shipping
+                    </td>
+
+                    <td class="summary-value">
+                        FREE
+                    </td>
+
+                </tr>
+
+                <tr class="grand-total-row">
+
+                    <td>
+                        Grand Total
+                    </td>
+
+                    <td style="text-align:right;">
+
+                        ₹{{ order.grand_total }}
+
+                    </td>
+
+                </tr>
+
+            </table>
+
+        </div>
+
+        <!-- FOOTER -->
+
+        <div class="footer">
+
+            <div class="thank-you">
+
+                Thank you for shopping with Foodifly.
+
+            </div>
+
+            <div>
+
+                This invoice was generated electronically
+                and is valid without signature.
+
+            </div>
+
+            <div style="margin-top:8px;">
+
+                © Foodifly Gourmet Marketplace
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

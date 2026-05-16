@@ -399,7 +399,11 @@ def add_address(request):
         address.save()
 
         messages.success(request, "New delivery address added successfully!")
-        return redirect('address')
+
+        next_page = request.GET.get("next")
+        if next_page == "checkout":
+            return redirect("checkout")
+        return redirect("address")
 
     return render(request, 'accounts/add_address.html')
 
@@ -430,7 +434,12 @@ def edit_address(request, id):
         address.save()
 
         messages.success(request, "Delivery address updated successfully!")
-        return redirect('address')
+        
+        next_page = request.GET.get("next")
+        if next_page == "checkout":
+            return redirect("checkout")
+        return redirect("address")
+
 
     context = {
         'address': address,

@@ -1,81 +1,377 @@
 :root {
+
     --foodifly-dark: #0a2d21;
-    --foodifly-gold: #c5a47e;
-    --card-bg: #f8f7f2;
+
+    --foodifly-dark-light: #123b2d;
+
+    --foodifly-gold-bright: #f6e6be;
+
+    --foodifly-gold-text: #c5a47e;
+
+    --foodifly-border: #e6e1d8;
+
+    --card-bg: #f7f5f1;
+
+    --text-muted-custom: #7d7d7d;
 }
 
-body { background-color: #fdfbf7; font-family: 'Inter', sans-serif; }
+/* GLOBAL */
+
+body {
+
+    background-color: #fdfbf7;
+
+    font-family: 'Inter', sans-serif;
+
+    color: #222;
+}
+
+/* CHECKOUT TITLE */
 
 .checkout-title {
+
     font-family: 'Playfair Display', serif;
-    font-size: 2.8rem;
+
+    font-size: 3rem;
+
+    font-weight: 600;
+
+    color: var(--foodifly-dark);
+
+    letter-spacing: -1px;
+}
+
+/* SECTION TITLE */
+
+.section-heading {
+
+    font-family: 'Playfair Display', serif;
+
+    font-size: 1.6rem;
+
     color: var(--foodifly-dark);
 }
 
-.section-subheading {
-    font-family: 'Playfair Display', serif;
-    color: var(--foodifly-dark);
-}
+/* SELECTABLE CARDS */
 
-/* Selectable Cards */
 .selectable-card {
+
     background: var(--card-bg);
-    border: 1px solid #e0dfd5;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
 
-.selectable-card.active {
-    border-color: #333;
-    background: #fff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
+    border: 1px solid transparent;
 
-/* Custom Radio UI */
-.radio-circle {
-    width: 18px;
-    height: 18px;
-    border: 1px solid #999;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.active .radio-circle {
-    border-color: var(--foodifly-dark);
-    background: var(--foodifly-dark);
-}
-
-.dot {
-    width: 6px;
-    height: 6px;
-    background: #fff;
-    border-radius: 50%;
-}
-
-/* Order Summary */
-.order-summary-card {
-    background-color: var(--foodifly-dark);
-    color: #fff;
     border-radius: 16px;
-    position: sticky;
-    top: 2rem;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+
+    position: relative;
 }
 
-.summary-title { font-family: 'Playfair Display', serif; color: var(--foodifly-gold); }
+.selectable-card:hover {
+
+    transform: translateY(-2px);
+
+    border-color: #ddd;
+
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+
+/* ACTIVE CARD */
+
+.selectable-card.active,
+.selectable-card:has(input:checked) {
+
+    background: #fff;
+
+    border-color: var(--foodifly-dark);
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+}
+
+/* RADIO INPUT */
+
+.form-check-input {
+
+    width: 18px;
+
+    height: 18px;
+
+    border: 2px solid #bbb;
+
+    cursor: pointer;
+
+    box-shadow: none !important;
+}
+
+.form-check-input:checked {
+
+    background-color: var(--foodifly-dark);
+
+    border-color: var(--foodifly-dark);
+}
+
+/* ADDRESS CARD */
+
+.address-selection .selectable-card {
+
+    min-height: 170px;
+}
+
+/* ORDER SUMMARY */
+
+.order-summary-card {
+
+    background-color: var(--foodifly-dark);
+
+    color: #fff;
+
+    border-radius: 24px;
+
+    box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+}
+
+/* SUMMARY TITLE */
+
+.summary-title {
+
+    font-family: 'Playfair Display', serif;
+
+    color: var(--foodifly-gold-text);
+
+    font-size: 2rem;
+}
+
+/* PRODUCT ITEM */
+
+.summary-items {
+
+    max-height: 350px;
+
+    overflow-y: auto;
+
+    padding-right: 6px;
+}
+
+/* CUSTOM SCROLLBAR */
+
+.summary-items::-webkit-scrollbar {
+
+    width: 4px;
+}
+
+.summary-items::-webkit-scrollbar-thumb {
+
+    background: rgba(255,255,255,0.2);
+
+    border-radius: 10px;
+}
+
+/* PRODUCT IMAGE */
 
 .summary-thumb {
-    width: 48px;
-    height: 48px;
+
+    width: 65px;
+
+    height: 65px;
+
     object-fit: cover;
-    border-radius: 4px;
-    background: #15362b;
+
+    border-radius: 10px;
+
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
-.text-gold { color: #8ba888; } /* Matching the muted discount color in image_bd5b1b.jpg */
-.display-5.text-gold { color: #c5a47e; }
+/* GOLD COLORS */
 
-.x-small { font-size: 0.7rem; }
-.ls-1 { letter-spacing: 1px; }
+.text-gold-muted {
+
+    color: #a4ba8f;
+}
+
+.text-gold-bright {
+
+    color: var(--foodifly-gold-text);
+}
+
+/* TOTAL PRICE */
+
+.display-5 {
+
+    font-weight: 700;
+
+    font-size: 2.3rem;
+}
+
+/* PLACE ORDER BUTTON */
+
+.btn-place-order {
+
+    background-color: var(--foodifly-gold-bright);
+
+    color: #222;
+
+    border: none;
+
+    border-radius: 14px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    font-size: 0.9rem;
+
+    padding: 14px 20px;
+
+    transition: all 0.25s ease;
+}
+
+.btn-place-order:hover {
+
+    background-color: #fff2cf;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+}
+
+/* SMALL TEXT */
+
+.x-small {
+
+    font-size: 0.72rem;
+}
+
+.ls-1 {
+
+    letter-spacing: 1px;
+}
+
+/* PAYMENT ICON */
+
+.payment-selection i {
+
+    font-size: 1.2rem;
+
+    color: #666;
+}
+
+/* EDIT LINK */
+
+.address-selection a {
+
+    color: var(--foodifly-dark);
+
+    font-weight: 600;
+}
+
+.address-selection a:hover {
+
+    color: var(--foodifly-gold-text);
+}
+
+/* ADDRESS TEXT */
+
+.address-selection p {
+
+    line-height: 1.5;
+}
+
+/* SUMMARY ROWS */
+
+.totals-section span {
+
+    font-size: 0.92rem;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 991px) {
+
+    .checkout-title {
+
+        font-size: 2.3rem;
+    }
+
+    .order-summary-card {
+
+        margin-top: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .checkout-title {
+
+        font-size: 2rem;
+    }
+
+    .summary-title {
+
+        font-size: 1.7rem;
+    }
+
+    .display-5 {
+
+        font-size: 1.8rem;
+    }
+
+    .summary-thumb {
+
+        width: 55px;
+
+        height: 55px;
+    }
+
+    .btn-place-order {
+
+        font-size: 0.8rem;
+    }
+}
+/* ORDER SUMMARY TEXT FIX */
+
+.order-summary-card,
+.order-summary-card p,
+.order-summary-card span,
+.order-summary-card small,
+.order-summary-card h6,
+.order-summary-card div {
+
+    color: #fff;
+}
+
+/* MUTED TEXT INSIDE SUMMARY */
+
+.order-summary-card .text-muted {
+
+    color: rgba(255,255,255,0.65) !important;
+}
+
+/* GOLD TEXT */
+
+.order-summary-card .text-gold-bright {
+
+    color: var(--foodifly-gold-text) !important;
+}
+
+/* SUMMARY LABELS */
+
+.order-summary-card .totals-section span {
+
+    color: rgba(255,255,255,0.8);
+}
+
+/* TOTAL PRICE */
+
+.order-summary-card .display-5 {
+
+    color: var(--foodifly-gold-text) !important;
+}
+
+/* SECURE TEXT */
+
+.order-summary-card .x-small {
+
+    color: rgba(255,255,255,0.5);
+}

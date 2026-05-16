@@ -1,25 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Address and Shipping Selection
-    const handleSelection = (selector) => {
-        const cards = document.querySelectorAll(selector);
+    // Function to handle selection logic for multiple groups
+    const setupSelection = (containerSelector) => {
+        const container = document.querySelector(containerSelector);
+        if (!container) return;
+
+        const cards = container.querySelectorAll('.selectable-card');
+        
         cards.forEach(card => {
             card.addEventListener('click', () => {
-                cards.forEach(c => c.classList.remove('active'));
+                // Remove active class and dots from all in this group
+                cards.forEach(c => {
+                    c.classList.remove('active');
+                    const circle = c.querySelector('.radio-circle');
+                    if(circle) circle.innerHTML = '';
+                });
+
+                // Add active class and dot to clicked card
                 card.classList.add('active');
-                
-                // If it has a radio circle, update the dot
                 const radio = card.querySelector('.radio-circle');
-                if (radio) {
-                    cards.forEach(c => {
-                        const r = c.querySelector('.radio-circle');
-                        if (r) r.innerHTML = '';
-                    });
-                    radio.innerHTML = '<div class="dot"></div>';
-                }
+                if(radio) radio.innerHTML = '<div class="dot"></div>';
             });
         });
     };
 
-    handleSelection('.address-selection .selectable-card');
-    handleSelection('.method-card');
+    // Initialize both sections
+    setupSelection('.address-selection');
+    setupSelection('.payment-selection');
 });

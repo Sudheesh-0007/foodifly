@@ -1,0 +1,315 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/success.css' %}"
+>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap"
+    rel="stylesheet"
+>
+
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container success-page">
+
+    <div class="success-layout">
+
+
+    {% include "includes/alerts.html" %}
+
+        <div class="success-left">
+
+            <div class="success-icon-wrapper mb-4">
+
+                <div class="icon-circle">
+
+                    <i class="bi bi-check-lg"></i>
+
+                </div>
+
+            </div>
+
+            <h1 class="success-title">
+
+                A Taste of
+                Excellence
+                Awaits.
+
+            </h1>
+
+            <p class="success-description">
+
+                Thank you for choosing Foodifly.
+                Your order has been successfully placed
+                and is now being prepared with artisanal care.
+
+            </p>
+
+        </div>
+
+        <!-- RIGHT SIDE -->
+
+        <div>
+
+            <!-- SUMMARY CARD -->
+
+            <div class="success-summary-card text-start">
+
+
+                <div
+                    class="d-flex justify-content-between align-items-center mb-4"
+                >
+                <!-- PAYMENT INFO -->
+
+<div
+    class="payment-info-box mb-4 pb-3 border-bottom border-secondary"
+>
+
+    <div class="row">
+
+        <!-- PAYMENT METHOD -->
+
+        <div class="col-6">
+
+            <small
+                class="text-gold-muted text-uppercase ls-1 d-block mb-1"
+            >
+
+                Payment Method
+
+            </small>
+
+            <span class="fw-semibold text-white">
+
+                {{ order.payment_method }}
+
+            </span>
+
+        </div>
+
+        <!-- ORDER STATUS -->
+
+
+
+    </div>
+
+</div>
+
+                    <h3 class="summary-heading mb-0">
+
+                        Order Summary
+
+                    </h3>
+
+                    <span class="order-number-badge">
+
+                          #{{ order.order_number }}
+
+                    </span>
+
+                </div>
+
+                {% for item in order.items.all %}
+
+                <div class="ordered-product-row mb-4">
+
+                    <div class="product-left">
+
+                        <img
+                            src="{{ item.product.image.url }}"
+                            class="ordered-product-image"
+                            alt="{{ item.product.name }}"
+                        >
+
+                        <div class="product-details">
+
+                            <h6 class="fw-bold text-white">
+
+                                {{ item.product.name }}
+
+                            </h6>
+
+                            <small class="text-light-muted">
+
+                                {{ item.variant.variant_value }}
+
+                            </small>
+
+                            <small class="text-light-muted">
+
+                                Qty: {{ item.quantity }}
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <span class="fw-bold text-white">
+
+                        ₹{{ item.total_price }}
+
+                    </span>
+
+                </div>
+
+                {% endfor %}
+
+                <div
+                    class="d-flex justify-content-between mb-2 text-light-muted"
+                >
+
+                    <span>Subtotal</span>
+
+                    <span>₹{{ order.total_amount }}</span>
+
+                </div>
+
+                <div
+                    class="d-flex justify-content-between mb-2 text-light-muted"
+                >
+
+                    <span>Tax</span>
+
+                    <span>₹{{ order.tax }}</span>
+
+                </div>
+
+                <div
+                    class="d-flex justify-content-between mb-4 pb-3 border-bottom border-secondary text-light-muted"
+                >
+
+                    <span>Shipping</span>
+
+                    <span>FREE</span>
+
+                </div>
+
+                <div
+                    class="d-flex justify-content-between align-items-end mb-4"
+                >
+
+                    <div>
+
+                        <span
+                            class="text-uppercase x-small text-gold-muted ls-1"
+                        >
+
+                            Grand Total
+
+                        </span>
+
+                        <h2
+                            class="grand-total-price text-white mb-0"
+                        >
+
+                            ₹{{ order.grand_total }}
+
+                        </h2>
+
+                    </div>
+
+                    <span class="text-gold-muted">
+
+                        INR
+
+                    </span>
+
+                </div>
+
+                <div class="d-grid gap-3">
+
+                    <a
+                        href="#"
+                        class="btn btn-gold-action"
+                    >
+
+                        VIEW ORDER
+
+                    </a>
+
+                    <a
+                        href="{% url 'download_invoice' order.id %}"
+                        class="btn btn-outline-light-muted"
+                    >
+
+                        DOWNLOAD INVOICE
+
+                    </a>
+<div class="text-center mt-4">
+
+    <a
+        href="{% url 'shop' %}"
+        class="continue-shopping-btn"
+    >
+
+        <i class="bi bi-arrow-left"></i>
+
+        Continue Shopping
+
+    </a>
+
+</div>
+
+                </div>
+
+            </div>
+
+            <!-- DELIVERY CARD -->
+
+            <div
+                class="delivery-info-card p-3 d-flex align-items-center"
+            >
+
+                <div class="delivery-icon me-3">
+
+                    <i class="bi bi-truck"></i>
+
+                </div>
+
+                <div>
+
+                    <h6 class="mb-1 fw-bold">
+
+                        Expected Delivery
+
+                    </h6>
+
+                    <p class="mb-0 small text-muted">
+
+                        Within 3 - 5 Business Days
+
+                    </p>
+
+                    <p
+                        class="mb-0 x-small text-gold-brand fw-bold"
+                    >
+
+                        Secure Gourmet Shipping
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
