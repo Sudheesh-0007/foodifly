@@ -12,8 +12,15 @@
 <div class="row">
     <div class="col-xl-10 col-lg-12">
         <div class="address-form-card shadow-sm">
-            <form method="POST" action="{% url 'edit_address' address.id %}">
+            <form
+    method="POST"
+    action="{% url 'edit_address' address.id %}?next={{ request.GET.next }}">
                 {% csrf_token %}
+                <input
+    type="hidden"
+    name="next"
+    value="{{ request.GET.next }}"
+>
                 
                 <div class="row g-2">
                     

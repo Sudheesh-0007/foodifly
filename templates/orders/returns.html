@@ -1,5 +1,7 @@
 {% extends 'admin_panel/admin_base.html' %}
+
 {% load static %}
+
 {% block admin_css %}
 
 <link
@@ -8,16 +10,22 @@
 >
 
 {% endblock %}
+
 {% block admin_content %}
 
 <div class="admin-returns-page">
 
     <div class="p-5">
 
-        <!-- HEADER -->
-          {% include "includes/alerts.html" %}
+        <!-- ALERTS -->
 
-        <div class="d-flex justify-content-between align-items-start mb-5">
+        {% include "includes/alerts.html" %}
+
+        <!-- PAGE HEADER -->
+
+        <div
+            class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3"
+        >
 
             <div>
 
@@ -29,7 +37,9 @@
 
                 </span>
 
-                <h1 class="returns-display-title">
+                <h1
+                    class="returns-display-title mb-0"
+                >
 
                     Return Requests
 
@@ -37,15 +47,20 @@
 
             </div>
 
-            <p
-                class="text-muted small text-end mb-0 col-md-4 lh-lg"
-            >
+            <div>
 
-                Monitor and process customer initiated
-                return operations with precision and
-                operational transparency.
+                <a
+                    href="{% url 'admin_orders' %}"
+                    class="btn btn-dark px-4 py-2 rounded-pill"
+                >
 
-            </p>
+                    <i class="bi bi-box-seam me-2"></i>
+
+                    Order Registry
+
+                </a>
+
+            </div>
 
         </div>
 
@@ -57,7 +72,9 @@
 
             <form method="GET">
 
-                <div class="row align-items-end g-3">
+                <div
+                    class="row align-items-end g-3"
+                >
 
                     <!-- SEARCH -->
 
@@ -71,7 +88,9 @@
 
                         </label>
 
-                        <div class="input-group-return">
+                        <div
+                            class="input-group-return"
+                        >
 
                             <i
                                 class="bi bi-search text-muted me-2"
@@ -80,15 +99,16 @@
                             <input
                                 type="text"
                                 name="search"
+                                value="{{ search }}"
                                 class="border-0 bg-transparent w-100"
-                                placeholder="Order ID / Product / User"
+                                placeholder="Order ID / Product / Customer"
                             >
 
                         </div>
 
                     </div>
 
-                    <!-- STATUS -->
+                    <!-- STATUS FILTER -->
 
                     <div class="col-md-3">
 
@@ -111,19 +131,34 @@
 
                             </option>
 
-                            <option value="Requested">
+                            <option
+                                value="Pending"
+                                {% if status == "Pending" %}
+                                    selected
+                                {% endif %}
+                            >
 
-                                Requested
+                                Pending
 
                             </option>
 
-                            <option value="Approved">
+                            <option
+                                value="Approved"
+                                {% if status == "Approved" %}
+                                    selected
+                                {% endif %}
+                            >
 
                                 Approved
 
                             </option>
 
-                            <option value="Rejected">
+                            <option
+                                value="Rejected"
+                                {% if status == "Rejected" %}
+                                    selected
+                                {% endif %}
+                            >
 
                                 Rejected
 
@@ -133,9 +168,11 @@
 
                     </div>
 
-                    <!-- ACTION -->
+                    <!-- BUTTONS -->
 
-                    <div class="col-md-5 text-md-end">
+                    <div
+                        class="col-md-5 text-md-end"
+                    >
 
                         <button
                             type="submit"
@@ -151,7 +188,7 @@
                         </button>
 
                         <a
-                            href="#"
+                            href="{% url 'admin_return_requests' %}"
                             class="btn btn-outline-secondary px-4 py-2 ms-2"
                         >
 
@@ -167,7 +204,7 @@
 
         </div>
 
-        <!-- TABLE -->
+        <!-- RETURNS TABLE -->
 
         <div
             class="returns-table-wrapper bg-white rounded-4 shadow-sm p-4"
@@ -205,13 +242,13 @@
 
                             <th class="py-3">
 
-                                Reason
+                                Quantity
 
                             </th>
 
                             <th class="py-3">
 
-                                Requested
+                                Reason
 
                             </th>
 
@@ -248,7 +285,7 @@
                                     <img
                                         src="{{ item.product.image.url }}"
                                         class="return-product-thumb rounded me-3"
-                                        alt=""
+                                        alt="{{ item.product.name }}"
                                     >
 
                                     <div>
@@ -284,7 +321,8 @@
                                     class="fw-medium"
                                 >
 
-                                    {{ item.order.user.first_name }} {{ item.order.user.last_name }}
+                                    {{ item.order.user.first_name }}
+                                    {{ item.order.user.last_name }}
 
                                 </span>
 
@@ -300,6 +338,14 @@
 
                             </td>
 
+                            <!-- QUANTITY -->
+
+                            <td>
+
+                                {{ item.quantity }}
+
+                            </td>
+
                             <!-- REASON -->
 
                             <td>
@@ -308,21 +354,7 @@
                                     class="text-muted small"
                                 >
 
-                                    {{ item.return_reason }}
-
-                                </span>
-
-                            </td>
-
-                            <!-- DATE -->
-
-                            <td>
-
-                                <span
-                                    class="small text-muted"
-                                >
-
-                                    {{ item.order.created_at|date:"M d, Y" }}
+                                    {{ item.return_reason|default:"No reason provided" }}
 
                                 </span>
 
@@ -332,17 +364,7 @@
 
                             <td>
 
-                                {% if item.return_status == "Requested" %}
-
-                                <span
-                                    class="badge-return badge-requested"
-                                >
-
-                                    Requested
-
-                                </span>
-
-                                {% elif item.return_status == "Approved" %}
+                                {% if item.return_status == "Approved" %}
 
                                 <span
                                     class="badge-return badge-approved"
@@ -359,6 +381,16 @@
                                 >
 
                                     Rejected
+
+                                </span>
+
+                                {% else %}
+
+                                <span
+                                    class="badge-return badge-requested"
+                                >
+
+                                    Pending
 
                                 </span>
 
@@ -385,17 +417,27 @@
 
                                         <option value="">
 
-                                            Select
+                                            Select Action
 
                                         </option>
 
-                                        <option value="Approved">
+                                        <option
+                                            value="Approved"
+                                            {% if item.return_status == "Approved" %}
+                                                selected
+                                            {% endif %}
+                                        >
 
                                             Approve
 
                                         </option>
 
-                                        <option value="Rejected">
+                                        <option
+                                            value="Rejected"
+                                            {% if item.return_status == "Rejected" %}
+                                                selected
+                                            {% endif %}
+                                        >
 
                                             Reject
 
@@ -418,6 +460,10 @@
                                 class="text-center py-5 text-muted"
                             >
 
+                                <i
+                                    class="bi bi-arrow-return-left fs-1 d-block mb-3 opacity-50"
+                                ></i>
+
                                 No return requests available.
 
                             </td>
@@ -431,6 +477,125 @@
                 </table>
 
             </div>
+
+            <!-- PAGINATION -->
+
+            {% if return_items.has_other_pages %}
+
+            <div
+                class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3"
+            >
+
+                <p
+                    class="small text-muted mb-0"
+                >
+
+                    Showing page
+
+                    <strong>
+
+                        {{ return_items.number }}
+
+                    </strong>
+
+                    of
+
+                    <strong>
+
+                        {{ return_items.paginator.num_pages }}
+
+                    </strong>
+
+                </p>
+
+                <ul
+                    class="pagination custom-pagination mb-0"
+                >
+
+                    {% if return_items.has_previous %}
+
+                    <li class="page-item">
+
+                        <a
+                            class="page-link"
+                            href="?page={{ return_items.previous_page_number }}&search={{ search }}&status={{ status }}"
+                        >
+
+                            <i
+                                class="bi bi-chevron-left"
+                            ></i>
+
+                        </a>
+
+                    </li>
+
+                    {% endif %}
+
+                    {% for i in return_items.paginator.page_range %}
+
+                        {% if return_items.number == i %}
+
+                        <li
+                            class="page-item active"
+                        >
+
+                            <span
+                                class="page-link"
+                            >
+
+                                {{ i }}
+
+                            </span>
+
+                        </li>
+
+                        {% else %}
+
+                        <li
+                            class="page-item"
+                        >
+
+                            <a
+                                class="page-link"
+                                href="?page={{ i }}&search={{ search }}&status={{ status }}"
+                            >
+
+                                {{ i }}
+
+                            </a>
+
+                        </li>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                    {% if return_items.has_next %}
+
+                    <li
+                        class="page-item"
+                    >
+
+                        <a
+                            class="page-link"
+                            href="?page={{ return_items.next_page_number }}&search={{ search }}&status={{ status }}"
+                        >
+
+                            <i
+                                class="bi bi-chevron-right"
+                            ></i>
+
+                        </a>
+
+                    </li>
+
+                    {% endif %}
+
+                </ul>
+
+            </div>
+
+            {% endif %}
 
         </div>
 

@@ -490,73 +490,97 @@
 
                                 <!-- STATUS -->
 
-                                <td>
+                               <!-- STATUS -->
 
-                                    <form
-                                        method="POST"
-                                        action="{% url 'update_order_status' order.id %}"
-                                    >
+<td>
 
-                                        {% csrf_token %}
+    {% if order.status == "Cancelled" %}
 
-                                        <select
-                                            name="status"
-                                            class="form-select form-select-sm status-select"
-                                            onchange="this.form.submit()"
-                                        >
+    <span
+        class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill"
+    >
 
-                                            <option
-                                                value="Pending"
-                                                {% if order.status == "Pending" %}selected{% endif %}
-                                            >
+        Cancelled
 
-                                                Pending
+    </span>
 
-                                            </option>
+    {% elif order.status == "Returned" %}
 
-                                            <option
-                                                value="Confirmed"
-                                                {% if order.status == "Confirmed" %}selected{% endif %}
-                                            >
+    <span
+        class="badge bg-dark text-white px-3 py-2 rounded-pill"
+    >
 
-                                                Confirmed
+        Returned
 
-                                            </option>
+    </span>
 
-                                            <option
-                                                value="Shipped"
-                                                {% if order.status == "Shipped" %}selected{% endif %}
-                                            >
+    {% else %}
 
-                                                Shipped
+    <form
+        method="POST"
+        action="{% url 'update_order_status' order.id %}"
+    >
 
-                                            </option>
+        {% csrf_token %}
 
+        <select
+            name="status"
+            class="form-select form-select-sm status-select"
+            onchange="this.form.submit()"
+        >
 
+            <option
+                value="Pending"
+                {% if order.status == "Pending" %}selected{% endif %}
+            >
 
-                                            <option
-                                                value="Delivered"
-                                                {% if order.status == "Delivered" %}selected{% endif %}
-                                            >
+                Pending
 
-                                                Delivered
+            </option>
 
-                                            </option>
+            <option
+                value="Confirmed"
+                {% if order.status == "Confirmed" %}selected{% endif %}
+            >
 
-                                            <option
-                                                value="Cancelled"
-                                                {% if order.status == "Cancelled" %}selected{% endif %}
-                                            >
+                Confirmed
 
-                                                Cancelled
+            </option>
 
-                                            </option>
+            <option
+                value="Shipped"
+                {% if order.status == "Shipped" %}selected{% endif %}
+            >
 
-                                        </select>
+                Shipped
 
-                                    </form>
+            </option>
 
-                                </td>
+            <option
+                value="Delivered"
+                {% if order.status == "Delivered" %}selected{% endif %}
+            >
+
+                Delivered
+
+            </option>
+
+            <option
+                value="Cancelled"
+                {% if order.status == "Cancelled" %}selected{% endif %}
+            >
+
+                Cancelled
+
+            </option>
+
+        </select>
+
+    </form>
+
+    {% endif %}
+
+</td>
 
                                 <!-- ACTION -->
 

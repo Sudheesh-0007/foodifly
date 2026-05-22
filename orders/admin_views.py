@@ -174,11 +174,22 @@ def update_return_status(request, item_id):
         if status == "Approved":
 
             order_item.variant.stock += order_item.quantity
+
             order_item.variant.save()
 
             order_item.status = "Returned"
 
         order_item.save()
+
+        if status == "Approved":
+
+            remaining_items = order_item.order.items.exclude(status="Returned").exists()
+
+            if not remaining_items:
+
+                order_item.order.status = "Returned"
+
+                order_item.order.save()
 
         messages.success(request, f"Return request {status.lower()} successfully.")
 

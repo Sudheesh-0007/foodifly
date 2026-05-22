@@ -237,9 +237,9 @@ def cancel_order(request, order_id):
             item.variant.stock += item.quantity
             item.variant.save()
 
-    order.total_amount = Decimal("0.00")
-    order.tax = Decimal("0.00")
-    order.grand_total = Decimal("0.00")
+    # order.total_amount = Decimal("0.00")
+    # order.tax = Decimal("0.00")
+    # order.grand_total = Decimal("0.00")
     order.save()
 
     messages.success(request, "Order cancelled successfully.")

@@ -435,7 +435,7 @@ def edit_address(request, id):
 
         messages.success(request, "Delivery address updated successfully!")
         
-        next_page = request.GET.get("next")
+        next_page = request.POST.get("next")
         if next_page == "checkout":
             return redirect("checkout")
         return redirect("address")

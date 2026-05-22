@@ -11,6 +11,7 @@ class Order(models.Model):
         ("Shipped", "Shipped"),
         ("Delivered", "Delivered"),
         ("Cancelled", "Cancelled"),
+        ("Returned", "Returned"),
     )
 
     PAYMENT_METHODS = (
@@ -59,7 +60,7 @@ class OrderItem(models.Model):
 
     return_requested = models.BooleanField(default=False)
     return_reason = models.TextField(blank=True, null=True)
-    return_status = models.CharField(max_length=20, choices=RETURN_STATUS, default="Not Requested")
+    return_status = models.CharField(max_length=20, choices=RETURN_STATUS, default="Not Requested" )
 
     def __str__(self):
 
