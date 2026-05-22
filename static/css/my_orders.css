@@ -1,0 +1,681 @@
+:root {
+    --foodifly-dark: #0a2d21;
+    --foodifly-muted-green: #4f6b61;
+    --light-bg: #fdfbf7;
+    --card-border: #e9e8e3;
+    
+    /* Status Colors */
+    --bg-delivered: #eef9f2;
+    --text-delivered: #198754;
+    --bg-processing: #fffbeb;
+    --text-processing: #b45309;
+    --bg-canceled: #fdf2f2;
+    --text-canceled: #de350b;
+}
+
+body {
+    background-color: var(--light-bg);
+    font-family: 'Inter', sans-serif;
+}
+
+.display-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    color: var(--foodifly-dark);
+}
+
+/* Account Panel Navigation */
+.account-heading {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--foodifly-dark);
+}
+
+.account-nav .nav-link {
+    color: #555;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    transition: 0.2s;
+}
+
+.account-nav .nav-link i {
+    margin-right: 15px;
+    font-size: 1.1rem;
+}
+
+.account-nav .nav-link.active {
+    background-color: var(--foodifly-dark);
+    color: white;
+    border-radius: 6px;
+}
+
+.logout-link {
+    color: #b91c1c !important;
+    font-weight: 600;
+}
+
+/* Order Record Layouts */
+.order-card {
+    background: white;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+}
+
+.product-thumb {
+    width: 100%;
+    max-width: 90px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+.item-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #111;
+}
+
+.price-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    color: #222;
+}
+
+/* Status Micro-copy badges */
+.badge-status {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+}
+
+.status-delivered { background-color: var(--bg-delivered); color: var(--text-delivered); }
+.status-processing { background-color: var(--bg-processing); color: var(--text-processing); }
+.status-canceled { background-color: var(--bg-canceled); color: var(--text-canceled); }
+
+.text-warning-dark { color: var(--text-processing); }
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.btn-action {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 100%;
+
+    min-height: 44px;
+
+    font-size: 0.82rem;
+
+    font-weight: 600;
+
+    letter-spacing: 0.5px;
+
+    border-radius: 8px;
+
+    transition: all 0.25s ease;
+
+    text-decoration: none;
+}
+
+
+/* OUTLINE BUTTON */
+
+.btn-outline-dark {
+
+    background-color: #fff !important;
+
+    border: 1px solid #0a2d21 !important;
+
+    color: #0a2d21 !important;
+}
+
+.btn-outline-dark:hover {
+
+    background-color: #0a2d21 !important;
+
+    color: #fff !important;
+
+    transform: translateY(-2px);
+}
+
+
+/* PRIMARY DARK BUTTON */
+
+.btn-foodifly-dark {
+
+    background-color: var(--foodifly-dark);
+
+    color: #fff !important;
+
+    border: 1px solid var(--foodifly-dark);
+}
+
+.btn-foodifly-dark:hover {
+
+    background-color: #051811;
+
+    border-color: #051811;
+
+    color: #fff !important;
+
+    transform: translateY(-2px);
+}
+
+
+/* MUTED BUTTON */
+
+.btn-foodifly-muted {
+
+    background-color: var(--foodifly-muted-green);
+
+    color: #fff !important;
+
+    border: 1px solid var(--foodifly-muted-green);
+}
+
+.btn-foodifly-muted:hover {
+
+    background-color: #3c544b;
+
+    border-color: #3c544b;
+
+    color: #fff !important;
+
+    transform: translateY(-2px);
+}
+
+
+/* CANCEL LINK */
+
+.link-cancel {
+
+    display: inline-block;
+
+    color: var(--text-canceled);
+
+    font-size: 0.78rem;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: all 0.2s ease;
+}
+
+.link-cancel:hover {
+
+    color: #b91c1c;
+
+    text-decoration: underline;
+}
+
+.x-small { font-size: 0.75rem; }
+/* =========================================
+   FOODIFLY MINIMAL PAGINATION
+========================================= */
+
+.custom-pagination {
+
+    gap: 12px !important;
+}
+
+
+/* REMOVE DEFAULT BOOTSTRAP */
+
+.custom-pagination .page-item {
+
+    margin: 0 !important;
+}
+
+
+/* PAGE LINK */
+
+.custom-pagination .page-link {
+
+    width: 42px !important;
+
+    height: 42px !important;
+
+    border-radius: 50% !important;
+
+    border: none !important;
+
+   background-color: transparent !important;
+
+    color: #0a2d21 !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    font-size: 1rem !important;
+
+    font-weight: 500 !important;
+
+    padding: 0 !important;
+
+    transition: all 0.25s ease !important;
+
+    box-shadow: none !important;
+}
+
+
+/* ACTIVE */
+
+.custom-pagination .page-item.active .page-link {
+
+    background-color: #0a2d21 !important;
+
+    color: #ffffff !important;
+}
+
+
+/* HOVER */
+.custom-pagination .page-link {
+
+    width: 42px !important;
+
+    height: 42px !important;
+
+    border-radius: 50% !important;
+
+    border: none !important;
+
+    background-color: transparent !important;
+
+    color: #0a2d21 !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    font-size: 1rem !important;
+
+    font-weight: 500 !important;
+
+    padding: 0 !important;
+
+    transition: all 0.25s ease !important;
+
+    box-shadow: none !important;
+}
+
+.custom-pagination .page-item {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+}
+
+/* REMOVE BLUE FOCUS */
+
+.custom-pagination .page-link:focus {
+
+    box-shadow: none !important;
+}
+
+
+/* REMOVE BORDER */
+
+.custom-pagination .page-link:active {
+
+    box-shadow: none !important;
+}
+.custom-pagination .page-item {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+}
+/* =========================================
+   ORDER META
+========================================= */
+
+.order-meta {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+}
+
+
+.meta-pill {
+
+    background: #f5f5f5;
+
+    color: #444;
+
+    font-size: 0.75rem;
+
+    padding: 6px 12px;
+
+    border-radius: 30px;
+
+    font-weight: 500;
+}
+
+
+/* STATUS */
+
+.status-pill {
+
+    background: #0a2d21;
+
+    color: #fff;
+}
+/* =========================================
+   PREMIUM ORDER FILTER CARD
+========================================= */
+
+.orders-filter-card {
+
+    background: linear-gradient(
+        145deg,
+        #ffffff,
+        #fcfcfc
+    );
+
+    border: 1px solid #f1f1f1;
+
+    border-radius: 24px;
+
+    padding: 28px;
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.04),
+        0 2px 10px rgba(0, 0, 0, 0.02);
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+/* TOP ACCENT */
+
+.orders-filter-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+
+    left: 0;
+
+    width: 100%;
+
+    height: 4px;
+
+    background: linear-gradient(
+        90deg,
+        #111111,
+        #444444
+    );
+}
+
+
+/* =========================================
+   LABELS
+========================================= */
+
+.orders-filter-card label {
+
+    font-size: 0.72rem;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+
+    color: #7d7d7d;
+
+    margin-bottom: 10px;
+}
+
+
+/* =========================================
+   SEARCH BOX
+========================================= */
+
+.order-search-box {
+
+    display: flex;
+
+    align-items: center;
+
+    background: #f8f9fa;
+
+    border: 1px solid #ececec;
+
+    border-radius: 16px;
+
+    padding: 14px 18px;
+
+    transition: all 0.25s ease;
+
+    position: relative;
+}
+
+
+/* HOVER */
+
+.order-search-box:hover {
+
+    border-color: #d8d8d8;
+
+    background: #ffffff;
+}
+
+
+/* FOCUS */
+
+.order-search-box:focus-within {
+
+    border-color: #111111;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 4px rgba(17, 17, 17, 0.05);
+}
+
+
+/* ICON */
+
+.order-search-box i {
+
+    font-size: 0.95rem;
+
+    color: #8a8a8a;
+}
+
+
+/* INPUT */
+
+.order-search-box input {
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    width: 100%;
+
+    font-size: 0.92rem;
+
+    color: #111111;
+
+    font-weight: 500;
+}
+
+
+/* PLACEHOLDER */
+
+.order-search-box input::placeholder {
+
+    color: #9ca3af;
+
+    font-weight: 400;
+}
+
+
+/* =========================================
+   SELECT FILTER
+========================================= */
+
+.order-filter-select {
+
+    border-radius: 16px;
+
+    border: 1px solid #ececec;
+
+    padding: 14px 16px;
+
+    font-size: 0.9rem;
+
+    font-weight: 500;
+
+    color: #111111;
+
+    background-color: #f8f9fa;
+
+    transition: all 0.25s ease;
+
+    box-shadow: none;
+}
+
+
+/* HOVER */
+
+.order-filter-select:hover {
+
+    border-color: #d8d8d8;
+
+    background: #ffffff;
+}
+
+
+/* FOCUS */
+
+.order-filter-select:focus {
+
+    border-color: #111111;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 4px rgba(17, 17, 17, 0.05);
+}
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.btn-filter-orders {
+
+    background-color: #111111;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 16px;
+
+    padding: 14px 20px;
+
+    font-size: 0.88rem;
+
+    font-weight: 600;
+
+    transition: all 0.25s ease;
+}
+
+
+/* HOVER */
+
+.btn-filter-orders:hover {
+
+    background-color: #000000;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 10px 20px rgba(0,0,0,0.08);
+
+    color: white;
+}
+
+
+/* CLEAR BUTTON */
+
+.btn-clear-orders {
+
+    border-radius: 16px;
+
+    padding: 14px 20px;
+
+    font-size: 0.88rem;
+
+    font-weight: 600;
+
+    border: 1px solid #e5e7eb;
+
+    background: white;
+
+    transition: all 0.25s ease;
+}
+
+
+/* HOVER */
+
+.btn-clear-orders:hover {
+
+    background: #f8f9fa;
+
+    border-color: #111111;
+
+    color: #111111;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+    .orders-filter-card {
+
+        padding: 22px;
+    }
+
+    .btn-filter-orders,
+    .btn-clear-orders {
+
+        width: 100%;
+    }
+}

@@ -1,0 +1,247 @@
+:root {
+    --foodifly-dark: #0a2d21;
+    --foodifly-gold: #c5a47e;
+    --tracker-accent: #7d652a;
+    --card-bg-light: #f6f5f0;
+    --border-color: #eae9e2;
+}
+
+body { background-color: #fdfbf7; font-family: 'Inter', sans-serif; }
+
+/* Structural Navigation Hierarchy */
+.account-heading { font-family: 'Playfair Display', serif; font-style: italic; color: var(--foodifly-dark); }
+
+.account-nav .nav-link { color: #555; padding: 12px 20px; font-size: 0.9rem; display: flex; align-items: center; }
+.account-nav .nav-link i { margin-right: 15px; font-size: 1.1rem; }
+.account-nav .nav-link.active { background-color: var(--foodifly-dark); color: white; border-radius: 6px; }
+.logout-link { color: #b91c1c !important; font-weight: 600; }
+
+.order-id-title { font-family: 'Playfair Display', serif; font-size: 2.8rem; color: var(--foodifly-dark); line-height: 1; }
+.section-title { font-family: 'Playfair Display', serif; color: #222; }
+
+.btn-cancel-top { border-color: #d9534f; color: #d9534f; font-size: 0.85rem; font-weight: 500; border-radius: 6px; }
+.btn-cancel-top:hover { background-color: #d9534f; color: white; }
+
+/* Delivery Tracker Engine Layout */
+.journey-card { background-color: var(--card-bg-light); border: 1px solid var(--border-color); border-radius: 12px; }
+
+.tracker-wrapper { margin-top: 2rem; }
+.progress-line { position: absolute; top: 16px; left: 0; right: 0; height: 3px; background-color: #dedcd3; z-index: 1; }
+.progress-fill { height: 100%; background-color: var(--tracker-accent); transition: width 0.4s ease; }
+
+.step-node { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 2; width: 60px; }
+.node-icon { width: 34px; height: 34px; background-color: #e6e4dc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; color: #777; transition: all 0.3s ease; }
+.node-label { font-size: 0.62rem; font-weight: 700; color: #888; text-align: center; margin-top: 8px; white-space: nowrap; letter-spacing: 0.5px; }
+
+.step-node.completed .node-icon { background-color: var(--tracker-accent); color: white; }
+.step-node.completed .node-label { color: var(--tracker-accent); }
+.step-node.active .node-icon { background-color: var(--tracker-accent); color: white; transform: scale(1.15); box-shadow: 0 0 0 5px rgba(125, 101, 42, 0.15); }
+.step-node.active .node-label { color: #111; font-weight: 800; }
+
+.info-strip { background: rgba(255, 255, 255, 0.6); border-radius: 6px; border: 1px solid rgba(0,0,0,0.03); }
+.mt-05 { margin-top: 2px; }
+
+/* Financial Layout Configuration */
+.financial-card { background-color: var(--foodifly-dark); border-radius: 16px; display: flex; flex-direction: column; justify-content: center; }
+.financial-title { font-family: 'Playfair Display', serif; font-style: italic; color: var(--foodifly-gold); }
+.font-serif.italic { font-family: 'Playfair Display', serif; font-size: 1.3rem; }
+.total-price-gold { font-size: 1.8rem; color: var(--foodifly-gold); font-weight: 600; }
+
+/* Product Display Line Item Block */
+.item-display-card { background: white; border: 1px solid var(--border-color); border-radius: 10px; transition: transform 0.2s; }
+.item-thumb { width: 110px; height: 85px; object-fit: cover; }
+.item-name { font-weight: 600; color: #111; font-size: 1.05rem; }
+.link-item-cancel { color: #cc3333; }
+.link-item-cancel:hover { text-decoration: underline !important; color: #aa2222; }
+
+/* Micro elements Utility */
+.z-index-2 { z-index: 2; }
+.x-small { font-size: 0.72rem; }
+.ls-1 { letter-spacing: 1px; }
+/* =========================================
+   CANCEL ORDER BUTTON
+========================================= */
+
+.btn-cancel-top {
+
+    background-color: transparent;
+
+    border: 1.5px solid #dc3545;
+
+    color: #dc3545;
+
+    border-radius: 12px;
+
+    padding: 12px 22px;
+
+    font-size: 0.85rem;
+
+    font-weight: 600;
+
+    letter-spacing: 0.5px;
+
+    transition: all 0.25s ease;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+}
+
+
+/* HOVER */
+
+.btn-cancel-top:hover {
+
+    background-color: #dc3545;
+
+    color: #ffffff;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 20px rgba(220, 53, 69, 0.18);
+}
+
+
+/* ACTIVE */
+
+.btn-cancel-top:active {
+
+    transform: scale(0.98);
+}
+
+
+/* ICON */
+
+.btn-cancel-top i {
+
+    font-size: 0.95rem;
+}
+/* =========================================
+   PREMIUM CANCEL MODAL
+========================================= */
+
+.premium-cancel-modal {
+
+    background: #0a2d21;
+
+    border: none;
+
+    border-radius: 24px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,0.35);
+}
+
+
+/* ICON */
+
+.cancel-icon-wrapper {
+
+    width: 90px;
+
+    height: 90px;
+
+    margin: auto;
+
+    border-radius: 50%;
+
+    background:
+        rgba(220, 53, 69, 0.12);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+.cancel-icon-wrapper i {
+
+    font-size: 2.5rem;
+
+    color: #dc3545;
+}
+
+
+/* TITLE */
+
+.cancel-modal-title {
+
+    font-family: 'Playfair Display', serif;
+
+    color: #fff;
+
+    font-size: 2rem;
+}
+
+
+/* TEXT */
+
+.cancel-modal-text {
+
+    color: rgba(255,255,255,0.72);
+
+    line-height: 1.7;
+
+    font-size: 0.95rem;
+}
+
+
+/* BUTTONS */
+
+.btn-cancel-primary {
+
+    background: #dc3545;
+
+    color: white;
+
+    padding: 12px 24px;
+
+    border-radius: 12px;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: 0.3s;
+}
+
+.btn-cancel-primary:hover {
+
+    background: #bb2d3b;
+
+    color: white;
+
+    transform: translateY(-2px);
+}
+
+.btn-cancel-secondary {
+
+    background: transparent;
+
+    border: 1px solid rgba(255,255,255,0.2);
+
+    color: white;
+
+    padding: 12px 24px;
+
+    border-radius: 12px;
+
+    font-weight: 600;
+
+    transition: 0.3s;
+}
+
+.btn-cancel-secondary:hover {
+
+    background: rgba(255,255,255,0.08);
+
+    color: white;
+}

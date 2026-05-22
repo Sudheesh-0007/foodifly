@@ -30,14 +30,19 @@ def shop(request):
             | Q(variants__variant_value__icontains=search_query)
         )
 
+    try:
+
+        if min_price:
+            products = products.filter(starting_price__gte=float(min_price))
+
+        if max_price:
+            products = products.filter(starting_price__lte=float(max_price))
+
+    except ValueError:
+        pass
+
     if category_slug:
         products = products.filter(category__slug=category_slug)
-
-    if min_price:
-        products = products.filter(starting_price__gte=min_price)
-
-    if max_price:
-        products = products.filter(starting_price__lte=max_price)
 
     if sort == "price_low":
         products = products.order_by("starting_price")

@@ -1,4 +1,7 @@
 {% load static %}
+
+
+
 <aside class="col-lg-2 admin-sidebar d-flex flex-column">
     <div class="sidebar-brand p-4 mb-2">
         <h3 class="m-0 text-white fw-bold" style="font-size: 1.4rem;">Foodifly Admin</h3>
@@ -9,24 +12,32 @@
         <a href="#" class="sidebar-link {% if '/dashboard/' in request.path %}active{% endif %}">
             <i class="bi bi-grid-1x2"></i> Dashboard
         </a>
-        <a href="{% url "admin_products" %}" class="sidebar-link">
+        <a href="{% url "admin_products" %}" class="sidebar-link {% if '/products/' in request.path %}active{% endif %}">
             <i class="bi bi-box-seam"></i> Product
         </a>
-        <a href="#" class="sidebar-link">
+        <a href="{% url "admin_orders" %}" class="sidebar-link {% if '/orders/' in request.path %}active{% endif %}">
             <i class="bi bi-cart3"></i> Order
         </a>
+<a
+    href="{% url 'admin_return_requests' %}"
+    class="sidebar-link {% if '/returns/' in request.path %}active{% endif %}"
+>
+
+    <i class="bi bi-arrow-counterclockwise"></i>
+
+    Return Requests
+
+</a>
         <a href="{% url 'admin_user_management' %}" class="sidebar-link {% if 'users' in request.path %}active{% endif %}">
             <i class="bi bi-people"></i> User
         </a>
-        <a href="{% url "category_management"%}" class="sidebar-link">
+        <a href="{% url "category_management"%}" class="sidebar-link {% if '/categorys/' in request.path %}active{% endif %}">
             <i class="bi bi-layers"></i> Category
         </a>
         <a href="#" class="sidebar-link">
             <i class="bi bi-ticket-perforated"></i> Coupon
         </a>
-        <a href="#" class="sidebar-link">
-            <i class="bi bi-image"></i> Banner
-        </a>
+
         <a href="#" class="sidebar-link">
             <i class="bi bi-bar-chart-line"></i> Reports
         </a>

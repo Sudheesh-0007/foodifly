@@ -354,7 +354,7 @@ def edit_profile(request):
 @login_required(login_url='login')
 def manage_addresses(request):
 
-    addresses = Address.objects.filter(user=request.user).order_by('-is_default', '-id')
+    addresses = Address.objects.filter(user=request.user).order_by('-is_default', '-id')[:3]
     
     context = {
         'addresses': addresses,

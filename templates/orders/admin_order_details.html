@@ -1,0 +1,449 @@
+{% extends 'admin_panel/admin_base.html' %}
+
+{% load static %}
+
+{% block admin_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/admin/admin_order_details.css' %}"
+>
+
+{% endblock %}
+
+{% block admin_content %}
+
+<div class="admin-orders-page">
+
+    <!-- PAGE HEADER -->
+
+    <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
+
+        <div>
+
+            <span
+                class="text-uppercase x-small text-gold fw-bold tracking-wider mb-2 d-block"
+            >
+
+                Commerce Overview
+
+            </span>
+
+            <h1 class="registry-display-title mb-0">
+
+                Order Details
+
+            </h1>
+
+        </div>
+
+        <a
+            href="{% url 'admin_orders' %}"
+            class="btn btn-outline-dark rounded-pill px-4 py-2"
+        >
+
+            <i class="bi bi-arrow-left me-2"></i>
+
+            Back to Orders
+
+        </a>
+
+    </div>
+
+    <!-- ORDER SUMMARY -->
+
+    <div class="row g-4 mb-5">
+
+        <!-- ORDER INFO -->
+
+        <div class="col-lg-8">
+
+            <div class="table-container p-4 h-100">
+
+                <div
+                    class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom"
+                >
+
+                    <div>
+
+                        <h5 class="fw-bold mb-1">
+
+                            Order #{{ order.order_number }}
+
+                        </h5>
+
+                        <p class="text-muted small mb-0">
+
+                            Placed on
+                            {{ order.created_at|date:"d M Y, h:i A" }}
+
+                        </p>
+
+                    </div>
+
+                    <span
+                        class="status-badge
+                        {% if order.status == 'Delivered' %}
+                            status-delivered
+                        {% elif order.status == 'Cancelled' %}
+                            status-cancelled
+                        {% elif order.status == 'Shipped' %}
+                            status-shipped
+                        {% else %}
+                            status-pending
+                        {% endif %}
+                        "
+                    >
+
+                        {{ order.status }}
+
+                    </span>
+
+                </div>
+
+                <!-- CUSTOMER -->
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <div class="info-card">
+
+                            <h6 class="info-title">
+
+                                Customer Details
+
+                            </h6>
+
+                            <p class="mb-1 fw-semibold">
+
+                                {{ order.user.first_name }}
+                                {{ order.user.last_name }}
+
+                            </p>
+
+                            <p class="mb-1 text-muted">
+
+                                {{ order.user.email }}
+
+                            </p>
+
+                            <p class="mb-0 text-muted">
+
+                                {{ order.user.phone_number }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ADDRESS -->
+
+                    <div class="col-md-6">
+
+                        <div class="info-card">
+
+                            <h6 class="info-title">
+
+                                Shipping Address
+
+                            </h6>
+
+                            <p class="mb-1 fw-semibold">
+
+                                {{ order.address.first_name }} {{ order.address.last_name }}
+
+                            </p>
+
+                            <p class="mb-1 text-muted">
+
+                                {{ order.address.address_line_1 }}
+
+                            </p>
+
+                            <p class="mb-1 text-muted">
+
+                                {{ order.address.city }},
+                                {{ order.address.state }}
+
+                            </p>
+
+                            <p class="mb-0 text-muted">
+
+                                {{ order.address.postal_code}}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ORDER TOTAL -->
+
+        <div class="col-lg-4">
+
+            <div class="table-container p-4 h-100">
+
+                <h5 class="fw-bold mb-4">
+
+                    Payment Summary
+
+                </h5>
+
+                <div
+                    class="d-flex justify-content-between mb-3"
+                >
+
+                    <span class="text-muted">
+
+                        Subtotal
+
+                    </span>
+
+                    <span class="fw-semibold">
+
+                        ₹{{ order.total_amount }}
+
+                    </span>
+
+                </div>
+
+                <div
+                    class="d-flex justify-content-between mb-3"
+                >
+
+                    <span class="text-muted">
+
+                        Tax
+
+                    </span>
+
+                    <span class="fw-semibold">
+
+                        ₹{{ order.tax }}
+
+                    </span>
+
+                </div>
+
+                <div
+                    class="d-flex justify-content-between mb-4"
+                >
+
+                    <span class="text-muted">
+
+                        Payment Method
+
+                    </span>
+
+                    <span class="badge-payment">
+
+                        {{ order.payment_method }}
+
+                    </span>
+
+                </div>
+
+                <hr>
+
+                <div
+                    class="d-flex justify-content-between align-items-center"
+                >
+
+                    <span class="fw-bold fs-5">
+
+                        Grand Total
+
+                    </span>
+
+                    <span
+                        class="fw-bold fs-4 text-dark"
+                    >
+
+                        ₹{{ order.grand_total }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ORDER ITEMS -->
+
+    <div class="table-container p-4 bg-white">
+
+        <div
+            class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom"
+        >
+
+            <h5 class="fw-bold mb-0">
+
+                Ordered Products
+
+            </h5>
+
+            <span class="text-muted small">
+
+                {{ order.items.count }} Items
+
+            </span>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table align-middle mb-0">
+
+                <thead>
+
+                    <tr>
+
+                        <th>PRODUCT</th>
+
+                        <th>VARIANT</th>
+
+                        <th>PRICE</th>
+
+                        <th>QTY</th>
+
+                        <th>TOTAL</th>
+
+                        <th>STATUS</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in order.items.all %}
+
+                    <tr>
+
+                        <!-- PRODUCT -->
+
+                        <td>
+
+                            <div class="d-flex align-items-center gap-3">
+
+                                <div class="product-thumb">
+
+                                    <img
+                                        src="{{ item.product.image.url }}"
+                                        alt="{{ item.product.name }}"
+                                        class="w-100 h-100 object-fit-cover rounded"
+                                    >
+
+                                </div>
+
+                                <div>
+
+                                    <p class="product-name mb-1">
+
+                                        {{ item.product.name }}
+
+                                    </p>
+
+                                    <small class="product-meta">
+
+                                        SKU:
+                                        {{ item.product.id }}
+
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        <!-- VARIANT -->
+
+                        <td>
+
+                            <span class="variant-badge">
+
+                                {{ item.variant.variant_value }}
+
+                            </span>
+
+                        </td>
+
+                        <!-- PRICE -->
+
+                        <td class="fw-semibold">
+
+                            ₹{{ item.price }}
+
+                        </td>
+
+                        <!-- QUANTITY -->
+
+                        <td>
+
+                            {{ item.quantity }}
+
+                        </td>
+
+                        <!-- TOTAL -->
+
+                        <td class="fw-bold">
+
+                            ₹{{ item.total_price }}
+
+                        </td>
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            {% if item.status == "Cancelled" %}
+
+                            <span
+                                class="status-badge status-cancelled"
+                            >
+
+                                Cancelled
+
+                            </span>
+
+                            {% else %}
+
+                            <span
+                                class="status-badge status-active"
+                            >
+
+                                Active
+
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -28,7 +28,12 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
 >
-
+<link rel="stylesheet" href="{% static 'css/my_orders.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="{% static 'css/order_details.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 {% block dashboard_css %}{% endblock %}
 
 {% endblock %}
@@ -75,8 +80,8 @@
                         <!-- ORDERS -->
 
                         <a
-                            href="#"
-                            class="sidebar-link"
+                            href="{% url 'my_orders' %}"
+                            class="sidebar-link {% if request.path == '/orders/my-orders/' %}active{% endif %}"
                         >
 
                             <i class="bi bi-box-seam"></i>
@@ -222,5 +227,6 @@
 </main>
 
 <script src="{% static 'js/product_detail.js' %}"></script>
+<script src="{% static 'js/order_details.js' %}"></script>
 
 {% endblock %}

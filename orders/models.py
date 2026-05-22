@@ -29,6 +29,7 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Pending")
     is_ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.order_number
@@ -36,12 +37,30 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
 
+    ITEM_STATUS = (
+        ("Active", "Active"),
+        ("Cancelled", "Cancelled"),
+        ("Returned", "Returned"),
+    )
+    RETURN_STATUS = (
+        ("Not Requested", "Not Requested"),
+        ("Requested", "Requested"),
+        ("Approved", "Approved"),
+        ("Rejected", "Rejected"),
+    )
+
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     variant = models.ForeignKey(Variant, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=20, choices=ITEM_STATUS, default="Active")
+
+    return_requested = models.BooleanField(default=False)
+    return_reason = models.TextField(blank=True, null=True)
+    return_status = models.CharField(max_length=20, choices=RETURN_STATUS, default="Not Requested")
 
     def __str__(self):
+
         return self.product.name

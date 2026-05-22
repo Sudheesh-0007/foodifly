@@ -1,0 +1,441 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+{% block admin_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/admin/returns.css' %}"
+>
+
+{% endblock %}
+{% block admin_content %}
+
+<div class="admin-returns-page">
+
+    <div class="p-5">
+
+        <!-- HEADER -->
+          {% include "includes/alerts.html" %}
+
+        <div class="d-flex justify-content-between align-items-start mb-5">
+
+            <div>
+
+                <span
+                    class="text-uppercase x-small text-gold fw-bold tracking-wider d-block mb-2"
+                >
+
+                    Post Delivery Operations
+
+                </span>
+
+                <h1 class="returns-display-title">
+
+                    Return Requests
+
+                </h1>
+
+            </div>
+
+            <p
+                class="text-muted small text-end mb-0 col-md-4 lh-lg"
+            >
+
+                Monitor and process customer initiated
+                return operations with precision and
+                operational transparency.
+
+            </p>
+
+        </div>
+
+        <!-- FILTER CARD -->
+
+        <div
+            class="returns-filter-card p-4 rounded-4 shadow-sm mb-5"
+        >
+
+            <form method="GET">
+
+                <div class="row align-items-end g-3">
+
+                    <!-- SEARCH -->
+
+                    <div class="col-md-4">
+
+                        <label
+                            class="x-small text-uppercase text-muted fw-bold d-block mb-2"
+                        >
+
+                            Search Return
+
+                        </label>
+
+                        <div class="input-group-return">
+
+                            <i
+                                class="bi bi-search text-muted me-2"
+                            ></i>
+
+                            <input
+                                type="text"
+                                name="search"
+                                class="border-0 bg-transparent w-100"
+                                placeholder="Order ID / Product / User"
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <!-- STATUS -->
+
+                    <div class="col-md-3">
+
+                        <label
+                            class="x-small text-uppercase text-muted fw-bold d-block mb-2"
+                        >
+
+                            Return Status
+
+                        </label>
+
+                        <select
+                            class="form-select return-select"
+                            name="status"
+                        >
+
+                            <option value="">
+
+                                All Requests
+
+                            </option>
+
+                            <option value="Requested">
+
+                                Requested
+
+                            </option>
+
+                            <option value="Approved">
+
+                                Approved
+
+                            </option>
+
+                            <option value="Rejected">
+
+                                Rejected
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- ACTION -->
+
+                    <div class="col-md-5 text-md-end">
+
+                        <button
+                            type="submit"
+                            class="btn btn-return-filter px-4 py-2"
+                        >
+
+                            <i
+                                class="bi bi-funnel me-2"
+                            ></i>
+
+                            Apply Filters
+
+                        </button>
+
+                        <a
+                            href="#"
+                            class="btn btn-outline-secondary px-4 py-2 ms-2"
+                        >
+
+                            Clear
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- TABLE -->
+
+        <div
+            class="returns-table-wrapper bg-white rounded-4 shadow-sm p-4"
+        >
+
+            <div class="table-responsive">
+
+                <table
+                    class="table table-borderless align-middle mb-4"
+                >
+
+                    <thead>
+
+                        <tr
+                            class="border-bottom text-uppercase x-small tracking-wider text-muted"
+                        >
+
+                            <th class="py-3">
+
+                                Product
+
+                            </th>
+
+                            <th class="py-3">
+
+                                Customer
+
+                            </th>
+
+                            <th class="py-3">
+
+                                Order ID
+
+                            </th>
+
+                            <th class="py-3">
+
+                                Reason
+
+                            </th>
+
+                            <th class="py-3">
+
+                                Requested
+
+                            </th>
+
+                            <th class="py-3">
+
+                                Status
+
+                            </th>
+
+                            <th class="py-3 text-end">
+
+                                Actions
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in return_items %}
+
+                        <tr class="border-bottom">
+
+                            <!-- PRODUCT -->
+
+                            <td>
+
+                                <div
+                                    class="d-flex align-items-center"
+                                >
+
+                                    <img
+                                        src="{{ item.product.image.url }}"
+                                        class="return-product-thumb rounded me-3"
+                                        alt=""
+                                    >
+
+                                    <div>
+
+                                        <h6
+                                            class="mb-1 fw-semibold"
+                                        >
+
+                                            {{ item.product.name }}
+
+                                        </h6>
+
+                                        <span
+                                            class="x-small text-muted"
+                                        >
+
+                                            Variant:
+                                            {{ item.variant.variant_value }}
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <!-- CUSTOMER -->
+
+                            <td>
+
+                                <span
+                                    class="fw-medium"
+                                >
+
+                                    {{ item.order.user.first_name }} {{ item.order.user.last_name }}
+
+                                </span>
+
+                            </td>
+
+                            <!-- ORDER ID -->
+
+                            <td
+                                class="fw-bold"
+                            >
+
+                                #{{ item.order.order_number }}
+
+                            </td>
+
+                            <!-- REASON -->
+
+                            <td>
+
+                                <span
+                                    class="text-muted small"
+                                >
+
+                                    {{ item.return_reason }}
+
+                                </span>
+
+                            </td>
+
+                            <!-- DATE -->
+
+                            <td>
+
+                                <span
+                                    class="small text-muted"
+                                >
+
+                                    {{ item.order.created_at|date:"M d, Y" }}
+
+                                </span>
+
+                            </td>
+
+                            <!-- STATUS -->
+
+                            <td>
+
+                                {% if item.return_status == "Requested" %}
+
+                                <span
+                                    class="badge-return badge-requested"
+                                >
+
+                                    Requested
+
+                                </span>
+
+                                {% elif item.return_status == "Approved" %}
+
+                                <span
+                                    class="badge-return badge-approved"
+                                >
+
+                                    Approved
+
+                                </span>
+
+                                {% elif item.return_status == "Rejected" %}
+
+                                <span
+                                    class="badge-return badge-rejected"
+                                >
+
+                                    Rejected
+
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <!-- ACTION -->
+
+                            <td class="text-end">
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'update_return_status' item.id %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <select
+                                        name="status"
+                                        class="form-select return-status-select"
+                                        onchange="this.form.submit()"
+                                    >
+
+                                        <option value="">
+
+                                            Select
+
+                                        </option>
+
+                                        <option value="Approved">
+
+                                            Approve
+
+                                        </option>
+
+                                        <option value="Rejected">
+
+                                            Reject
+
+                                        </option>
+
+                                    </select>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="text-center py-5 text-muted"
+                            >
+
+                                No return requests available.
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

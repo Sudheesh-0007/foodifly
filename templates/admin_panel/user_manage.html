@@ -1,6 +1,13 @@
 {% extends 'admin_panel/admin_base.html' %}
 {% load static %}
+{% block admin_css %}
 
+<link
+    rel="stylesheet"
+    href="{% static 'css/admin/admin_users.css' %}"
+>
+
+{% endblock %}
 {% block admin_content %}
 <div class="user-page-container">
     <header class="mb-4">

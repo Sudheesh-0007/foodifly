@@ -1,0 +1,704 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+{% block admin_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/admin/admin_orders.css' %}"
+>
+
+{% endblock %}
+{% block admin_content %}
+
+<div class="admin-orders-page">
+
+    <div class="flex-grow-1 main-workspace">
+
+        <div class="p-5 content-body">
+
+            <!-- HEADER -->
+              {% include "includes/alerts.html" %}
+
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                
+
+                <div>
+
+                    <span
+                        class="text-uppercase x-small text-gold fw-bold tracking-wider mb-1 d-block"
+                    >
+
+                        Commerce Overview
+
+                    </span>
+
+                    <h1 class="registry-display-title">
+
+                        Order Registry
+
+                    </h1>
+
+                </div>
+
+                <p
+                    class="text-muted text-end small mb-0 col-md-4 lh-base"
+                >
+
+                    Curating the narrative of daily commerce
+                    through precise data orchestration.
+
+                </p>
+
+            </div>
+
+            <!-- FILTER CARD -->
+
+            <div
+                class="filter-card p-4 mb-5 border-0 rounded-4 shadow-sm"
+            >
+
+                <form method="GET">
+
+                    <div class="row align-items-end g-3">
+
+                        <!-- SEARCH -->
+
+                        <div class="col-md-3">
+
+                            <label
+                                class="x-small text-uppercase text-muted fw-bold d-block mb-2"
+                            >
+
+                                Search Order
+
+                            </label>
+
+                            <div class="input-group-custom">
+
+                                <i
+                                    class="bi bi-search me-2 text-muted"
+                                ></i>
+
+                                <input
+                                    type="text"
+                                    name="search"
+                                    class="border-0 bg-transparent w-100"
+                                    placeholder="Order ID / Customer"
+                                    value="{{ request.GET.search }}"
+                                >
+
+                            </div>
+
+                        </div>
+
+                        <!-- STATUS FILTER -->
+
+                        <div class="col-md-2">
+
+                            <label
+                                class="x-small text-uppercase text-muted fw-bold d-block mb-2"
+                            >
+
+                                Status
+
+                            </label>
+
+                            <select
+                                name="status"
+                                class="form-select select-custom"
+                            >
+
+                                <option value="">
+
+                                    All Status
+
+                                </option>
+
+                                <option
+                                    value="Pending"
+                                    {% if request.GET.status == "Pending" %}selected{% endif %}
+                                >
+
+                                    Pending
+
+                                </option>
+
+                                <option
+                                    value="Confirmed"
+                                    {% if request.GET.status == "Confirmed" %}selected{% endif %}
+                                >
+
+                                    Confirmed
+
+                                </option>
+
+                                <option
+                                    value="Shipped"
+                                    {% if request.GET.status == "Shipped" %}selected{% endif %}
+                                >
+
+                                    Shipped
+
+                                </option>
+
+
+
+                                <option
+                                    value="Delivered"
+                                    {% if request.GET.status == "Delivered" %}selected{% endif %}
+                                >
+
+                                    Delivered
+
+                                </option>
+
+                                <option
+                                    value="Cancelled"
+                                    {% if request.GET.status == "Cancelled" %}selected{% endif %}
+                                >
+
+                                    Cancelled
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- PAYMENT FILTER -->
+
+                        <div class="col-md-2">
+
+                            <label
+                                class="x-small text-uppercase text-muted fw-bold d-block mb-2"
+                            >
+
+                                Payment
+
+                            </label>
+
+                            <select
+                                name="payment"
+                                class="form-select select-custom"
+                            >
+
+                                <option value="">
+
+                                    All Payments
+
+                                </option>
+
+                                <option
+                                    value="COD"
+                                    {% if request.GET.payment == "COD" %}selected{% endif %}
+                                >
+
+                                    COD
+
+                                </option>
+
+                                <option
+                                    value="RAZORPAY"
+                                    {% if request.GET.payment == "RAZORPAY" %}selected{% endif %}
+                                >
+
+                                    Razorpay
+
+                                </option>
+
+                                <option
+                                    value="WALLET"
+                                    {% if request.GET.payment == "WALLET" %}selected{% endif %}
+                                >
+
+                                    Wallet
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- SORT -->
+
+                        <div class="col-md-2">
+
+                            <label
+                                class="x-small text-uppercase text-muted fw-bold d-block mb-2"
+                            >
+
+                                Sort
+
+                            </label>
+
+                            <select
+                                name="sort"
+                                class="form-select select-custom"
+                            >
+
+                                <option
+                                    value="-created_at"
+                                    {% if request.GET.sort == "-created_at" %}selected{% endif %}
+                                >
+
+                                    Latest
+
+                                </option>
+
+                                <option
+                                    value="created_at"
+                                    {% if request.GET.sort == "created_at" %}selected{% endif %}
+                                >
+
+                                    Oldest
+
+                                </option>
+
+                                <option
+                                    value="-grand_total"
+                                    {% if request.GET.sort == "-grand_total" %}selected{% endif %}
+                                >
+
+                                    Highest Amount
+
+                                </option>
+
+                                <option
+                                    value="grand_total"
+                                    {% if request.GET.sort == "grand_total" %}selected{% endif %}
+                                >
+
+                                    Lowest Amount
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- ACTIONS -->
+
+                        <div class="col-md-3 text-md-end">
+
+                            <button
+                                type="submit"
+                                class="btn btn-apply-refinement px-4 py-2 rounded-3 fw-bold small"
+                            >
+
+                                <i
+                                    class="bi bi-filter-left me-2"
+                                ></i>
+
+                                Apply
+
+                            </button>
+
+                            <a
+                                href="{% url 'admin_orders' %}"
+                                class="btn btn-outline-secondary px-4 py-2 rounded-3 fw-bold small ms-2"
+                            >
+
+                                Clear
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <!-- TABLE -->
+
+            <div
+                class="table-container p-4 bg-white rounded-4 shadow-sm"
+            >
+
+                <div class="table-responsive">
+
+                    <table
+                        class="table table-borderless align-middle mb-4"
+                    >
+
+                        <thead>
+
+                            <tr
+                                class="text-uppercase text-muted x-small tracking-wider border-bottom"
+                            >
+
+                                <th class="py-3">
+
+                                    Registry ID
+
+                                </th>
+
+                                <th class="py-3">
+
+                                    User Name
+
+                                </th>
+
+                                <th class="py-3">
+
+                                     Date & Time
+
+                                </th>
+
+                                <th class="py-3">
+
+                                  Total Amount
+
+                                </th>
+
+                                <th class="py-3">
+
+                                    Payment Method
+
+                                </th>
+
+                                <th class="py-3">
+
+                                   Status
+
+                                </th>
+
+                                <th class="py-3 text-end">
+
+                                    Actions
+
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for order in orders %}
+
+                            <tr class="border-bottom">
+
+                                <!-- ORDER ID -->
+
+                                <td class="fw-bold py-3">
+
+                                    #{{ order.order_number }}
+
+                                </td>
+
+                                <!-- USER -->
+
+                                <td>
+
+                                    <div
+                                        class="d-flex align-items-center"
+                                    >
+
+                                        <span
+                                            class="avatar-initial bg-mint text-mint-dark me-3"
+                                        >
+
+                                            {{ order.user.first_name|first|upper }}
+
+                                            {{ order.user.last_name|first|upper }}
+
+                                        </span>
+
+                                        <span
+                                            class="fw-medium text-dark-title"
+                                        >
+
+                                            {{ order.user.first_name }} {{ order.user.last_name }}
+
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+                                <!-- DATE -->
+
+                                <td>
+
+                                    <span
+                                        class="text-muted small d-block"
+                                    >
+
+                                        {{ order.created_at|date:"M d, Y" }}
+
+                                    </span>
+
+                                    <span
+                                        class="x-small text-muted"
+                                    >
+
+                                        {{ order.created_at|time:"h:i A" }}
+
+                                    </span>
+
+                                </td>
+
+                                <!-- TOTAL -->
+
+                                <td
+                                    class="fw-bold text-dark-title"
+                                >
+
+                                    ₹{{ order.grand_total }}
+
+                                </td>
+
+                                <!-- PAYMENT -->
+
+                                <td>
+
+                                    <span
+                                        class="badge-payment"
+                                    >
+
+                                        {% if order.payment_method == "COD" %}
+
+                                            <i
+                                                class="bi bi-cash-stack me-1"
+                                            ></i>
+
+                                            Cash On Delivery
+
+                                        {% elif order.payment_method == "RAZORPAY" %}
+
+                                            <i
+                                                class="bi bi-credit-card me-1"
+                                            ></i>
+
+                                            Razorpay
+
+                                        {% elif order.payment_method == "WALLET" %}
+
+                                            <i
+                                                class="bi bi-wallet2 me-1"
+                                            ></i>
+
+                                            Wallet
+
+                                        {% endif %}
+
+                                    </span>
+
+                                </td>
+
+                                <!-- STATUS -->
+
+                                <td>
+
+                                    <form
+                                        method="POST"
+                                        action="{% url 'update_order_status' order.id %}"
+                                    >
+
+                                        {% csrf_token %}
+
+                                        <select
+                                            name="status"
+                                            class="form-select form-select-sm status-select"
+                                            onchange="this.form.submit()"
+                                        >
+
+                                            <option
+                                                value="Pending"
+                                                {% if order.status == "Pending" %}selected{% endif %}
+                                            >
+
+                                                Pending
+
+                                            </option>
+
+                                            <option
+                                                value="Confirmed"
+                                                {% if order.status == "Confirmed" %}selected{% endif %}
+                                            >
+
+                                                Confirmed
+
+                                            </option>
+
+                                            <option
+                                                value="Shipped"
+                                                {% if order.status == "Shipped" %}selected{% endif %}
+                                            >
+
+                                                Shipped
+
+                                            </option>
+
+
+
+                                            <option
+                                                value="Delivered"
+                                                {% if order.status == "Delivered" %}selected{% endif %}
+                                            >
+
+                                                Delivered
+
+                                            </option>
+
+                                            <option
+                                                value="Cancelled"
+                                                {% if order.status == "Cancelled" %}selected{% endif %}
+                                            >
+
+                                                Cancelled
+
+                                            </option>
+
+                                        </select>
+
+                                    </form>
+
+                                </td>
+
+                                <!-- ACTION -->
+
+                                <td class="text-end">
+
+                                    <a
+                                        href="{% url "admin_order_details" order.id %}"
+                                        class="btn-interaction text-uppercase x-small fw-bold text-decoration-none"
+                                    >
+
+                                        View Details
+
+                                        <i
+                                            class="bi bi-arrow-up-right small"
+                                        ></i>
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    class="text-center py-5 text-muted"
+                                >
+
+                                    No orders found.
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <!-- PAGINATION -->
+
+                <div
+                    class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3"
+                >
+
+                    <span class="x-small text-muted">
+
+                        Showing
+                        {{ orders.start_index }}
+                        -
+                        {{ orders.end_index }}
+                        of
+                        {{ orders.paginator.count }}
+                        entries
+
+                    </span>
+
+                    {% if orders.has_other_pages %}
+
+                    <nav>
+
+                        <ul
+                            class="pagination custom-pagination mb-0"
+                        >
+
+                            {% if orders.has_previous %}
+
+                            <li class="page-item">
+
+                                <a
+                                    class="page-link"
+                                    href="?page={{ orders.previous_page_number }}"
+                                >
+
+                                    <i
+                                        class="bi bi-chevron-left"
+                                    ></i>
+
+                                </a>
+
+                            </li>
+
+                            {% endif %}
+
+                            {% for num in orders.paginator.page_range %}
+
+                            <li
+                                class="page-item {% if orders.number == num %}active{% endif %}"
+                            >
+
+                                <a
+                                    class="page-link"
+                                    href="?page={{ num }}"
+                                >
+
+                                    {{ num }}
+
+                                </a>
+
+                            </li>
+
+                            {% endfor %}
+
+                            {% if orders.has_next %}
+
+                            <li class="page-item">
+
+                                <a
+                                    class="page-link"
+                                    href="?page={{ orders.next_page_number }}"
+                                >
+
+                                    <i
+                                        class="bi bi-chevron-right"
+                                    ></i>
+
+                                </a>
+
+                            </li>
+
+                            {% endif %}
+
+                        </ul>
+
+                    </nav>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

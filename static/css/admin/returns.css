@@ -1,0 +1,199 @@
+:root {
+
+    --admin-dark: #0b3427;
+
+    --admin-gold: #c29d63;
+
+    --workspace-bg: #f8f7f4;
+}
+
+
+/* PAGE */
+
+.admin-returns-page {
+
+    background: var(--workspace-bg);
+
+    min-height: 100vh;
+}
+
+
+/* HEADER */
+
+.returns-display-title {
+
+    font-size: 2.8rem;
+
+    font-weight: 700;
+
+    color: var(--admin-dark);
+
+    letter-spacing: -1px;
+}
+
+.text-gold {
+
+    color: var(--admin-gold);
+}
+
+
+/* FILTER CARD */
+
+.returns-filter-card {
+
+    background: #f3f2ed;
+}
+
+.input-group-return {
+
+    background: white;
+
+    border-radius: 10px;
+
+    padding: 11px 14px;
+
+    display: flex;
+
+    align-items: center;
+}
+
+.return-select {
+
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 11px 14px;
+
+    font-size: 0.9rem;
+}
+
+.return-select:focus {
+
+    box-shadow: none;
+
+    border-color: transparent;
+}
+
+.btn-return-filter {
+
+    background: var(--admin-dark);
+
+    color: white;
+
+    border: none;
+
+    border-radius: 10px;
+
+    font-weight: 600;
+
+    transition: 0.25s;
+}
+
+.btn-return-filter:hover {
+
+    background: #051a13;
+
+    color: white;
+}
+
+
+/* TABLE */
+
+.returns-table-wrapper {
+
+    border: 1px solid #ece9e1;
+}
+
+.return-product-thumb {
+
+    width: 65px;
+
+    height: 65px;
+
+    object-fit: cover;
+}
+
+thead th {
+
+    font-size: 0.72rem;
+
+    font-weight: 700;
+
+    color: #8a8f92 !important;
+}
+
+
+/* BADGES */
+
+.badge-return {
+
+    padding: 7px 14px;
+
+    border-radius: 30px;
+
+    font-size: 0.7rem;
+
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
+}
+
+.badge-requested {
+
+    background: #fff5db;
+
+    color: #b78103;
+}
+
+.badge-approved {
+
+    background: #e8f8ef;
+
+    color: #1d7a46;
+}
+
+.badge-rejected {
+
+    background: #fdecec;
+
+    color: #cc4343;
+}
+
+
+/* ACTION SELECT */
+
+.return-status-select {
+
+    min-width: 140px;
+
+    border-radius: 10px;
+
+    border: 1px solid #e7e5df;
+
+    font-size: 0.8rem;
+
+    font-weight: 600;
+
+    padding: 10px 12px;
+}
+
+.return-status-select:focus {
+
+    box-shadow: none;
+
+    border-color: var(--admin-dark);
+}
+
+
+/* UTILITIES */
+
+.x-small {
+
+    font-size: 0.7rem;
+}
+
+.tracking-wider {
+
+    letter-spacing: 1px;
+}

@@ -1,0 +1,566 @@
+{% extends 'accounts/dashboard_base.html' %}
+
+{% load static %}
+
+{% block dashboard_content %}
+
+<main class="col-lg-9">
+
+    <!-- HEADER -->
+      {% include "includes/alerts.html" %}
+
+    <header class="mb-5">
+
+        <h1 class="display-title">
+
+            Order History
+
+        </h1>
+
+    </header>
+    <!-- SEARCH + FILTER -->
+
+<div class="orders-filter-card mb-5">
+
+    <form
+        method="GET"
+        class="row g-3 align-items-end"
+    >
+
+        <!-- SEARCH -->
+
+        <div class="col-md-5">
+
+            <label
+                class="small fw-bold text-muted mb-2"
+            >
+
+                Search Orders
+
+            </label>
+
+            <div class="order-search-box">
+
+                <i
+                    class="bi bi-search text-muted me-2"
+                ></i>
+
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ search }}"
+                    placeholder="Order ID / Product"
+                    class="border-0 bg-transparent w-100"
+                >
+
+            </div>
+
+        </div>
+
+        <!-- STATUS FILTER -->
+
+        <div class="col-md-4">
+
+            <label
+                class="small fw-bold text-muted mb-2"
+            >
+
+                Delivery Status
+
+            </label>
+
+            <select
+                name="status"
+                class="form-select order-filter-select"
+            >
+
+                <option value="">
+
+                    All Orders
+
+                </option>
+
+                <option
+                    value="Pending"
+                    {% if status == "Pending" %}
+                        selected
+                    {% endif %}
+                >
+
+                    Pending
+
+                </option>
+
+                <option
+                    value="Confirmed"
+                    {% if status == "Confirmed" %}
+                        selected
+                    {% endif %}
+                >
+
+                    Confirmed
+
+                </option>
+
+                <option
+                    value="Shipped"
+                    {% if status == "Shipped" %}
+                        selected
+                    {% endif %}
+                >
+
+                    Shipped
+
+                </option>
+
+                <option
+                    value="Out For Delivery"
+                    {% if status == "Out For Delivery" %}
+                        selected
+                    {% endif %}
+                >
+
+                    Out For Delivery
+
+                </option>
+
+                <option
+                    value="Delivered"
+                    {% if status == "Delivered" %}
+                        selected
+                    {% endif %}
+                >
+
+                    Delivered
+
+                </option>
+
+                <option
+                    value="Cancelled"
+                    {% if status == "Cancelled" %}
+                        selected
+                    {% endif %}
+                >
+
+                    Cancelled
+
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- BUTTONS -->
+
+        <div class="col-md-3 d-flex gap-2">
+
+            <button
+                type="submit"
+                class="btn btn-foodifly-dark w-100"
+            >
+
+                Apply
+
+            </button>
+
+            <a
+                href="{% url 'my_orders' %}"
+                class="btn btn-outline-dark w-100"
+            >
+
+                Clear
+
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+    <!-- ORDER LIST -->
+
+    {% for item in order_items %}
+
+    <div class="order-card p-4 mb-4">
+
+        <!-- ORDER META -->
+
+        <div class="order-meta mb-3">
+
+            <span class="meta-pill">
+
+                Order ID:
+                <strong>
+
+                    #{{ item.order.order_number }}
+
+                </strong>
+
+            </span>
+
+            <span class="meta-pill">
+
+                {{ item.order.created_at|date:"d M Y" }}
+
+            </span>
+
+            <!-- STATUS -->
+
+            <span
+                class="meta-pill status-pill
+
+                {% if item.status == 'Cancelled' %}
+
+                    status-canceled
+
+                {% elif item.order.status == 'Delivered' %}
+
+                    status-delivered
+
+                {% else %}
+
+                    status-processing
+
+                {% endif %}"
+            >
+
+                {% if item.status == "Cancelled" %}
+
+                    Cancelled
+
+                {% else %}
+
+                    {{ item.order.status }}
+
+                {% endif %}
+
+            </span>
+
+        </div>
+
+        <div class="row align-items-center g-3">
+
+            <!-- IMAGE -->
+
+            <div class="col-md-2 col-sm-3 text-center text-sm-start">
+
+                <img
+                    src="{{ item.product.image.url }}"
+                    class="img-fluid rounded product-thumb"
+                    alt="{{ item.product.name }}"
+                >
+
+            </div>
+
+            <!-- CONTENT -->
+
+            <div class="col-md-6 col-sm-9">
+
+                <!-- PRODUCT TITLE -->
+
+                <div
+                    class="d-flex flex-wrap align-items-center gap-3 mb-2"
+                >
+
+                    <h5 class="item-title mb-0">
+
+                        {{ item.product.name }}
+
+                    </h5>
+
+                </div>
+
+                <!-- VARIANT -->
+
+                <p class="text-muted x-small mb-3">
+
+                    Variant:
+                    {{ item.variant.variant_value }}
+
+                </p>
+
+                <!-- PRICE -->
+
+                <h4 class="price-text mb-2">
+
+                    ₹{{ item.total_price }}
+
+                </h4>
+
+                <!-- DELIVERY STATUS -->
+
+                {% if item.status == "Cancelled" %}
+
+                <p
+                    class="delivery-note text-danger x-small mb-0"
+                >
+
+                    <i class="bi bi-x-circle"></i>
+
+                    This item has been cancelled
+
+                </p>
+
+                {% elif item.order.status == "Delivered" %}
+
+                <p
+                    class="delivery-note text-success x-small mb-0"
+                >
+
+                    <i class="bi bi-check2-circle"></i>
+
+                    Delivered:
+                    {{ item.order.updated_at|date:"M d, Y" }}
+
+                </p>
+
+                {% else %}
+
+                <p
+                    class="delivery-note text-warning-dark x-small mb-0"
+                >
+
+                    <i class="bi bi-clock"></i>
+
+                    Order is being processed
+
+                </p>
+
+                {% endif %}
+
+            </div>
+
+            <!-- ACTIONS -->
+
+            <div
+                class="col-md-4 text-md-end d-flex flex-column gap-2"
+            >
+
+                <!-- DOWNLOAD INVOICE -->
+
+                <a
+                    href="{% url 'download_invoice' item.order.id %}"
+                    class="btn btn-outline-dark btn-action w-100"
+                >
+
+                    <i class="bi bi-download me-1"></i>
+
+                    Invoice
+
+                </a>
+
+                <!-- VIEW DETAILS -->
+
+                <a
+                    href="{% url 'order_details' item.order.id %}"
+                    class="btn btn-foodifly-dark btn-action w-100"
+                >
+
+                    View Details
+
+                </a>
+
+                <!-- CANCEL ORDER -->
+
+                {% if item.order.status == "Pending" and item.status != "Cancelled" %}
+
+<a
+    href="#"
+    class="link-item-cancel text-danger fw-bold text-decoration-none"
+    data-bs-toggle="modal"
+    data-bs-target="#cancelItemModal"
+    data-url="{% url 'cancel_order_item' item.id %}"
+>
+
+    Cancel Item
+
+</a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <!-- EMPTY STATE -->
+
+    <div class="text-center py-5">
+
+        <h4 class="mb-3">
+
+            No orders found
+
+        </h4>
+
+        <a
+            href="{% url 'shop' %}"
+            class="btn btn-dark"
+        >
+
+            Continue Shopping
+
+        </a>
+
+    </div>
+
+    {% endfor %}
+
+    <!-- PAGINATION -->
+
+    {% if order_items.has_other_pages %}
+
+    <nav class="mt-5">
+
+        <ul
+            class="pagination custom-pagination justify-content-center"
+        >
+
+            <!-- PREVIOUS -->
+
+            {% if order_items.has_previous %}
+
+            <li class="page-item">
+
+                <a
+                    class="page-link"
+                    href="?page={{ order_items.previous_page_number }}&search={{ search }}&status={{ status }}"
+                >
+
+                    <i class="bi bi-chevron-left"></i>
+
+                </a>
+
+            </li>
+
+            {% endif %}
+
+            <!-- PAGE NUMBERS -->
+
+            {% for num in order_items.paginator.page_range %}
+
+            <li
+                class="page-item {% if order_items.number == num %}active{% endif %}"
+            >
+
+                <a
+                    class="page-link"
+                    href="?page={{ num }}&search={{ search }}&status={{ status }}"
+                >
+
+                    {{ num }}
+
+                </a>
+
+            </li>
+
+            {% endfor %}
+
+            <!-- NEXT -->
+
+            {% if order_items.has_next %}
+
+            <li class="page-item">
+
+                <a
+                    class="page-link"
+                    href="?page={{ order_items.next_page_number }}&search={{ search }}&status={{ status }}"
+                >
+
+                    <i class="bi bi-chevron-right"></i>
+
+                </a>
+
+            </li>
+
+            {% endif %}
+
+        </ul>
+
+    </nav>
+
+    {% endif %}
+
+</main>
+<!-- CANCEL ITEM MODAL -->
+
+<div
+    class="modal fade"
+    id="cancelItemModal"
+    tabindex="-1"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content premium-cancel-modal">
+
+            <div class="modal-body text-center p-5">
+
+                <!-- ICON -->
+
+                <div class="cancel-icon-wrapper mb-4">
+
+                    <i class="bi bi-x-circle"></i>
+
+                </div>
+
+                <!-- TITLE -->
+
+                <h3 class="cancel-modal-title mb-3">
+
+                    Cancel Product?
+
+                </h3>
+
+                <!-- PRODUCT -->
+
+                <p class="cancel-modal-text mb-4">
+
+                    Are you sure you want to cancel
+
+                    <strong id="cancelProductName"></strong> ?
+
+                </p>
+
+                <!-- BUTTONS -->
+
+                <div
+                    class="d-flex justify-content-center gap-3"
+                >
+
+                    <button
+                        type="button"
+                        class="btn btn-cancel-secondary"
+                        data-bs-dismiss="modal"
+                    >
+
+                        Keep Item
+
+                    </button>
+
+                    <a
+                        href="#"
+                        id="confirmCancelBtn"
+                        class="btn btn-cancel-primary"
+                    >
+
+                        Yes, Cancel
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

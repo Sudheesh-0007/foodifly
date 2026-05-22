@@ -1,0 +1,808 @@
+{% extends 'accounts/dashboard_base.html' %}
+
+{% load static %}
+
+{% block dashboard_content %}
+
+<div class="container py-5">
+
+    <main class="col-lg-9">
+
+        <!-- HEADER -->
+          {% include "includes/alerts.html" %}
+
+        <header
+            class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3"
+        >
+
+            <div>
+
+                <!-- BREADCRUMB -->
+
+                <nav aria-label="breadcrumb">
+
+                    <ol
+                        class="breadcrumb x-small text-uppercase fw-bold ls-1 mb-1"
+                    >
+
+                        <li class="breadcrumb-item">
+
+                            <a
+                                href="{% url 'my_orders' %}"
+                                class="text-muted text-decoration-none"
+                            >
+
+                                Orders
+
+                            </a>
+
+                        </li>
+
+                        <li
+                            class="breadcrumb-item active text-dark"
+                            aria-current="page"
+                        >
+
+                            Details
+
+                        </li>
+
+                    </ol>
+
+                </nav>
+
+                <!-- ORDER NUMBER -->
+
+                <h1 class="order-id-title">
+
+                    Order #{{ order.order_number }}
+
+                </h1>
+
+                <!-- ORDER META -->
+
+                <div
+                    class="d-flex flex-wrap gap-2 mt-2"
+                >
+
+                    <span class="meta-pill">
+
+                        {{ order.created_at|date:"d M Y" }}
+
+                    </span>
+
+                    <span class="meta-pill">
+
+                        Payment:
+                        {{ order.payment_method }}
+
+                    </span>
+
+                    <span
+                        class="meta-pill
+
+                        {% if order.status == 'Delivered' %}
+
+                            bg-success text-white
+
+                        {% elif order.status == 'Cancelled' %}
+
+                            bg-danger text-white
+
+                        {% else %}
+
+                            bg-dark text-white
+
+                        {% endif %}"
+                    >
+
+                        {{ order.status }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- CANCEL ENTIRE ORDER -->
+
+            {% if order.status == "Pending" or order.status == "Confirmed" %}
+
+            <a
+                href="#"
+                class="btn btn-cancel-top cancel-order-btn"
+                data-bs-toggle="modal"
+                data-bs-target="#cancelOrderModal"
+                data-url="{% url 'cancel_order' order.id %}"
+            >
+
+                <i class="bi bi-x-circle"></i>
+
+                Cancel Entire Order
+
+            </a>
+
+            {% endif %}
+
+        </header>
+
+        <!-- TOP SECTION -->
+
+        <div class="row g-4 mb-5">
+
+            <!-- DELIVERY TRACKER -->
+
+            <div class="col-xl-8 col-lg-7">
+
+                <div
+                    class="journey-card p-4 h-100 d-flex flex-column justify-content-between"
+                >
+
+                    <h5 class="section-title mb-4">
+
+                        Delivery Journey
+
+                    </h5>
+
+                    <!-- TRACKER -->
+
+                    <div
+                        class="tracker-wrapper position-relative px-3 mb-4"
+                    >
+
+                        <div class="progress-line">
+
+                            <div
+                                class="progress-fill"
+
+                                {% if order.status == "Pending" %}
+                                    style="width: 25%;"
+
+                                {% elif order.status == "Confirmed" %}
+                                    style="width: 50%;"
+
+                                {% elif order.status == "Shipped" %}
+                                    style="width: 75%;"
+
+                                {% elif order.status == "Delivered" %}
+                                    style="width: 100%;"
+
+                                {% elif order.status == "Cancelled" %}
+                                    style="width: 0%;"
+
+                                {% endif %}
+                            >
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="d-flex justify-content-between position-relative z-index-2"
+                        >
+
+                            <!-- CONFIRMED -->
+
+                            <div
+                                class="step-node completed"
+                            >
+
+                                <div class="node-icon">
+
+                                    <i class="bi bi-check"></i>
+
+                                </div>
+
+                                <span class="node-label">
+
+                                    PENDING
+
+                                </span>
+
+                            </div>
+
+                            <!-- PREPARED -->
+
+                            <div
+                                class="step-node {% if order.status != 'Pending' %}completed{% endif %}"
+                            >
+
+                                <div class="node-icon">
+
+                                    <i class="bi bi-box-seam"></i>
+
+                                </div>
+
+                                <span class="node-label">
+
+                                    CONFIRMED
+
+                                </span>
+
+                            </div>
+
+                            <!-- SHIPPED -->
+
+                            <div
+                                class="step-node {% if order.status == 'Shipped' or order.status == 'Delivered' %}active{% endif %}"
+                            >
+
+                                <div class="node-icon">
+
+                                    <i class="bi bi-truck"></i>
+
+                                </div>
+
+                                <span class="node-label">
+
+                                    SHIPPED
+
+                                </span>
+
+                            </div>
+
+                            <!-- DELIVERED -->
+
+                            <div
+                                class="step-node {% if order.status == 'Delivered' %}completed{% endif %}"
+                            >
+
+                                <div class="node-icon">
+
+                                    <i class="bi bi-house-door"></i>
+
+                                </div>
+
+                                <span class="node-label">
+
+                                    DELIVERED
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- INFO -->
+
+                    <div
+                        class="info-strip d-flex align-items-start p-3 mt-3"
+                    >
+
+                        <i
+                            class="bi bi-info-circle me-2 mt-05 text-muted"
+                        ></i>
+
+                        <p class="mb-0 x-small text-muted">
+
+                            Your order is currently
+                            <strong>{{ order.status }}</strong>
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- FINANCIAL SUMMARY -->
+
+            <div class="col-xl-4 col-lg-5">
+
+                <div
+                    class="financial-card p-4 shadow-sm text-white"
+                >
+
+                    <h5 class="financial-title mb-4">
+
+                        Financial Summary
+
+                    </h5>
+
+                    <div
+                        class="d-flex justify-content-between mb-3 small opacity-75"
+                    >
+
+                        <span>
+
+                            Subtotal
+
+                        </span>
+
+                        <span>
+
+                            ₹{{ order.total_amount }}
+
+                        </span>
+
+                    </div>
+
+                    <div
+                        class="d-flex justify-content-between mb-3 small opacity-75"
+                    >
+
+                        <span>
+
+                            Taxes
+
+                        </span>
+
+                        <span>
+
+                            ₹{{ order.tax }}
+
+                        </span>
+
+                    </div>
+
+                    <div
+                        class="d-flex justify-content-between mb-4 small opacity-75 pb-3 border-bottom border-secondary"
+                    >
+
+                        <span>
+
+                            Payment
+
+                        </span>
+
+                        <span>
+
+                            {{ order.payment_method }}
+
+                        </span>
+
+                    </div>
+
+                    <div
+                        class="d-flex justify-content-between align-items-center pt-2"
+                    >
+
+                        <span
+                            class="font-serif italic text-white-50"
+                        >
+
+                            Total
+
+                        </span>
+
+                        <span
+                            class="total-price-gold"
+                        >
+
+                            ₹{{ order.grand_total }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ORDER ITEMS -->
+
+        <section class="selection-module">
+
+            <div
+                class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2"
+            >
+
+                <h4 class="section-title mb-0">
+
+                    Your Selection
+
+                </h4>
+
+                <!-- DOWNLOAD INVOICE -->
+
+                <a
+                    href="{% url 'download_invoice' order.id %}"
+                    class="btn btn-dark"
+                >
+
+                    <i class="bi bi-download me-2"></i>
+
+                    Download Invoice
+
+                </a>
+
+            </div>
+
+            <!-- LOOP ITEMS -->
+
+            {% for item in order_items %}
+
+            <div
+                class="item-display-card p-3 mb-3"
+            >
+
+                <div
+                    class="row align-items-center g-3"
+                >
+
+                    <!-- IMAGE -->
+
+                    <div
+                        class="col-md-7 col-sm-6 d-flex align-items-center"
+                    >
+
+                        <img
+                            src="{{ item.product.image.url }}"
+                            class="img-fluid item-thumb rounded"
+                            alt="{{ item.product.name }}"
+                        >
+
+                        <div class="ms-3">
+
+                            <h6 class="item-name mb-1">
+
+                                {{ item.product.name }}
+
+                            </h6>
+
+                            <p
+                                class="mb-0 x-small text-muted"
+                            >
+
+                                Variant:
+                                {{ item.variant.variant_value }}
+
+                            </p>
+
+                            <!-- ITEM STATUS -->
+
+                            {% if item.status == "Cancelled" %}
+
+                            <span
+                                class="badge bg-danger mt-2"
+                            >
+
+                                Cancelled
+
+                            </span>
+
+                            {% elif item.status == "Returned" %}
+
+                            <span
+                                class="badge bg-dark mt-2"
+                            >
+
+                                Returned
+
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    <!-- PRICE -->
+
+                    <div
+                        class="col-md-3 col-sm-4 text-sm-end text-md-center"
+                    >
+
+                        <div
+                            class="x-small text-muted mb-1"
+                        >
+
+                            Qty:
+                            {{ item.quantity }}
+
+                        </div>
+
+                        <span
+                            class="fw-bold fs-5"
+                        >
+
+                            ₹{{ item.total_price }}
+
+                        </span>
+
+                    </div>
+
+                    <!-- ACTIONS -->
+
+                    <div
+                        class="col-md-2 col-sm-2 text-end"
+                    >
+
+                        <!-- CANCEL -->
+
+{% if item.status == "Active" %}
+
+    {% if order.status == "Pending" or order.status == "Confirmed" %}
+
+    <a
+        href="#"
+        class="link-item-cancel text-danger fw-bold text-decoration-none"
+        data-bs-toggle="modal"
+        data-bs-target="#cancelItemModal"
+        data-url="{% url 'cancel_order_item' item.id %}"
+    >
+
+        Cancel
+
+    </a>
+
+    {% endif %}
+
+{% endif %}
+
+                        <!-- RETURN -->
+
+                        {% if order.status == "Delivered" %}
+
+                            {% if item.return_status == "Not Requested" %}
+
+                            <button
+                                class="btn btn-outline-dark btn-sm mt-2"
+                                data-bs-toggle="modal"
+                                data-bs-target="#returnModal{{ item.id }}"
+                            >
+
+                                Return
+
+                            </button>
+
+                            {% elif item.return_status == "Requested" %}
+
+                            <span class="badge bg-warning text-dark mt-2">
+
+                                Return Requested
+
+                            </span>
+
+                            {% elif item.return_status == "Approved" %}
+
+                            <span class="badge bg-success mt-2">
+
+                                Return Approved
+
+                            </span>
+
+                            {% elif item.return_status == "Rejected" %}
+
+                            <span class="badge bg-danger mt-2">
+
+                                Return Rejected
+
+                            </span>
+
+                            {% endif %}
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RETURN MODAL -->
+
+            <div
+                class="modal fade"
+                id="returnModal{{ item.id }}"
+                tabindex="-1"
+            >
+
+                <div class="modal-dialog modal-dialog-centered">
+
+                    <div class="modal-content rounded-4 border-0">
+
+                        <div class="modal-body p-5">
+
+                            <h4 class="fw-bold mb-4">
+
+                                Request Return
+
+                            </h4>
+
+                            <form
+                                method="POST"
+                                action="{% url 'request_return' item.id %}"
+                            >
+
+                                {% csrf_token %}
+
+                                <div class="mb-4">
+
+                                    <label class="form-label">
+
+                                        Return Reason
+
+                                    </label>
+
+                                    <textarea
+                                        name="reason"
+                                        class="form-control"
+                                        rows="4"
+                                        required
+                                    ></textarea>
+
+                                </div>
+
+                                <div class="d-flex justify-content-end gap-2">
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-light"
+                                        data-bs-dismiss="modal"
+                                    >
+
+                                        Cancel
+
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-dark"
+                                    >
+
+                                        Submit Request
+
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </section>
+
+    </main>
+
+</div>
+
+<!-- CANCEL ITEM MODAL -->
+
+<div
+    class="modal fade"
+    id="cancelItemModal"
+    tabindex="-1"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content premium-cancel-modal">
+
+            <div class="modal-body text-center p-5">
+
+                <div class="cancel-icon-wrapper mb-4">
+
+                    <i class="bi bi-x-circle"></i>
+
+                </div>
+
+                <h3 class="cancel-modal-title mb-3">
+
+                    Cancel Product?
+
+                </h3>
+
+                <p class="cancel-modal-text mb-4">
+
+                    Are you sure you want to cancel this product?
+
+                </p>
+
+                <div
+                    class="d-flex justify-content-center gap-3"
+                >
+
+                    <button
+                        type="button"
+                        class="btn btn-cancel-secondary"
+                        data-bs-dismiss="modal"
+                    >
+
+                        Keep Item
+
+                    </button>
+
+                    <a
+                        href="#"
+                        id="confirmCancelBtn"
+                        class="btn btn-cancel-primary"
+                    >
+
+                        Yes, Cancel
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ENTIRE ORDER CANCEL MODAL -->
+
+<div
+    class="modal fade"
+    id="cancelOrderModal"
+    tabindex="-1"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content premium-cancel-modal">
+
+            <div class="modal-body text-center p-5">
+
+                <div class="cancel-icon-wrapper mb-4">
+
+                    <i class="bi bi-exclamation-triangle"></i>
+
+                </div>
+
+                <h3 class="cancel-modal-title mb-3">
+
+                    Cancel Entire Order?
+
+                </h3>
+
+                <p class="cancel-modal-text mb-4">
+
+                    This will remove all items from your order
+                    and restore product stock.
+
+                </p>
+
+                <div
+                    class="d-flex justify-content-center gap-3"
+                >
+
+                    <button
+                        type="button"
+                        class="btn btn-cancel-secondary"
+                        data-bs-dismiss="modal"
+                    >
+
+                        Keep Order
+
+                    </button>
+
+                    <a
+                        href="#"
+                        id="confirmOrderCancelBtn"
+                        class="btn btn-cancel-primary"
+                    >
+
+                        Yes, Cancel
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

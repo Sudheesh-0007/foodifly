@@ -1,5 +1,6 @@
 from django.db import models
-from category.models import Category # Make sure this matches your category app import
+from category.models import Category 
+from cloudinary.models import CloudinaryField
 
 class Product(models.Model):
 
@@ -8,7 +9,7 @@ class Product(models.Model):
     slug = models.SlugField(max_length=200, unique=True) 
     description = models.TextField(blank=True)
 
-    image = models.ImageField(upload_to='products/', blank=True, null=True)
+    image = CloudinaryField('image', blank=True, null=True)
 
     averageRating = models.FloatField(default=0.0)
     reviewCount = models.IntegerField(default=0)
@@ -36,7 +37,7 @@ class Variant(models.Model):
     
 class ProductGallery(models.Model):
     product = models.ForeignKey(Product, default=None, on_delete=models.CASCADE, related_name='gallery_images')
-    image = models.ImageField(upload_to='store/products/gallery/', max_length=255)
+    image = CloudinaryField('image')
     is_main = models.BooleanField(default=False)
 
     def __str__(self):

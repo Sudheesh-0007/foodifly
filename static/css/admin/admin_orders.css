@@ -1,0 +1,527 @@
+/* =========================================
+   ORDER MANAGEMENT PAGE
+========================================= */
+
+.admin-orders-page {
+
+    --admin-dark-green: #0b3427;
+
+    --admin-gold: #c29d63;
+
+    --bg-workspace: #f8f7f4;
+
+    --border-color: #f1f0ea;
+
+    --text-dark: #0f1a1c;
+
+    background-color: var(--bg-workspace);
+
+    min-height: 100vh;
+
+    font-family: 'Inter', sans-serif;
+
+    color: #4a5456;
+}
+
+
+/* =========================================
+   PAGE HEADER
+========================================= */
+
+.admin-orders-page .registry-display-title {
+
+    font-weight: 700;
+
+    font-size: 2.8rem;
+
+    color: var(--admin-dark-green);
+
+    letter-spacing: -0.5px;
+}
+
+.admin-orders-page .text-gold {
+
+    color: var(--admin-gold);
+}
+
+
+/* =========================================
+   FILTER CARD
+========================================= */
+
+.admin-orders-page .filter-card {
+
+    background-color: #f3f2ed;
+
+    border-radius: 20px;
+}
+
+
+/* SEARCH INPUT */
+
+.admin-orders-page .input-group-custom {
+
+    background: white;
+
+    border-radius: 12px;
+
+    padding: 11px 14px;
+
+    display: flex;
+
+    align-items: center;
+
+    font-size: 0.85rem;
+
+    border: 1px solid #ece9e1;
+
+    transition: 0.2s ease;
+}
+
+.admin-orders-page .input-group-custom:focus-within {
+
+    border-color: var(--admin-dark-green);
+
+    box-shadow: 0 0 0 3px rgba(11, 52, 39, 0.06);
+}
+
+.admin-orders-page .input-group-custom input {
+
+    outline: none;
+
+    border: none;
+
+    background: transparent;
+
+    width: 100%;
+}
+
+
+/* FILTER SELECTS */
+
+.admin-orders-page .select-custom {
+
+    padding: 11px 14px;
+
+    border-radius: 12px;
+
+    font-size: 0.85rem;
+
+    border: 1px solid #ece9e1;
+
+    box-shadow: none;
+
+    transition: 0.2s ease;
+}
+
+.admin-orders-page .select-custom:focus {
+
+    border-color: var(--admin-dark-green);
+
+    box-shadow: none;
+}
+
+
+/* FILTER BUTTON */
+
+.admin-orders-page .btn-apply-refinement {
+
+    background-color: var(--admin-dark-green);
+
+    color: white;
+
+    border: none;
+
+    border-radius: 12px;
+
+    transition: 0.25s ease;
+
+    font-size: 0.85rem;
+
+    font-weight: 600;
+}
+
+.admin-orders-page .btn-apply-refinement:hover {
+
+    background-color: #051a13;
+
+    color: white;
+
+    transform: translateY(-1px);
+}
+
+
+/* CLEAR BUTTON */
+
+.admin-orders-page .btn-clear-filter {
+
+    border-radius: 12px;
+
+    font-size: 0.85rem;
+
+    font-weight: 600;
+
+    padding: 10px 18px;
+}
+
+
+/* =========================================
+   TABLE WRAPPER
+========================================= */
+
+.admin-orders-page .table-container {
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 22px;
+
+    overflow: hidden;
+
+    background: white;
+}
+
+
+/* =========================================
+   TABLE
+========================================= */
+
+.admin-orders-page table {
+
+    margin-bottom: 0;
+}
+
+.admin-orders-page thead th {
+
+    font-weight: 700;
+
+    color: #8c9698 !important;
+
+    font-size: 0.72rem;
+
+    letter-spacing: 1px;
+
+    border-bottom: 1px solid #f2f2f2;
+
+    padding-bottom: 18px;
+}
+
+.admin-orders-page tbody td {
+
+    padding-top: 18px;
+
+    padding-bottom: 18px;
+
+    vertical-align: middle;
+
+    border-bottom: 1px solid #f7f7f7;
+}
+
+.admin-orders-page tbody tr {
+
+    transition: 0.2s ease;
+}
+
+.admin-orders-page tbody tr:hover {
+
+    background-color: #faf9f6;
+}
+
+.admin-orders-page tbody tr:last-child td {
+
+    border-bottom: none;
+}
+
+
+/* =========================================
+   USER AVATAR
+========================================= */
+
+.admin-orders-page .avatar-initial {
+
+    width: 38px;
+
+    height: 38px;
+
+    border-radius: 50%;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 0.78rem;
+
+    font-weight: 700;
+}
+
+
+/* AVATAR COLORS */
+
+.admin-orders-page .bg-mint {
+
+    background-color: #e6f6f1;
+}
+
+.admin-orders-page .text-mint-dark {
+
+    color: #2ea37a;
+}
+
+.admin-orders-page .bg-cream {
+
+    background-color: #fbf3e6;
+}
+
+.admin-orders-page .text-cream-dark {
+
+    color: #d69838;
+}
+
+.admin-orders-page .bg-forest {
+
+    background-color: #e5eded;
+}
+
+.admin-orders-page .text-forest-light {
+
+    color: #2b5d5d;
+}
+
+.admin-orders-page .bg-coral {
+
+    background-color: #fdeded;
+}
+
+.admin-orders-page .text-coral-dark {
+
+    color: #db5a5a;
+}
+
+.admin-orders-page .bg-slate {
+
+    background-color: #eff1f3;
+}
+
+.admin-orders-page .text-slate-dark {
+
+    color: #72808d;
+}
+
+
+/* =========================================
+   PAYMENT BADGE
+========================================= */
+
+.admin-orders-page .badge-payment {
+
+    background-color: #f4f5f7;
+
+    color: #4a5456;
+
+    border-radius: 10px;
+
+    font-size: 0.75rem;
+
+    font-weight: 500;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 7px 13px;
+}
+
+.admin-orders-page .badge-payment i {
+
+    font-size: 0.85rem;
+
+    color: #7c888a;
+}
+
+
+/* =========================================
+   STATUS SELECT
+========================================= */
+
+.admin-orders-page .status-select {
+
+    border-radius: 12px;
+
+    border: 1px solid #e7e5df;
+
+    font-size: 0.78rem;
+
+    font-weight: 600;
+
+    min-width: 165px;
+
+    padding: 10px 14px;
+
+    background-color: #fff;
+
+    transition: 0.2s ease;
+}
+
+.admin-orders-page .status-select:focus {
+
+    border-color: var(--admin-dark-green);
+
+    box-shadow: none;
+}
+
+
+/* =========================================
+   VIEW DETAILS BUTTON
+========================================= */
+
+.admin-orders-page .btn-interaction {
+
+    color: #a87e43;
+
+    letter-spacing: 0.5px;
+
+    transition: 0.2s ease;
+
+    font-size: 0.78rem;
+}
+
+.admin-orders-page .btn-interaction:hover {
+
+    color: var(--admin-dark-green);
+}
+
+
+/* =========================================
+   PAGINATION
+========================================= */
+
+.admin-orders-page .custom-pagination .page-link {
+
+    border: none;
+
+    color: #111;
+
+    font-weight: 600;
+
+    font-size: 0.8rem;
+
+    margin: 0 3px;
+
+    border-radius: 10px;
+
+    background: transparent;
+
+    width: 38px;
+
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    transition: 0.2s ease;
+}
+
+.admin-orders-page .custom-pagination .page-item.active .page-link {
+
+    background-color: var(--admin-dark-green) !important;
+
+    color: white !important;
+}
+
+.admin-orders-page .custom-pagination .page-link:hover {
+
+    background-color: #ece9e1;
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.admin-orders-page .empty-orders {
+
+    padding: 80px 20px;
+
+    text-align: center;
+}
+
+.admin-orders-page .empty-orders i {
+
+    font-size: 3rem;
+
+    color: #d4d4d4;
+
+    margin-bottom: 18px;
+}
+
+.admin-orders-page .empty-orders h5 {
+
+    color: var(--text-dark);
+
+    font-weight: 600;
+}
+
+.admin-orders-page .empty-orders p {
+
+    color: #8c9698;
+
+    font-size: 0.9rem;
+}
+
+
+/* =========================================
+   UTILITIES
+========================================= */
+
+.admin-orders-page .x-small {
+
+    font-size: 0.7rem;
+}
+
+.admin-orders-page .tracking-wider {
+
+    letter-spacing: 1px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 992px) {
+
+    .admin-orders-page .registry-display-title {
+
+        font-size: 2rem;
+    }
+
+    .admin-orders-page .filter-card {
+
+        padding: 1.2rem !important;
+    }
+
+    .admin-orders-page .status-select {
+
+        min-width: 100%;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .admin-orders-page .table-container {
+
+        border-radius: 16px;
+    }
+
+    .admin-orders-page .btn-apply-refinement,
+    .admin-orders-page .btn-clear-filter {
+
+        width: 100%;
+    }
+
+}
