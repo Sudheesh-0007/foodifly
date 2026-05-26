@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
+from cloudinary.models import CloudinaryField
 
 
 class MyAccountManager(BaseUserManager):
@@ -76,7 +77,8 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(Account, on_delete=models.CASCADE)
     
-    profile_image = models.ImageField(upload_to='profile_pics/', default='default_avatar.png', blank=True)
+    profile_image = CloudinaryField('profile_image',folder='profile_pics/',  default='download_1_nlzcjs',blank=True,null=True)
+
 
     def __str__(self):
         return f'{self.user.email} Profile'

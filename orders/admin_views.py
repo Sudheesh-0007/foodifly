@@ -133,7 +133,7 @@ def admin_return_requests(request):
 
         return_items = return_items.filter(return_status=status)
 
-    paginator = Paginator(return_items, 10)
+    paginator = Paginator(return_items, 9)
 
     page = request.GET.get("page")
 
