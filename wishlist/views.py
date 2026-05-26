@@ -14,13 +14,13 @@ def add_to_wishlist(request):
 
         product_id = request.POST.get("product_id")
 
+        variant_id = request.POST.get("variant_id")
+
         if not product_id:
 
             messages.error(request, "Invalid product.")
 
             return redirect(request.META.get("HTTP_REFERER", "shop"))
-
-        
 
         product = get_object_or_404(
             Product,
@@ -30,20 +30,19 @@ def add_to_wishlist(request):
             isActive=True,
         )
 
-    
-        variant = Variant.objects.filter(product=product, is_active=True).first()
+        if not variant_id:
 
-        if not variant:
-
-            messages.error(request, "Variant unavailable.")
+            messages.error(request, "Please select a variant.")
 
             return redirect(request.META.get("HTTP_REFERER", "shop"))
 
-        
+        variant = get_object_or_404(
+            Variant, id=variant_id, product=product, is_active=True
+        )
 
         wishlist, created = Wishlist.objects.get_or_create(user=request.user)
 
-        exists = WishlistItem.objects.filter(
+        exists = WishlistItem.objects.filter(git 
             wishlist=wishlist, variant=variant
         ).exists()
 

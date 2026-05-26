@@ -2,6 +2,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q, Min
 from store.models import Product
 from category.models import Category
+from wishlist.models import WishlistItem
 from django.shortcuts import render, get_object_or_404, redirect
 
 
@@ -114,12 +115,21 @@ def product_detail(request, slug):
     #     .exclude(id=product.id)
     #     .annotate(starting_price=Min("variants__salePrice"))[:4]
     # )
+    wishlisted_variant_ids = []
+
+    if request.user.is_authenticated:
+
+        wishlisted_variant_ids = WishlistItem.objects.filter(
+            wishlist__user=request.user, product=product
+        ).values_list("variant_id", flat=True)
+
     context = {
         "product": product,
         "variants": variants,
         "gallery_images": gallery_images,
         "related_products": related_products,
         "selected_variant": selected_variant,
+       "wishlisted_variant_ids": wishlisted_variant_ids,
     }
 
     return render(request, "store/product_detail.html", context)

@@ -138,6 +138,13 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById(
             "wishlist-variant-id"
         );
+    const wishlistBtn =
+    document.querySelector(
+        ".wishlist-btn"
+    );
+
+const wishlistIcon =
+    wishlistBtn.querySelector("i");    
 
     // =========================
     // IMAGE THUMBNAIL SWITCH
@@ -368,6 +375,49 @@ variantButtons.forEach(button => {
 
             wishlistVariantInput.value =
                 variantId;
+            // =========================
+// WISHLIST VISUAL UPDATE
+// =========================
+
+const isWishlisted =
+    this.dataset.wishlisted;
+
+if (isWishlisted === "true") {
+
+    wishlistBtn.classList.remove(
+        "btn-outline-secondary"
+    );
+
+    wishlistBtn.classList.add(
+        "btn-danger"
+    );
+
+    wishlistIcon.classList.remove(
+        "bi-heart"
+    );
+
+    wishlistIcon.classList.add(
+        "bi-heart-fill"
+    );
+
+} else {
+
+    wishlistBtn.classList.remove(
+        "btn-danger"
+    );
+
+    wishlistBtn.classList.add(
+        "btn-outline-secondary"
+    );
+
+    wishlistIcon.classList.remove(
+        "bi-heart-fill"
+    );
+
+    wishlistIcon.classList.add(
+        "bi-heart"
+    );
+}    
         }
     );
 });

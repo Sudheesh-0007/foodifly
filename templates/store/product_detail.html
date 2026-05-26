@@ -164,26 +164,34 @@
                 <div class="d-flex gap-2 flex-wrap">
 
                     {% for variant in variants %}
+<button
 
-                    <button
-                        type="button"
-                        class="btn {% if variant.id == selected_variant.id %}btn-dark active{% else %}btn-outline-dark{% endif %} weight-btn variant-btn"
-                        data-variant-id="{{ variant.id }}"
-                        data-price="{{ variant.salePrice }}"
-                        data-stock="{{ variant.stock }}"
-                    >
+    type="button"
 
-                        {{ variant.variant_value }}
+    class="btn {% if variant.id == selected_variant.id %}btn-dark active{% else %}btn-outline-dark{% endif %} weight-btn variant-btn"
 
-                        {% if variant.stock <= 0 %}
+    data-variant-id="{{ variant.id }}"
 
-                        <small class="d-block">
-                            Out Of Stock
-                        </small>
+    data-price="{{ variant.salePrice }}"
 
-                        {% endif %}
+    data-stock="{{ variant.stock }}"
 
-                    </button>
+    data-wishlisted="{% if variant.id in wishlisted_variant_ids %}true{% else %}false{% endif %}"
+>
+
+    {{ variant.variant_value }}
+
+    {% if variant.stock <= 0 %}
+
+        <small class="d-block">
+
+            Out Of Stock
+
+        </small>
+
+    {% endif %}
+
+</button>
 
                     {% endfor %}
 
@@ -224,38 +232,38 @@
                 </form>
 
                 <!-- WISHLIST -->
+<form
+    method="POST"
+    action="{% url 'add_to_wishlist' %}"
+>
 
-                <form
-                    method="POST"
-                    action="{% url 'add_to_wishlist' %}"
-                >
+    {% csrf_token %}
 
-                    {% csrf_token %}
+    <input
+        type="hidden"
+        name="product_id"
+        value="{{ product.id }}"
+    >
 
-                    <input
-                        type="hidden"
-                        name="product_id"
-                        value="{{ product.id }}"
-                    >
+    <input
+        type="hidden"
+        name="variant_id"
+        id="wishlist-variant-id"
+        value="{{ selected_variant.id }}"
+    >
 
-                    <input
-                        type="hidden"
-                        name="variant_id"
-                        id="wishlist-variant-id"
-                        value="{% if selected_variant %}{{ selected_variant.id }}{% endif %}"
-                    >
+    <button
 
-                    <button
-                        type="submit"
-                        class="btn btn-outline-secondary px-3 h-100"
-                    >
+        type="submit"
 
-                        <i class="bi bi-heart"></i>
+        class="btn wishlist-btn px-3 h-100 {% if is_wishlisted %}btn-danger{% else %}btn-outline-secondary{% endif %}"
+    >
 
-                    </button>
+        <i class="bi {% if is_wishlisted %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
 
-                </form>
+    </button>
 
+</form>
             </div>
 
             <!-- FEATURES -->
