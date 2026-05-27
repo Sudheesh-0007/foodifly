@@ -201,35 +201,51 @@
 
             <!-- CART + WISHLIST -->
 
-            <div class="d-flex gap-2 mb-4">
+           <div class="d-flex gap-2 mb-4">
 
-                <!-- ADD TO CART -->
+    <!-- ADD TO CART -->
 
-                <form
-                    method="POST"
-                    action="{% url 'add_cart' product.id %}"
-                    class="flex-grow-1"
-                >
+    <form
+        method="POST"
+        action="{% url 'add_cart' product.id %}"
+        class="flex-grow-1"
+    >
 
-                    {% csrf_token %}
+        {% csrf_token %}
 
-                    <input
-                        type="hidden"
-                        name="variant_id"
-                        id="selected-variant-id"
-                        value="{% if selected_variant %}{{ selected_variant.id }}{% endif %}"
-                    >
+        <input
+            type="hidden"
+            name="variant_id"
+            id="selected-variant-id"
+            value="{% if selected_variant %}{{ selected_variant.id }}{% endif %}"
+        >
 
-                    <button
-                        type="submit"
-                        class="btn btn-dark add-to-cart-btn w-100"
-                    >
+        {% if is_available %}
 
-                        Add To Cart
+            <button
+                type="submit"
+                class="btn btn-dark add-to-cart-btn w-100"
+            >
 
-                    </button>
+                Add To Cart
 
-                </form>
+            </button>
+
+        {% else %}
+
+            <button
+                type="button"
+                class="btn btn-secondary w-100"
+                disabled
+            >
+
+                Currently Unavailable
+
+            </button>
+
+        {% endif %}
+
+    </form>
 
                 <!-- WISHLIST -->
 <form

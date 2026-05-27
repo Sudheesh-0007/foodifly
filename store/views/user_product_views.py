@@ -81,10 +81,11 @@ def shop(request):
 def product_detail(request, slug):
 
     product = get_object_or_404(
-        Product.objects.filter(is_deleted=False, isBlocked=False, isActive=True),
+        Product.objects.filter(is_deleted=False, isBlocked =False),
         slug=slug,
     )
     variants = product.variants.filter(is_active=True)
+    is_available = product.isActive
     selected_variant = variants.filter(stock__gt=0, is_active=True).first()
 
     if not variants.exists():
@@ -130,6 +131,7 @@ def product_detail(request, slug):
         "related_products": related_products,
         "selected_variant": selected_variant,
        "wishlisted_variant_ids": wishlisted_variant_ids,
+       "is_available": is_available,
     }
 
     return render(request, "store/product_detail.html", context)
