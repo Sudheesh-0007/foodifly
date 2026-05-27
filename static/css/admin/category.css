@@ -41,9 +41,9 @@
 
 .admin-category-page .btn-add-category {
 
-    background-color: var(--admin-dark-green);
+    background-color:black;
 
-    color: white;
+    color: rgb(255, 255, 255);
 
     border: none;
 
@@ -68,7 +68,7 @@
 
     background-color: var(--admin-dark-green-hover);
 
-    color: white;
+    color: rgb(15, 66, 45);
 
     transform: translateY(-1px);
 }
