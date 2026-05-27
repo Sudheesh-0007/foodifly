@@ -42,7 +42,7 @@ def add_to_wishlist(request):
 
         wishlist, created = Wishlist.objects.get_or_create(user=request.user)
 
-        exists = WishlistItem.objects.filter(git 
+        exists = WishlistItem.objects.filter(
             wishlist=wishlist, variant=variant
         ).exists()
 

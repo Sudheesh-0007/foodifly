@@ -152,8 +152,6 @@ def edit_product(request, product_id):
     variants = product.variants.all()
     gallery_images = product.gallery_images.all()
 
-
-
     if request.method == "POST":
 
         product.name = request.POST.get("name")
@@ -165,33 +163,73 @@ def edit_product(request, product_id):
 
         images = request.FILES.getlist("images")
 
-
         if images:
             product.image = images[0]
 
-        product.variants.all().delete()
+        variant_ids = request.POST.getlist("variant_ids[]")
+
         variant_values = request.POST.getlist("variant_values[]")
+
         variant_prices = request.POST.getlist("variant_prices[]")
+
         variant_stocks = request.POST.getlist("variant_stocks[]")
+
         variant_statuses = request.POST.getlist("variant_status[]")
 
-        for value, price, stock, status in zip(variant_values, variant_prices, variant_stocks, variant_statuses):
 
-            Variant.objects.create(
-                product=product,
-                variant_value=value,
-                salePrice=price,
-                stock=stock,
-                is_active=(status == "True"),
+        for index, (value, price, stock, status) in enumerate(
+
+            zip(
+
+                variant_values,
+
+                variant_prices,
+
+                variant_stocks,
+
+                variant_statuses
             )
+        ):
 
+            # EXISTING VARIANT
+
+            if index < len(variant_ids):
+
+                variant = Variant.objects.get(id=variant_ids[index])
+
+                variant.variant_value = value
+
+                variant.salePrice = price
+
+                variant.stock = stock
+
+                variant.is_active = (status == "True")
+
+                variant.save()
+
+            # NEW VARIANT
+
+            else:
+
+                Variant.objects.create(
+
+                    product=product,
+
+                    variant_value=value,
+
+                    salePrice=price,
+
+                    stock=stock,
+
+                    is_active=(status == "True"),
+                )
 
         deleted_images = request.POST.get("deleted_images")
         if deleted_images:
             deleted_image_ids = deleted_images.split(",")
             ProductGallery.objects.filter(
-                id__in=deleted_image_ids, product=product).delete()
-
+                id__in=deleted_image_ids, product=product
+            ).delete()
 
         if images:
 
@@ -200,7 +238,8 @@ def edit_product(request, product_id):
                 ProductGallery.objects.create(
                     product=product,
                     image=image,
-                    is_main=(existing_count == 0 and index == 0),)
+                    is_main=(existing_count == 0 and index == 0),
+                )
 
         product.save()
 
@@ -222,7 +261,7 @@ def edit_product(request, product_id):
 def delete_product(request, product_id):
     if not request.user.is_admin:
         return redirect("home")
-    
+
     product = get_object_or_404(Product, id=product_id, is_deleted=False)
     product.is_deleted = True
     product.isActive = False

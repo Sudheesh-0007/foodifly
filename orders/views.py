@@ -17,7 +17,6 @@ from django.db.models import Q
 
 @login_required(login_url="login")
 def checkout(request):
-
     total = Decimal("0.00")
     quantity = 0
     tax = Decimal("0.00")
@@ -33,18 +32,40 @@ def checkout(request):
             messages.warning(request, "Your cart is empty.")
             return redirect("cart")
 
-        for item in cart_items:
-            item.total_price = item.variant.salePrice * item.quantity
-            total += item.total_price
-            quantity += item.quantity
-
-        tax = total * Decimal("0.10")
-        shipping = Decimal("0.00")
-        grand_total = total + tax + shipping
-
         addresses = Address.objects.filter(user=request.user).order_by(
             "-is_default", "-id"
         )[:3]
+
+        for item in cart_items:
+
+            if item.variant.stock > 0 and item.quantity > item.variant.stock:
+
+                item.quantity = item.variant.stock
+
+                item.save()
+
+                messages.warning(
+                    request,
+                    f"{item.product.name} quantity adjusted to available stock.",
+                )
+
+        total = Decimal("0.00")
+
+        quantity = 0
+
+        for item in cart_items:
+
+            item.total_price = item.variant.salePrice * item.quantity
+
+            total += item.total_price
+
+            quantity += item.quantity
+
+        tax = total * Decimal("0.10")
+
+        shipping = Decimal("0.00")
+
+        grand_total = total + tax + shipping
 
         if request.method == "POST":
             try:
@@ -61,6 +82,27 @@ def checkout(request):
 
                 address = get_object_or_404(Address, id=address_id, user=request.user)
 
+                for item in cart_items:
+
+                    if item.variant.stock <= 0:
+
+                        messages.error(request, f"{item.product.name} is out of stock.")
+
+                        return redirect("cart")
+
+                    if item.quantity > item.variant.stock:
+
+                        item.quantity = item.variant.stock
+
+                        item.save()
+
+                        messages.warning(
+                            request,
+                            f"{item.product.name} quantity adjusted to available stock.",
+                        )
+
+                        return redirect("cart")
+
                 order = Order.objects.create(
                     user=request.user,
                     address=address,
@@ -73,13 +115,6 @@ def checkout(request):
                 )
 
                 for item in cart_items:
-                    if item.quantity > item.variant.stock:
-                        messages.error(
-                            request, f"Sorry, {item.product.name} is out of stock."
-                        )
-
-                        order.delete()
-                        return redirect("checkout")
 
                     OrderItem.objects.create(
                         order=order,
@@ -89,10 +124,11 @@ def checkout(request):
                         price=item.variant.salePrice,
                         total_price=(item.variant.salePrice * item.quantity),
                     )
+
                     item.variant.stock -= item.quantity
                     item.variant.save()
-
                 cart_items.delete()
+
                 messages.success(request, "Order placed successfully.")
                 return redirect("order_success", order_id=order.id)
 
@@ -237,9 +273,6 @@ def cancel_order(request, order_id):
             item.variant.stock += item.quantity
             item.variant.save()
 
-    # order.total_amount = Decimal("0.00")
-    # order.tax = Decimal("0.00")
-    # order.grand_total = Decimal("0.00")
     order.save()
 
     messages.success(request, "Order cancelled successfully.")

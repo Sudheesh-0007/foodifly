@@ -70,13 +70,22 @@
                     <!-- Bulletproof Flexbox Variant Row -->
 {% for variant in variants %}
 
+<input
+    type="hidden"
+    name="variant_ids[]"
+    value="{{ variant.id }}"
+>
+
 <div class="d-flex align-items-end gap-3 variant-row mb-3">
 
     <!-- VARIANT -->
+
     <div class="flex-fill">
 
         <label class="custom-label">
+
             Variant
+
         </label>
 
         <input
@@ -88,7 +97,6 @@
         >
 
     </div>
-
     <!-- PRICE -->
     <div class="flex-fill">
 

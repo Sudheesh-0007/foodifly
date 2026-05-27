@@ -98,6 +98,15 @@
                             </span>
 
                         </div>
+                        {% if item.variant.stock <= 0 %}
+
+<div class="alert alert-danger mt-2 py-2">
+
+    This item is currently out of stock.
+
+</div>
+
+{% endif %}
 
                         <!-- DESCRIPTION -->
 
@@ -122,6 +131,15 @@
                         </div>
 
                         {% endif %}
+                        {% if item.stock_issue %}
+
+<div class="alert alert-warning mt-2 py-2">
+
+    Only {{ item.variant.stock }} items available.
+
+</div>
+
+{% endif %}
 
                         <!-- QUANTITY -->
 
@@ -312,14 +330,29 @@
 
                 <!-- CHECKOUT -->
 
-                <a
-                    href="{% url 'checkout' %}"
-                    class="btn btn-acquire w-100 mb-3"
-                >
+{% if can_checkout %}
 
-                    COMPLETE ACQUISITION
+<a
+    href="{% url 'checkout' %}"
+    class="btn btn-dark w-100"
+>
 
-                </a>
+    Proceed To Checkout
+
+</a>
+
+{% else %}
+
+<button
+    class="btn btn-secondary w-100"
+    disabled
+>
+
+    Some Items Are Unavailable
+
+</button>
+
+{% endif %}
 
                 <p
                     class="text-center small text-muted text-uppercase ls-1 mb-0"
