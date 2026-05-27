@@ -7,6 +7,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
+from .decorators import admin_required
 
 @never_cache
 def admin_login(request):
@@ -14,7 +15,8 @@ def admin_login(request):
         if request.user.is_admin:
             return redirect('admin_user_management')
         else:
-            auth.logout(request)
+            messages.warning(request,"You are already logged in as a user.")
+            return redirect("home")
 
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -32,7 +34,7 @@ def admin_login(request):
     return render(request, 'admin_panel/admin_login.html')
 
 @never_cache
-@login_required(login_url='admin_login')
+@admin_required
 def admin_user_management(request):
 
     users_list = Account.objects.all().order_by('-date_joined')
