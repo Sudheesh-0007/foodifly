@@ -81,7 +81,14 @@
 
                     <h3 class="item-title mb-3">
 
-                        {{ item.product.product_name }}
+                                <a
+            href="{% url 'product_detail' item.product.slug %}"
+            class="text-decoration-none text-dark"
+        >
+
+            {{ item.product.name }}
+
+        </a>
 
                     </h3>
 

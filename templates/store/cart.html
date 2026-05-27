@@ -76,20 +76,27 @@
 
                             <div>
 
-                                <h5 class="item-name mb-1">
+    <h5 class="item-name mb-1">
 
-                                    {{ item.product.product_name }}
+        <a
+            href="{% url 'product_detail' item.product.slug %}"
+            class="text-decoration-none text-dark"
+        >
 
-                                </h5>
+            {{ item.product.name }}
 
-                                <small class="text-muted">
+        </a>
 
-                                    Variant:
-                                    {{ item.variant.variant_value }}
+    </h5>
 
-                                </small>
+    <small class="text-muted">
 
-                            </div>
+        Variant:
+        {{ item.variant.variant_value }}
+
+    </small>
+
+</div>
 
                             <span class="item-price">
 

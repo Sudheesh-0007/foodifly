@@ -27,8 +27,12 @@ def add_to_wishlist(request):
             id=product_id,
             is_deleted=False,
             isBlocked=False,
-            isActive=True,
         )
+        if not product.isActive:
+
+            messages.warning(request, "This product is currently unavailable.")
+
+            return redirect("product_detail", slug=product.slug)
 
         if not variant_id:
 
