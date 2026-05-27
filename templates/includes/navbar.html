@@ -1,82 +1,228 @@
 {% load static %}
+
 <nav class="navbar navbar-expand-lg bg-white border-bottom py-3">
+
     <div class="container">
-        <a class="navbar-brand brand-title-sm" href="{% url 'home' %}">Foodifly</a>
-        
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+
+        <!-- LOGO -->
+
+        <a
+            class="navbar-brand brand-title-sm"
+            href="{% url 'home' %}"
+        >
+
+            Foodifly
+
+        </a>
+
+        <!-- MOBILE TOGGLER -->
+
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+        >
+
             <span class="navbar-toggler-icon"></span>
+
         </button>
-        
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+
+        <!-- NAV LINKS -->
+
+        <div
+            class="collapse navbar-collapse justify-content-center"
+            id="navbarNav"
+        >
+
             <ul class="navbar-nav nav-links text-uppercase">
-                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url "shop" %}">Shop</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Recipes</a></li>
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="{% url 'home' %}"
+                    >
+
+                        Home
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="{% url 'shop' %}"
+                    >
+
+                        Shop
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="#"
+                    >
+
+                        Recipes
+
+                    </a>
+
+                </li>
+
             </ul>
+
         </div>
-        
+
+        <!-- RIGHT ICONS -->
+
         <div class="nav-icons d-flex gap-3 align-items-center">
-<form
-    action="{% url 'shop' %}"
-    method="GET"
-    class="d-flex align-items-center"
->
 
-    <input
-        type="text"
-        name="q"
-        class="form-control form-control-sm luxury-search"
-        placeholder="Search..."
-        value="{{ request.GET.q }}"
-    >
+            <!-- SEARCH -->
 
-    <button
-        type="submit"
-        class="btn btn-link text-dark p-0 ms-2"
-    >
+            <form
+                action="{% url 'shop' %}"
+                method="GET"
+                class="d-flex align-items-center"
+            >
 
-        <i class="bi bi-search"></i>
+                <input
+                    type="text"
+                    name="q"
+                    class="form-control form-control-sm luxury-search"
+                    placeholder="Search..."
+                    value="{{ request.GET.q }}"
+                >
 
-    </button>
+                <button
+                    type="submit"
+                    class="btn btn-link text-dark p-0 ms-2"
+                >
 
-</form>
-            
-            <a href="{% url "cart" %}" class="text-dark position-relative">
+                    <i class="bi bi-search"></i>
+
+                </button>
+
+            </form>
+
+            <!-- CART -->
+
+            <a
+                href="{% url 'cart' %}"
+                class="text-dark position-relative"
+            >
+
                 <i class="bi bi-cart2"></i>
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-gold">
+
+                <span
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-gold"
+                >
+
                     {{ cart_count|default:0 }}
+
                 </span>
+
             </a>
-            
-            <div class="dropdown">
-                <a href="#" class="text-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-person"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    {% if user.is_authenticated %}
-                        <li><a class="dropdown-item" href="{% url 'dashboard' %}">Account</a></li>
-                        <li>
-                            <a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a>
-                        </li>
-                    {% else %}
-                        <li><a class="dropdown-item" href="{% url 'login' %}">Sign In</a></li>
-                        <li><a class="dropdown-item" href="{% url 'register' %}">Register</a></li>
-                    {% endif %}
-                </ul>
-            </div>
+
             <!-- WISHLIST -->
 
-<a
+            <a
+                href="{% url 'wishlist_page' %}"
+                class="text-dark position-relative"
+            >
 
-    href="{% url 'wishlist_page' %}"
+                <i class="bi bi-heart"></i>
 
-    class="text-dark position-relative"
->
+            </a>
 
-    <i class="bi bi-heart"></i>
+            <!-- PROFILE -->
 
-</a>
-            
+            <div class="dropdown">
+
+                <a
+                    href="#"
+                    class="text-dark"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                >
+
+                    <i class="bi bi-person"></i>
+
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end">
+
+                    {% if user.is_authenticated %}
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'dashboard' %}"
+                            >
+
+                                Account
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a
+                                class="dropdown-item text-danger"
+                                href="{% url 'logout' %}"
+                            >
+
+                                Logout
+
+                            </a>
+
+                        </li>
+
+                    {% else %}
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'login' %}"
+                            >
+
+                                Sign In
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'register' %}"
+                            >
+
+                                Register
+
+                            </a>
+
+                        </li>
+
+                    {% endif %}
+
+                </ul>
+
+            </div>
+
         </div>
+
     </div>
+
 </nav>
