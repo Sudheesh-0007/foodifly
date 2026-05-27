@@ -1,7 +1,7 @@
-from django.shortcuts import render,redirect,get_object_or_404
-from .forms import RegistrationForm
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import RegistrationForm, AddressForm
 from .models import Account, UserProfile, Address
-from django.contrib import messages,auth
+from django.contrib import messages, auth
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
@@ -9,7 +9,7 @@ from django.views.decorators.cache import never_cache
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
@@ -21,285 +21,297 @@ from django.contrib.auth import update_session_auth_hash
 from .forms import UserForm, UserProfileForm
 
 
-
-
-# Create your views here.
-
 def register(request):
     if request.method == "POST":
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            phone_number = form.cleaned_data['phone_number']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
+            first_name = form.cleaned_data["first_name"]
+            last_name = form.cleaned_data["last_name"]
+            phone_number = form.cleaned_data["phone_number"]
+            email = form.cleaned_data["email"]
+            password = form.cleaned_data["password"]
             username = email.split("@")[0]
 
-            user =  Account.objects.create_user(first_name=first_name,last_name=last_name,email=email,username=username,password=password)
+            user = Account.objects.create_user(
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                username=username,
+                password=password,
+            )
             user.phone_number = phone_number
             user.save()
- # USER ACTIVATIONS
-            current_site = get_current_site(request)
-            mail_subject = 'Please activate your account' 
-            message      = render_to_string('accounts/account_varification_email.html',{
-                'user'  : user,
-                'domain': current_site,
-        # encoding the primary key for nobody can see the primary key        
-                'uid'   : urlsafe_base64_encode(force_bytes(user.pk)),
-                'token'  : default_token_generator.make_token(user),
 
-            })
-            to_email   = email
-            send_email = EmailMessage(mail_subject,message,to=[to_email])
+            current_site = get_current_site(request)
+            mail_subject = "Please activate your account"
+            message = render_to_string(
+                "accounts/account_varification_email.html",
+                {
+                    "user": user,
+                    "domain": current_site,
+                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                    "token": default_token_generator.make_token(user),
+                },
+            )
+            to_email = email
+            send_email = EmailMessage(mail_subject, message, to=[to_email])
             send_email.send()
-            messages.success(request, "Thank you for registering with us . we have sent you a varification email to your email address")
-            return redirect('login')
+            messages.success(
+                request,
+                "Thank you for registering with us . we have sent you a varification email to your email address",
+            )
+            return redirect("login")
 
     else:
         form = RegistrationForm()
 
     context = {
-        'form':form,
+        "form": form,
     }
-    return render(request,'accounts/register.html',context)
+    return render(request, "accounts/register.html", context)
 
 
 def login(request):
     if request.method == "POST":
-        email = request.POST['email']
-        password = request.POST['password']
+        email = request.POST["email"]
+        password = request.POST["password"]
 
-        user = auth.authenticate(email=email,password=password)
+        user = auth.authenticate(email=email, password=password)
 
         if user is not None:
-            auth.login(request,user)
-            return redirect('home')
+            auth.login(request, user)
+            return redirect("home")
         else:
-            messages.error(request,"Invalid login credentials")
-            return redirect('login')
+            messages.error(request, "Invalid login credentials")
+            return redirect("login")
+
+    return render(request, "accounts/login.html")
 
 
-    return render(request,'accounts/login.html')
-
-@login_required(login_url='login')
+@login_required(login_url="login")
 @never_cache
 def logout(request):
     auth.logout(request)
-    messages.success(request,"You are Logged Out")
+    messages.success(request, "You are Logged Out")
 
-    return redirect('login')
+    return redirect("login")
 
-def activate(request,uidb64,token):
+
+def activate(request, uidb64, token):
     try:
-        uid  = urlsafe_base64_decode(uidb64).decode()
+        uid = urlsafe_base64_decode(uidb64).decode()
         user = Account._default_manager.get(pk=uid)
 
-    except(TypeError,ValueError,OverflowError,Account.DoesNotExist):
+    except (TypeError, ValueError, OverflowError, Account.DoesNotExist):
         user = None
 
-    if user is not None and default_token_generator.check_token(user,token):
-        user.is_active=True
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
         user.save()
-        messages.success(request, 'Congratulations ! Your account is activated.')
-        return redirect('login')
-    else :
+        messages.success(request, "Congratulations ! Your account is activated.")
+        return redirect("login")
+    else:
         messages.error(request, "Invalid activation link")
-        return redirect('register')
-    
+        return redirect("register")
+
+
 def forgotPassword(request):
-    if request.method=="POST":
-        email=request.POST['email']
+    if request.method == "POST":
+        email = request.POST["email"]
         if Account.objects.filter(email=email).exists():
             user = Account.objects.get(email__exact=email)
 
             current_site = get_current_site(request)
-            mail_subject = 'Reset Your Password' 
-            message      = render_to_string('accounts/reset_password_email.html',{
-                'user'  : user,
-                'domain': current_site,
-                'uid'   : urlsafe_base64_encode(force_bytes(user.pk)),
-                'token'  : default_token_generator.make_token(user),
-
-            })
-            to_email   = email
-            send_email = EmailMessage(mail_subject,message,to=[to_email])
+            mail_subject = "Reset Your Password"
+            message = render_to_string(
+                "accounts/reset_password_email.html",
+                {
+                    "user": user,
+                    "domain": current_site,
+                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                    "token": default_token_generator.make_token(user),
+                },
+            )
+            to_email = email
+            send_email = EmailMessage(mail_subject, message, to=[to_email])
             send_email.send()
 
-            messages.success(request,"Password reset email has been send to your email address.")
-            return redirect('login')
+            messages.success(
+                request, "Password reset email has been send to your email address."
+            )
+            return redirect("login")
 
         else:
-            messages.error(request,"Account does not exist")
-            return  redirect('forgotPassword')
-   
+            messages.error(request, "Account does not exist")
+            return redirect("forgotPassword")
 
-    return render(request, 'accounts/forgotPassword.html')
+    return render(request, "accounts/forgotPassword.html")
 
-def resetpassword_validate(request,uidb64,token):
+
+def resetpassword_validate(request, uidb64, token):
     try:
-        uid  = urlsafe_base64_decode(uidb64).decode()
+        uid = urlsafe_base64_decode(uidb64).decode()
         user = Account._default_manager.get(pk=uid)
 
-    except(TypeError,ValueError,OverflowError,Account.DoesNotExist):
+    except (TypeError, ValueError, OverflowError, Account.DoesNotExist):
         user = None
 
-    if user is not None and default_token_generator.check_token(user,token):
-        request.session['uid'] = uid
-        messages.success(request , 'please reset your password')
-        return redirect('resetPassword')
+    if user is not None and default_token_generator.check_token(user, token):
+        request.session["uid"] = uid
+        messages.success(request, "please reset your password")
+        return redirect("resetPassword")
     else:
         messages.error(request, "this link has been expired")
-        return redirect('login')
+        return redirect("login")
+
 
 def resetPassword(request):
     if request.method == "POST":
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
-     
+        password = request.POST.get("password")
+        confirm_password = request.POST.get("confirm_password")
 
         if password == confirm_password:
-            uid  = request.session.get('uid')
-            try :
+            uid = request.session.get("uid")
+            try:
                 user = Account.objects.get(pk=uid)
             except Account.DoesNotExist:
                 messages.error(request, "Invalid user session")
-                return redirect ('login')
-            try :
-                validate_password(password,user=user)
-            except ValidationError as e :
+                return redirect("login")
+            try:
+                validate_password(password, user=user)
+            except ValidationError as e:
                 messages.error(request, e)
-                return redirect('resetPassword')
-                        
+                return redirect("resetPassword")
+
             user.set_password(password)
             user.save()
-            if 'uid' in request.session:
-                del request.session['uid']
+            if "uid" in request.session:
+                del request.session["uid"]
 
-            messages.success(request , 'Passwors reset is successful')
-            return redirect('login')
-
+            messages.success(request, "Passwors reset is successful")
+            return redirect("login")
 
         else:
-            messages.error(request,'password do not match!')
-            return redirect('resetPassword')        
+            messages.error(request, "password do not match!")
+            return redirect("resetPassword")
     else:
-        return render(request , 'accounts/resetPassword.html')
+        return render(request, "accounts/resetPassword.html")
 
 
 @receiver(pre_social_login)
 def activate_user_from_social(sender, request, sociallogin, **kwargs):
-   
+
     user = sociallogin.user
-    
+
     if user and user.id and not user.is_active:
         user.is_active = True
-        user.save()  
+        user.save()
 
 
-
-
-@login_required(login_url='login')
-@login_required(login_url='login')
+@login_required(login_url="login")
+@login_required(login_url="login")
 @never_cache
 def user_dashboard(request):
 
     default_address = Address.objects.filter(user=request.user, is_default=True).first()
-    
-    context = {
-        'default_address': default_address,
-    }
-    return render(request, 'accounts/user_dashboard.html', context)
 
-@login_required(login_url='login')
+    context = {
+        "default_address": default_address,
+    }
+    return render(request, "accounts/user_dashboard.html", context)
+
+
+@login_required(login_url="login")
 @never_cache
 def account_settings(request):
-    return render(request, 'accounts/account_settings.html')
+    return render(request, "accounts/account_settings.html")
 
 
-
-@login_required(login_url='login')
+@login_required(login_url="login")
 @never_cache
 def edit_email(request):
-    if request.method == 'POST':
-        
-        if 'new_email' in request.POST:
-            new_email = request.POST.get('new_email')
+    if request.method == "POST":
+
+        if "new_email" in request.POST:
+            new_email = request.POST.get("new_email")
 
             if new_email == request.user.email:
                 messages.info(request, "This is already your current email address.")
-                return redirect('edit_email')
+                return redirect("edit_email")
 
             if Account.objects.filter(email=new_email).exists():
-                messages.error(request, "This email address is already in use by another account.")
-                return redirect('edit_email')
+                messages.error(
+                    request, "This email address is already in use by another account."
+                )
+                return redirect("edit_email")
 
             user = request.user
             current_site = get_current_site(request)
-            mail_subject = 'Verify your new email address'
-            
+            mail_subject = "Verify your new email address"
+
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
             encoded_email = urlsafe_base64_encode(force_bytes(new_email))
-            
-            message = render_to_string('accounts/update_email_verification.html', {
-                'user': user,
-                'domain': current_site,
-                'uid': uid,
-                'token': token,
-                'encoded_email': encoded_email,
-            })
-            
+
+            message = render_to_string(
+                "accounts/update_email_verification.html",
+                {
+                    "user": user,
+                    "domain": current_site,
+                    "uid": uid,
+                    "token": token,
+                    "encoded_email": encoded_email,
+                },
+            )
+
             send_email = EmailMessage(mail_subject, message, to=[new_email])
             send_email.send()
 
-            messages.success(request, "A verification link has been sent to your new email address. Please click it to complete the update.")
-            return redirect('edit_email')
-     
-# password update
+            messages.success(
+                request,
+                "A verification link has been sent to your new email address. Please click it to complete the update.",
+            )
+            return redirect("edit_email")
 
-        elif 'old_password' in request.POST:
-            old_password = request.POST.get('old_password')
-            new_password = request.POST.get('new_password')
-            confirm_password = request.POST.get('confirm_password')
+        elif "old_password" in request.POST:
+            old_password = request.POST.get("old_password")
+            new_password = request.POST.get("new_password")
+            confirm_password = request.POST.get("confirm_password")
 
-           
             if not request.user.check_password(old_password):
                 messages.error(request, "Your old password was entered incorrectly.")
-                return redirect('edit_email')
+                return redirect("edit_email")
 
-           
             if new_password != confirm_password:
                 messages.error(request, "Your new passwords do not match.")
-                return redirect('edit_email')
-                
-            
-            if old_password == new_password:
-                messages.error(request, "Your new password must be different from your current one.")
-                return redirect('edit_email')
+                return redirect("edit_email")
 
-           
+            if old_password == new_password:
+                messages.error(
+                    request,
+                    "Your new password must be different from your current one.",
+                )
+                return redirect("edit_email")
+
             try:
-                
+
                 validate_password(new_password, request.user)
             except ValidationError as e:
-               
+
                 for error in e.messages:
                     messages.error(request, error)
-                return redirect('edit_email')
+                return redirect("edit_email")
 
-            
             user = request.user
             user.set_password(new_password)
             user.save()
 
-            
             update_session_auth_hash(request, user)
 
             messages.success(request, "Your password has been successfully updated.")
-            return redirect('edit_email')
+            return redirect("edit_email")
 
-    return render(request, 'accounts/edit_email.html')
+    return render(request, "accounts/edit_email.html")
 
 
 def update_email_validate(request, uidb64, token, encoded_email):
@@ -307,150 +319,198 @@ def update_email_validate(request, uidb64, token, encoded_email):
         uid = urlsafe_base64_decode(uidb64).decode()
         user = Account._default_manager.get(pk=uid)
         new_email = urlsafe_base64_decode(encoded_email).decode()
-    except(TypeError, ValueError, OverflowError, Account.DoesNotExist):
+    except (TypeError, ValueError, OverflowError, Account.DoesNotExist):
         user = None
 
-
     if user is not None and default_token_generator.check_token(user, token):
-        
+
         if Account.objects.filter(email=new_email).exists():
-            messages.error(request, "This email address was recently taken by another account.")
-            return redirect('account_settings')
+            messages.error(
+                request, "This email address was recently taken by another account."
+            )
+            return redirect("account_settings")
 
         user.email = new_email
         user.username = new_email.split("@")[0]
         user.save()
-        
-        messages.success(request, 'Your email address has been successfully updated!')
-        return redirect('account_settings')
-    else:
-        messages.error(request, "The email verification link is invalid or has expired.")
-        return redirect('account_settings')
 
-login_required(login_url='login')
+        messages.success(request, "Your email address has been successfully updated!")
+        return redirect("account_settings")
+    else:
+        messages.error(
+            request, "The email verification link is invalid or has expired."
+        )
+        return redirect("account_settings")
+
+
+login_required(login_url="login")
+
+
 def edit_profile(request):
     userprofile, created = UserProfile.objects.get_or_create(user=request.user)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         user_form = UserForm(request.POST, instance=request.user)
-        profile_form = UserProfileForm(request.POST, request.FILES, instance=userprofile)
+        profile_form = UserProfileForm(
+            request.POST, request.FILES, instance=userprofile
+        )
 
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            messages.success(request, 'Your profile has been successfully updated.')
-            return redirect('edit_profile')
+            messages.success(request, "Your profile has been successfully updated.")
+            return redirect("edit_profile")
     else:
         user_form = UserForm(instance=request.user)
         profile_form = UserProfileForm(instance=userprofile)
 
     context = {
-        'user_form': user_form,
-        'profile_form': profile_form,
-        'userprofile': userprofile,
+        "user_form": user_form,
+        "profile_form": profile_form,
+        "userprofile": userprofile,
     }
-    return render(request, 'accounts/edit_profile.html', context)
+    return render(request, "accounts/edit_profile.html", context)
 
-@login_required(login_url='login')
+
+@login_required(login_url="login")
 def manage_addresses(request):
 
-    addresses = Address.objects.filter(user=request.user).order_by('-is_default', '-id')[:3]
-    
+    addresses = Address.objects.filter(user=request.user).order_by(
+        "-is_default", "-id"
+    )[:3]
+
     context = {
-        'addresses': addresses,
+        "addresses": addresses,
     }
-    return render(request, 'accounts/manage_addresses.html', context)
+    return render(request, "accounts/manage_addresses.html", context)
 
-@login_required(login_url='login')
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+
+from .models import Address
+from .forms import AddressForm
+
+
+@login_required(login_url="login")
 def add_address(request):
-    if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        address_line_1 = request.POST.get('address_line_1')
-        phone = request.POST.get('phone')
-        city = request.POST.get('city')
-        postal_code = request.POST.get('postal_code')
-        district = request.POST.get('district')
-        state = request.POST.get('state')
-        country = request.POST.get('country')
-        
-        is_default = request.POST.get('is_default') == 'on' 
 
-     
-        if not Address.objects.filter(user=request.user).exists():
-            is_default = True
+    if request.method == "POST":
 
-        if is_default:
-            Address.objects.filter(user=request.user, is_default=True).update(is_default=False)
+        form = AddressForm(request.POST)
 
-        address = Address.objects.create(
-            user=request.user,
-            first_name=first_name,
-            last_name=last_name,
-            address_line_1=address_line_1,
-            phone=phone,
-            city=city,
-            postal_code=postal_code,
-            district=district,
-            state=state,
-            country=country,
-            is_default=is_default
-        )
-        address.save()
+        if form.is_valid():
 
-        messages.success(request, "New delivery address added successfully!")
+            address = form.save(commit=False)
 
-        next_page = request.GET.get("next")
-        if next_page == "checkout":
-            return redirect("checkout")
-        return redirect("address")
+            address.user = request.user
 
-    return render(request, 'accounts/add_address.html')
+            is_default = form.cleaned_data.get("is_default")
+
+            if not Address.objects.filter(user=request.user).exists():
+
+                is_default = True
+
+            if is_default:
+
+                Address.objects.filter(user=request.user, is_default=True).update(
+                    is_default=False
+                )
+
+            address.is_default = is_default
+
+            address.save()
+
+            messages.success(request, "New delivery address added successfully!")
+
+            next_page = request.GET.get("next")
+
+            if next_page == "checkout":
+
+                return redirect("checkout")
+
+            return redirect("address")
+
+        else:
+
+            for field, errors in form.errors.items():
+
+                for error in errors:
+
+                    messages.error(request, error)
+
+    else:
+
+        form = AddressForm()
+
+    context = {
+        "form": form,
+    }
+
+    return render(request, "accounts/add_address.html", context)
 
 
-
-@login_required(login_url='login')
+@login_required(login_url="login")
 def edit_address(request, id):
-    
+
     address = get_object_or_404(Address, id=id, user=request.user)
 
-    if request.method == 'POST':
-        address.first_name = request.POST.get('first_name')
-        address.last_name = request.POST.get('last_name')
-        address.address_line_1 = request.POST.get('address_line_1')
-        address.phone = request.POST.get('phone')
-        address.city = request.POST.get('city')
-        address.postal_code = request.POST.get('postal_code')
-        address.district = request.POST.get('district')
-        address.state = request.POST.get('state')
-        address.country = request.POST.get('country')
-        
-        is_default = request.POST.get('is_default') == 'on' 
+    if request.method == "POST":
 
-        if is_default:
-            Address.objects.filter(user=request.user, is_default=True).update(is_default=False)
+        form = AddressForm(request.POST, instance=address)
 
-        address.is_default = is_default
-        address.save()
+        if form.is_valid():
 
-        messages.success(request, "Delivery address updated successfully!")
-        
-        next_page = request.POST.get("next")
-        if next_page == "checkout":
-            return redirect("checkout")
-        return redirect("address")
+            address = form.save(commit=False)
 
+            is_default = form.cleaned_data.get("is_default")
+
+            if is_default:
+
+                Address.objects.filter(user=request.user, is_default=True).exclude(
+                    id=address.id
+                ).update(is_default=False)
+
+            address.is_default = is_default
+
+            address.save()
+
+            messages.success(request, "Delivery address updated successfully!")
+
+            next_page = request.POST.get("next")
+
+            if next_page == "checkout":
+
+                return redirect("checkout")
+
+            return redirect("address")
+
+        else:
+
+            for field, errors in form.errors.items():
+
+                for error in errors:
+
+                    messages.error(request, error)
+
+    else:
+
+        form = AddressForm(instance=address)
 
     context = {
-        'address': address,
+        "form": form,
+        "address": address,
     }
-    return render(request, 'accounts/edit_address.html', context)
 
-@login_required(login_url='login')
+    return render(request, "accounts/edit_address.html", context)
+
+
+@login_required(login_url="login")
 def delete_address(request, id):
     address = get_object_or_404(Address, id=id, user=request.user)
-    
+
     address.delete()
-    
+
     messages.success(request, "Delivery address deleted successfully.")
-    return redirect('address')
+    return redirect("address")
