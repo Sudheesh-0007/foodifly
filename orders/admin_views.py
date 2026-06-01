@@ -53,7 +53,9 @@ def admin_orders(request):
 def update_order_status(request, order_id):
 
     order = get_object_or_404(Order, id=order_id)
+
     if request.method == "POST":
+
         status = request.POST.get("status")
 
         valid_statuses = [
@@ -67,12 +69,23 @@ def update_order_status(request, order_id):
         if status not in valid_statuses:
 
             messages.error(request, "Invalid order status.")
+
             return redirect("admin_orders")
 
+        if status == "Cancelled" and order.status != "Cancelled":
+
+            for item in order.items.select_related("variant"):
+
+                item.variant.stock += item.quantity
+
+                item.variant.save()
+
         order.status = status
+
         order.save()
 
         messages.success(request, "Order status updated successfully.")
+
     return redirect("admin_orders")
 
 
