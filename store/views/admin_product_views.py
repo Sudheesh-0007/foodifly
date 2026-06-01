@@ -6,6 +6,8 @@ from django.contrib import messages
 from store.models import Product, Variant, ProductGallery
 from category.models import Category
 from django.utils.text import slugify
+from store.forms import ProductForm
+from django import forms
 
 
 @login_required(login_url="admin_login")
@@ -97,6 +99,26 @@ def add_product(request):
             return redirect("add_product")
 
         category = Category.objects.get(id=category_id)
+
+        variant_values = request.POST.getlist("variant_values[]")
+        variant_prices = request.POST.getlist("variant_prices[]")
+        variant_stocks = request.POST.getlist("variant_stocks[]")
+        variant_status = request.POST.getlist("variant_status[]")
+
+        try:
+
+            ProductForm().validate_variants(
+                variant_values,
+                variant_prices,
+                variant_stocks,
+                variant_status,
+            )
+
+        except forms.ValidationError as e:
+
+            messages.error(request, e.message)
+
+            return redirect("add_product")
         main_image = images[0]
 
         product = Product.objects.create(
@@ -112,10 +134,6 @@ def add_product(request):
             ProductGallery.objects.create(
                 product=product, image=image, is_main=(index == 0)
             )
-        variant_values = request.POST.getlist("variant_values[]")
-        variant_prices = request.POST.getlist("variant_prices[]")
-        variant_stocks = request.POST.getlist("variant_stocks[]")
-        variant_status = request.POST.getlist("variant_status[]")
 
         for vvalue, vprice, vstock, status in zip(
             variant_values,
@@ -158,7 +176,7 @@ def edit_product(request, product_id):
         product.slug = request.POST.get("slug")
         product.description = request.POST.get("description")
         category_id = request.POST.get("category")
-        product.category = Category.objects.get(id=category_id)
+        product.category = get_object_or_404(Category, id=category_id, is_deleted=False)
         product.isActive = request.POST.get("is_active") == "on"
 
         images = request.FILES.getlist("images")
@@ -167,35 +185,31 @@ def edit_product(request, product_id):
             product.image = images[0]
 
         variant_ids = request.POST.getlist("variant_ids[]")
-
         variant_values = request.POST.getlist("variant_values[]")
-
         variant_prices = request.POST.getlist("variant_prices[]")
-
         variant_stocks = request.POST.getlist("variant_stocks[]")
-
         variant_statuses = request.POST.getlist("variant_status[]")
 
+        try:
+
+            ProductForm().validate_variants(
+                variant_values,
+                variant_prices,
+                variant_stocks,
+                variant_statuses,
+            )
+
+        except forms.ValidationError as e:
+            messages.error(request, e.message)
+            return redirect("edit_product", product_id=product.id)
 
         for index, (value, price, stock, status) in enumerate(
-
-            zip(
-
-                variant_values,
-
-                variant_prices,
-
-                variant_stocks,
-
-                variant_statuses
-            )
+            zip(variant_values, variant_prices, variant_stocks, variant_statuses)
         ):
-
-            # EXISTING VARIANT
 
             if index < len(variant_ids):
 
-                variant = Variant.objects.get(id=variant_ids[index])
+                variant = get_object_or_404(Variant, id=variant_ids[index], product=product)
 
                 variant.variant_value = value
 
@@ -203,24 +217,17 @@ def edit_product(request, product_id):
 
                 variant.stock = stock
 
-                variant.is_active = (status == "True")
+                variant.is_active = status == "True"
 
                 variant.save()
-
-            # NEW VARIANT
 
             else:
 
                 Variant.objects.create(
-
                     product=product,
-
                     variant_value=value,
-
                     salePrice=price,
-
                     stock=stock,
-
                     is_active=(status == "True"),
                 )
 
