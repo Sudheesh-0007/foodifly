@@ -132,35 +132,27 @@
 
         <div class="col-md-4">
 
-            <div class="stat-card">
+    <div class="stat-card">
 
-                <div class="d-flex justify-content-between align-items-start">
+        <div class="d-flex justify-content-between align-items-start">
 
-                    <div>
+            <div>
 
-                        <p class="stat-title">
+                <p class="stat-title">
+                    Deleted Products
+                </p>
 
-                            Out of Stock
+                <h3 class="stat-value text-danger">
+                    {{ deleted_products }}
+                </h3>
 
-                        </p>
+            </div>
 
-                        <h3 class="stat-value text-danger">
+            <div
+                class="stat-icon bg-danger bg-opacity-10 text-danger"
+            >
 
-                            {{ out_of_stock|default:"0" }}
-
-                        </h3>
-
-                    </div>
-
-                    <div
-                        class="stat-icon bg-danger bg-opacity-10 text-danger"
-                    >
-
-                        <i class="bi bi-exclamation-triangle-fill"></i>
-
-                    </div>
-
-                </div>
+                <i class="bi bi-trash-fill"></i>
 
             </div>
 
@@ -168,6 +160,26 @@
 
     </div>
 
+</div>
+
+    </div>
+<div class="product-tabs">
+
+    <a
+        href="{% url 'admin_products' %}"
+        class="product-tab {% if not status %}active{% endif %}"
+    >
+        All Products
+    </a>
+
+    <a
+        href="{% url 'admin_products' %}?status=deleted"
+        class="product-tab {% if status == 'deleted' %}active{% endif %}"
+    >
+        Deleted
+    </a>
+
+</div>
     <!-- FILTER CARD -->
 
     <div class="filter-card p-4 mb-5">
@@ -394,8 +406,7 @@
 
                                     <p class="product-name mb-1">
 
-                                        {{ product.product.name }}
-
+                                      {{ product.name }}
                                     </p>
 
                                     <small class="product-meta">
@@ -515,43 +526,45 @@
 
                         <!-- ACTIONS -->
 
-                        <td class="text-end">
 
-                            {% if product.is_deleted %}
+<td class="text-end">
 
-                                <a
-                                    href="{% url 'restore_product' product.id %}"
-                                    class="btn btn-success btn-sm rounded-pill px-3"
-                                >
+    {% if product.is_deleted %}
 
-                                    Restore
+        <a
+            href="{% url 'restore_product' product.id %}"
+            class="btn btn-success btn-sm"
+            onclick="return confirm('Restore this product?')"
+        >
 
-                                </a>
+            Restore
 
-                            {% else %}
+        </a>
 
-                                <a
-                                    href="{% url 'edit_product' product.id %}"
-                                    class="action-btn me-2"
-                                    title="Edit"
-                                >
+    {% else %}
 
-                                    <i class="bi bi-pencil-fill"></i>
+        <a
+            href="{% url 'edit_product' product.id %}"
+            class="action-btn me-2"
+        >
 
-                                </a>
+            <i class="bi bi-pencil-fill"></i>
 
-                                <a
-                                    href="{% url 'delete_product' product.id %}"
-                                    class="action-btn"
-                                    title="Delete"
-                                    onclick="return confirm('Delete this product?')"
-                                >
+        </a>
 
-                                    <i class="bi bi-trash-fill"></i>
+        <a
+            href="{% url 'delete_product' product.id %}"
+            class="action-btn"
+            onclick="return confirm('Delete this product?')"
+        >
 
-                                </a>
+            <i class="bi bi-trash-fill"></i>
 
-                            {% endif %}
+        </a>
+
+    {% endif %}
+
+</td>
 
                         </td>
 

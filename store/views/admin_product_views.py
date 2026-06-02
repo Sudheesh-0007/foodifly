@@ -57,6 +57,7 @@ def product_management(request):
     total_products = Product.objects.filter(is_deleted=False).count()
 
     active_products = Product.objects.filter(is_deleted=False, isActive=True).count()
+    deleted_products = Product.objects.filter(is_deleted=True).count()
 
     out_of_stock = (
         Product.objects.annotate(active_stock=Sum("variants__stock"))
@@ -75,6 +76,9 @@ def product_management(request):
         "active_products": active_products,
         "out_of_stock": out_of_stock,
         "search_query": search_query,
+        "search_query": search_query,
+        "status": status,
+        "deleted_products": deleted_products,
     }
     return render(request, "admin_panel/product_management.html", context)
 
@@ -288,6 +292,8 @@ def restore_product(request, product_id):
     product.is_deleted = False
     product.isActive = True
     product.save()
+
+    product.variants.update(is_active=True)
 
     messages.success(request, "Product restored successfully.")
     return redirect("admin_products")
