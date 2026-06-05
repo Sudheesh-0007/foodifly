@@ -31,7 +31,8 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG =  os.getenv("DEBUG") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', 'localhost']
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
 
 
 # Application definition
@@ -222,3 +223,10 @@ SESSION_COOKIE_AGE = 1800
 SESSION_SAVE_EVERY_REQUEST = True
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+
+
+RAZORPAY_KEY_ID = "rzp_test_SxQKipX4UqqYSS"
+RAZORPAY_KEY_SECRET = "sQux32sMUEkkb1P66Fo8MV4E"
+
+

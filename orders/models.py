@@ -20,6 +20,13 @@ class Order(models.Model):
         ("WALLET", "Wallet"),
     )
 
+    PAYMENT_STATUS_CHOICES = (
+    ("Pending", "Pending"),
+    ("Paid", "Paid"),
+    ("Failed", "Failed"),
+    ("Refunded", "Refunded"),
+)
+
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
     order_number = models.CharField(max_length=20, unique=True)
@@ -31,6 +38,12 @@ class Order(models.Model):
     is_ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    payment_status = models.CharField(max_length=20,choices=PAYMENT_STATUS_CHOICES,default="Pending")
+
+    razorpay_order_id = models.CharField(max_length=200,blank=True,null=True)
+    razorpay_payment_id = models.CharField(max_length=200,blank=True,null=True)
+
 
     def __str__(self):
         return self.order_number

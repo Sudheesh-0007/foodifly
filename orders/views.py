@@ -14,6 +14,12 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.db.models import Q
 
+import razorpay
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
 
 @login_required(login_url="login")
 def checkout(request):
@@ -66,6 +72,7 @@ def checkout(request):
         shipping = Decimal("0.00")
 
         grand_total = total + tax + shipping
+        amount = int(grand_total * 100)
 
         if request.method == "POST":
             try:
@@ -102,38 +109,79 @@ def checkout(request):
                         )
 
                         return redirect("cart")
+                if payment_method == "COD":
 
-                order = Order.objects.create(
-                    user=request.user,
-                    address=address,
-                    order_number=str(uuid.uuid4()).split("-")[0].upper(),
-                    total_amount=total,
-                    tax=tax,
-                    grand_total=grand_total,
-                    payment_method=payment_method,
-                    is_ordered=True,
-                )
-
-                for item in cart_items:
-
-                    OrderItem.objects.create(
-                        order=order,
-                        product=item.product,
-                        variant=item.variant,
-                        quantity=item.quantity,
-                        price=item.variant.salePrice,
-                        total_price=(item.variant.salePrice * item.quantity),
+                    order = Order.objects.create(
+                        user=request.user,
+                        address=address,
+                        order_number=str(uuid.uuid4()).split("-")[0].upper(),
+                        total_amount=total,
+                        tax=tax,
+                        grand_total=grand_total,
+                        is_ordered=True,
+                        payment_method="COD",
+                        payment_status="Pending",
                     )
 
-                    item.variant.stock -= item.quantity
-                    item.variant.save()
-                cart_items.delete()
+                    for item in cart_items:
 
-                messages.success(request, "Order placed successfully.")
-                return redirect("order_success", order_id=order.id)
+                        OrderItem.objects.create(
+                            order=order,
+                            product=item.product,
+                            variant=item.variant,
+                            quantity=item.quantity,
+                            price=item.variant.salePrice,
+                            total_price=(item.variant.salePrice * item.quantity),
+                        )
+
+                        item.variant.stock -= item.quantity
+                        item.variant.save()
+                    cart_items.delete()
+
+                    messages.success(request, "Order placed successfully.")
+                    return redirect("order_success", order_id=order.id)
+
+                elif payment_method == "RAZORPAY":
+                    client = razorpay.Client(
+                        auth=(
+                            settings.RAZORPAY_KEY_ID,
+                            settings.RAZORPAY_KEY_SECRET,
+                        )
+                    )
+
+                    payment = client.order.create(
+                        {
+                            "amount": amount,
+                            "currency": "INR",
+                            "payment_capture": 1,
+                        }
+                    )
+
+                    request.session["checkout_data"] = {
+                        "address_id": address.id,
+                    }
+
+                    context = {
+                        "cart_items": cart_items,
+                        "addresses": addresses,
+                        "total": total,
+                        "tax": tax,
+                        "shipping": shipping,
+                        "grand_total": grand_total,
+                        "quantity": quantity,
+                        "razorpay_order_id": payment["id"],
+                        "razorpay_key": settings.RAZORPAY_KEY_ID,
+                        "razorpay_amount": amount,
+                    }
+
+                    return render(request, "orders/checkout.html", context)
 
             except Exception as e:
-                messages.error(request, "Order placement failed. Please try again.")
+
+                print("RAZORPAY ERROR:", e)
+
+                messages.error(request, str(e))
+
                 return redirect("checkout")
 
         context = {
@@ -153,13 +201,138 @@ def checkout(request):
         return redirect("shop")
 
     except Exception as e:
-        messages.error(request, "Something went wrong. Please try again.")
+        print("CHECKOUT ERROR:", e)
+        messages.error(request, str(e))
         return redirect("cart")
-
     except Cart.DoesNotExist:
 
         messages.warning(request, "Cart not found.")
         return redirect("shop")
+
+
+
+@csrf_exempt
+@login_required(login_url="login")
+def verify_payment(request):
+
+    if request.method == "POST":
+
+        print("VERIFY PAYMENT CALLED")
+
+        data = json.loads(request.body)
+
+        razorpay_order_id = data.get("razorpay_order_id")
+        razorpay_payment_id = data.get("razorpay_payment_id")
+        razorpay_signature = data.get("razorpay_signature")
+
+        client = razorpay.Client(
+            auth=(
+                settings.RAZORPAY_KEY_ID,
+                settings.RAZORPAY_KEY_SECRET,
+            )
+        )
+
+        try:
+
+            client.utility.verify_payment_signature(
+                {
+                    "razorpay_order_id": razorpay_order_id,
+                    "razorpay_payment_id": razorpay_payment_id,
+                    "razorpay_signature": razorpay_signature,
+                }
+            )
+
+            print("PAYMENT VERIFIED")
+
+            checkout_data = request.session.get("checkout_data")
+
+            if not checkout_data:
+
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": "Checkout session expired",
+                    }
+                )
+
+            address = Address.objects.get(
+                id=checkout_data["address_id"],
+                user=request.user,
+            )
+
+            cart = Cart.objects.get(user=request.user)
+
+            cart_items = CartItem.objects.filter(cart=cart)
+
+            total = Decimal("0.00")
+
+            for item in cart_items:
+
+                total += item.variant.salePrice * item.quantity
+
+            tax = total * Decimal("0.10")
+
+            grand_total = total + tax
+
+            order = Order.objects.create(
+                user=request.user,
+                address=address,
+                order_number=str(uuid.uuid4()).split("-")[0].upper(),
+                total_amount=total,
+                tax=tax,
+                grand_total=grand_total,
+                payment_method="RAZORPAY",
+                payment_status="Paid",
+                status="Confirmed",
+                is_ordered=True,
+                razorpay_order_id=razorpay_order_id,
+                razorpay_payment_id=razorpay_payment_id,
+            )
+
+            for item in cart_items:
+
+                OrderItem.objects.create(
+                    order=order,
+                    product=item.product,
+                    variant=item.variant,
+                    quantity=item.quantity,
+                    price=item.variant.salePrice,
+                    total_price=item.variant.salePrice * item.quantity,
+                )
+
+                item.variant.stock -= item.quantity
+
+                item.variant.save()
+
+            cart_items.delete()
+
+            if "checkout_data" in request.session:
+                del request.session["checkout_data"]
+
+            return JsonResponse(
+                {
+                    "success": True,
+                    "redirect_url": f"/orders/order-success/{order.id}/",
+                }
+            )
+
+        except Exception as e:
+
+            print("VERIFY PAYMENT ERROR:", e)
+
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": str(e),
+                }
+            )
+
+    return JsonResponse(
+        {
+            "success": False,
+            "error": "Invalid request",
+        }
+    )
 
 
 @login_required(login_url="login")
@@ -338,3 +511,25 @@ def request_return(request, item_id):
 
         messages.success(request, "Return request submitted successfully.")
     return redirect("order_details", order_id=order_item.order.id)
+
+
+@login_required(login_url="login")
+def payment_failed(request):
+
+    error = request.GET.get("error")
+    order_id = request.GET.get("order_id")
+
+    if order_id:
+        try:
+            order = Order.objects.get(id=order_id, user=request.user)
+
+            order.payment_status = "Failed"
+            order.status = "Failed"
+            order.save()
+
+        except Order.DoesNotExist:
+            pass
+
+    context = {"error": error}
+
+    return render(request, "orders/payment_failed.html", context)
