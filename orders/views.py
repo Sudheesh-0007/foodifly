@@ -20,6 +20,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
+from wallet.models import Wallet, WalletTransaction
+
 
 @login_required(login_url="login")
 def checkout(request):
@@ -431,13 +433,32 @@ def cancel_order(request, order_id):
 
     order = get_object_or_404(Order, id=order_id, user=request.user)
 
-    if order.status in ["Delivered", "Cancelled"]:
+    if order.status in ["Delivered", "Cancelled", "Returned"]:
         messages.error(request, "This order cannot be cancelled.")
         return redirect("order_details", order_id=order.id)
 
     order.status = "Cancelled"
 
     order_items = OrderItem.objects.filter(order=order)
+
+    if order.payment_method in ["RAZORPAY", "WALLET"]:
+        print("REFUND BLOCK EXECUTED")
+
+        wallet = Wallet.objects.get(
+            user=order.user
+        )
+        print("OLD BALANCE:", wallet.balance)
+        wallet.balance += order.grand_total
+
+        wallet.save()
+        print("NEW BALANCE:", wallet.balance)
+
+        WalletTransaction.objects.create(
+            wallet=wallet,
+            transaction_type="Credit",
+            amount=order.grand_total,
+            description=f"Refund for Order #{order.order_number}"
+        )
 
     for item in order_items:
         if item.status != "Cancelled":
@@ -468,6 +489,27 @@ def cancel_order_item(request, item_id):
 
     order_item.status = "Cancelled"
     order_item.save()
+    if order.payment_method in ["RAZORPAY", "WALLET"]:
+
+        refund_amount = order_item.total_price
+
+        wallet = Wallet.objects.get(
+            user=order.user
+        )
+
+        item_tax = order_item.total_price * Decimal("0.10")
+
+        refund_amount = order_item.total_price + item_tax
+        wallet.balance += refund_amount
+
+        wallet.save()
+
+        WalletTransaction.objects.create(
+            wallet=wallet,
+            transaction_type="Credit",
+            amount=refund_amount,
+            description=f"Refund for cancelled item - {order_item.product.name}"
+        )
     variant = order_item.variant
     variant.stock += order_item.quantity
     variant.save()
@@ -483,7 +525,10 @@ def cancel_order_item(request, item_id):
 
     if not active_items.exists():
         order.status = "Cancelled"
+        if order.payment_method in ["RAZORPAY", "WALLET"]:
+            order.payment_status = "Refunded"
     order.save()
+
 
     messages.success(request, "Item cancelled successfully.")
     return redirect("order_details", order_id=order.id)
