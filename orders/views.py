@@ -539,7 +539,7 @@ def request_return(request, item_id):
 
     order_item = get_object_or_404(OrderItem, id=item_id, order__user=request.user)
 
-    if order_item.order.status != "Delivered":
+    if order_item.order.status not in ["Delivered", "Returned"]:
         messages.error(request, "Only delivered items can be returned.")
         return redirect("order_details", order_id=order_item.order.id)
 

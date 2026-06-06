@@ -4,6 +4,9 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from django.db.models import Q
 from .models import Order, OrderItem
+from wallet.models import Wallet, WalletTransaction
+from decimal import Decimal
+
 
 
 @staff_member_required(login_url="admin_login")
@@ -182,12 +185,13 @@ def update_return_status(request, item_id):
 
             return redirect(request.META.get("HTTP_REFERER", "admin_return_requests"))
 
+        already_approved = order_item.return_status == "Approved"
+
         order_item.return_status = status
 
         if status == "Approved":
 
             order_item.variant.stock += order_item.quantity
-
             order_item.variant.save()
 
             order_item.status = "Returned"
@@ -196,13 +200,41 @@ def update_return_status(request, item_id):
 
         if status == "Approved":
 
+            if (
+                order_item.order.payment_method in ["RAZORPAY", "WALLET"]
+                and not already_approved
+            ):
+
+                item_tax = order_item.total_price * Decimal("0.10")
+
+                refund_amount = order_item.total_price + item_tax
+
+                wallet = Wallet.objects.get(user=order_item.order.user)
+
+                wallet.balance += refund_amount
+
+                wallet.save()
+
+                WalletTransaction.objects.create(
+                    wallet=wallet,
+                    transaction_type="Credit",
+                    amount=refund_amount,
+                    description=(f"Return refund - " f"{order_item.product.name}"),
+                )
+
             remaining_items = order_item.order.items.exclude(status="Returned").exists()
 
             if not remaining_items:
 
                 order_item.order.status = "Returned"
 
+                if order_item.order.payment_method in ["RAZORPAY", "WALLET"]:
+
+                    order_item.order.payment_status = "Refunded"
+
                 order_item.order.save()
+            elif order_item.order.status ==  "Delivered":
+                pass   
 
         messages.success(request, f"Return request {status.lower()} successfully.")
 
