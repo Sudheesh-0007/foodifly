@@ -1,0 +1,225 @@
+{% extends 'accounts/dashboard_base.html' %}
+{% load static %}
+
+{% block dashboard_css %}
+<link rel="stylesheet" href="{% static 'css/wallet.css' %}">
+{% endblock %}
+
+{% block dashboard_content %}
+{% include "includes/alerts.html" %}
+
+
+
+
+
+            <header class="mb-5">
+                <h1 class="display-title mb-2">My Wallet</h1>
+                <p class="text-muted small col-md-10 font-sans">
+                    Manage your digital assets and track your epicurean journey through our curated transaction history.
+                </p>
+            </header>
+
+            <div class="balance-card p-5 d-flex justify-content-between align-items-center mb-5 shadow-xs text-white">
+                <div>
+                    <span class="text-uppercase x-small text-gold-muted tracking-wider d-block mb-2">Available Wallet Balance</span>
+                    <h2 class="balance-amount display-4 fw-bold mb-0">
+    ₹{{ wallet.balance }}
+</h2>
+                </div>
+                {% comment %} <button class="btn btn-add-money px-4 py-2.5 rounded-2 fw-bold small">
+                    <i class="bi bi-plus-circle me-2"></i> ADD MONEY 
+                </button> {% endcomment %}
+            </div> 
+
+            <div class="transaction-section">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="section-heading mb-0">Transaction History</h3>
+<form method="GET">
+
+    <select
+        name="type"
+        class="form-select form-select-sm"
+        onchange="this.form.submit()"
+    >
+
+        <option value="">
+            All Transactions
+        </option>
+
+        <option value="Credit"
+            {% if selected_type == "Credit" %}
+                selected
+            {% endif %}
+        >
+            Credits
+        </option>
+
+        <option value="Debit"
+            {% if selected_type == "Debit" %}
+                selected
+            {% endif %}
+        >
+            Debits
+        </option>
+
+    </select>
+
+</form>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-borderless table-align-middle align-middle text-center mb-4">
+                        <thead>
+                           <tr class="text-uppercase text-muted x-small tracking-wider border-bottom border-light-subtle">
+    <th scope="col" class="py-3 text-start ps-4">Transaction ID</th>
+    <th scope="col" class="py-3">Date</th>
+    <th scope="col" class="py-3">Description</th>
+    <th scope="col" class="py-3">Type</th>
+    <th scope="col" class="py-3 text-end pe-4">Amount</th>
+</tr>
+                        </thead>
+                        <tbody>
+
+{% for transaction in transactions %}
+
+<tr class="border-bottom border-light-subtle">
+
+    <td class="py-3 text-start ps-4 text-dark-title small">
+        #TXN-{{ transaction.id }}
+    </td>
+
+    <td class="text-muted small">
+        {{ transaction.created_at|date:"d M Y" }}
+    </td>
+
+    <td class="small">
+        {{ transaction.description }}
+    </td>
+
+    <td>
+
+        {% if transaction.transaction_type == "Credit" %}
+
+            <span class="badge-type type-credit">
+                CREDIT
+            </span>
+
+        {% else %}
+
+            <span class="badge-type type-debit">
+                DEBIT
+            </span>
+
+        {% endif %}
+
+    </td>
+
+    <td class="text-end pe-4 fw-bold">
+
+        {% if transaction.transaction_type == "Credit" %}
+
+            <span class="text-success">
+                +₹{{ transaction.amount }}
+            </span>
+
+        {% else %}
+
+            <span class="text-danger">
+                -₹{{ transaction.amount }}
+            </span>
+
+        {% endif %}
+
+    </td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+    <td colspan="5" class="text-center py-5 text-muted">
+        No wallet transactions found.
+    </td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+                    </table>
+                </div>
+
+                <nav class="mt-5">
+{% if transactions.has_other_pages %}
+
+<nav class="mt-5">
+
+    <ul class="pagination custom-pagination justify-content-center">
+
+        {% if transactions.has_previous %}
+
+        <li class="page-item">
+
+            <a
+                class="page-link"
+                href="?page={{ transactions.previous_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}"
+            >
+                <i class="bi bi-chevron-left"></i>
+            </a>
+
+        </li>
+
+        {% endif %}
+
+        {% for num in transactions.paginator.page_range %}
+
+            {% if transactions.number == num %}
+
+                <li class="page-item active">
+
+                    <span class="page-link">
+                        {{ num }}
+                    </span>
+
+                </li>
+
+            {% else %}
+
+                <li class="page-item">
+
+                    <a
+                        class="page-link"
+                        href="?page={{ num }}{% if selected_type %}&type={{ selected_type }}{% endif %}"
+                    >
+                        {{ num }}
+                    </a>
+
+                </li>
+
+            {% endif %}
+
+        {% endfor %}
+
+        {% if transactions.has_next %}
+
+        <li class="page-item">
+
+            <a
+                class="page-link"
+                href="?page={{ transactions.next_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}"
+            >
+                <i class="bi bi-chevron-right"></i>
+            </a>
+
+        </li>
+
+        {% endif %}
+
+    </ul>
+
+</nav>
+
+{% endif %}
+                </nav>
+            </div>
+
+{% endblock %}

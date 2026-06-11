@@ -20,6 +20,9 @@ from allauth.socialaccount.signals import pre_social_login
 from django.contrib.auth import update_session_auth_hash
 from .forms import UserForm, UserProfileForm
 
+from .models import Address
+from .forms import AddressForm
+
 
 def register(request):
     if request.method == "POST":
@@ -385,12 +388,6 @@ def manage_addresses(request):
     return render(request, "accounts/manage_addresses.html", context)
 
 
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
-
-from .models import Address
-from .forms import AddressForm
 
 
 @login_required(login_url="login")

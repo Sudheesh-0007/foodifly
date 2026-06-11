@@ -1,0 +1,154 @@
+:root {
+    --foodifly-green: #0a2d21;
+    --foodifly-gold-dark: #7d652a;
+    --foodifly-gold-light: #c5a47e;
+    --light-bg: #fdfbf7;
+    --text-dark: #12191a;
+    
+    /* Type Colors */
+    --bg-credit: #d4f3e6;
+    --text-credit: #147246;
+    --bg-debit: #0f2c22;
+}
+
+body {
+    background-color: var(--light-bg);
+    font-family: 'Inter', sans-serif;
+}
+
+.display-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    color: var(--foodifly-green);
+}
+
+.section-heading {
+    font-family: 'Playfair Display', serif;
+    color: var(--foodifly-green);
+    font-size: 1.6rem;
+}
+
+/* Account Navigation Panel Styling */
+.account-heading {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--foodifly-green);
+}
+
+.account-nav .nav-link {
+    color: #555;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    transition: 0.2s ease;
+}
+
+.account-nav .nav-link i {
+    margin-right: 15px;
+    font-size: 1.15rem;
+}
+
+.account-nav .nav-link.active {
+    background-color: var(--foodifly-green);
+    color: white;
+    border-radius: 6px;
+}
+
+.logout-link {
+    color: #ba2525 !important;
+    font-weight: 600;
+}
+
+/* Available Balance Card Framework */
+.balance-card {
+    background-color: var(--foodifly-green);
+    border-radius: 12px;
+}
+
+.balance-amount {
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.5px;
+}
+
+.text-gold-muted {
+    color: rgba(197, 164, 126, 0.6);
+}
+
+.btn-add-money {
+    background-color: var(--foodifly-gold-dark);
+    color: white;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.btn-add-money:hover {
+    background-color: #5d4a1d;
+}
+
+/* Transaction Log Table Custom Design */
+.text-dark-title {
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+thead th {
+    font-weight: 700;
+    color: #8fa09b !important;
+}
+
+tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+tbody tr:hover {
+    background-color: rgba(0,0,0,0.01);
+}
+
+/* Transaction Micro Type Badges */
+.badge-type {
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    display: inline-block;
+}
+
+.type-credit {
+    background-color: var(--bg-credit);
+    color: var(--text-credit);
+}
+
+.type-debit {
+    background-color: var(--bg-debit);
+    color: white;
+}
+
+/* Micro-copy Navigation Pagination Component */
+.custom-pagination .page-link {
+    border: none;
+    color: #111;
+    font-weight: 500;
+    font-size: 0.85rem;
+    margin: 0 4px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50% !important;
+    background: transparent;
+}
+
+.custom-pagination .page-item.active .page-link {
+    background-color: #111 !important;
+    color: white !important;
+}
+
+.elipsis {
+    cursor: default;
+}
+
+.x-small { font-size: 0.72rem; }
+.tracking-wider { letter-spacing: 1px; }

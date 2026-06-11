@@ -6,8 +6,8 @@ from django.db.models import Q
 from .models import Order, OrderItem
 from wallet.models import Wallet, WalletTransaction
 from decimal import Decimal
-
-
+from accounts.models import Account
+import uuid
 
 @staff_member_required(login_url="admin_login")
 def admin_orders(request):
@@ -220,6 +220,7 @@ def update_return_status(request, item_id):
                     transaction_type="Credit",
                     amount=refund_amount,
                     description=(f"Return refund - " f"{order_item.product.name}"),
+                    transaction_id=f"TXN-{uuid.uuid4().hex[:8].upper()}",
                 )
 
             remaining_items = order_item.order.items.exclude(status="Returned").exists()

@@ -178,6 +178,61 @@ def checkout(request):
 
                     return render(request, "orders/checkout.html", context)
 
+                elif payment_method == "WALLET":
+
+                    wallet = Wallet.objects.get(user=request.user)
+
+                    if wallet.balance < grand_total:
+
+                        messages.error(request, "Insufficient wallet balance.")
+
+                        return redirect("checkout")
+
+                    wallet.balance -= grand_total
+
+                    wallet.save()
+
+                    order = Order.objects.create(
+                        user=request.user,
+                        address=address,
+                        order_number=str(uuid.uuid4()).split("-")[0].upper(),
+                        total_amount=total,
+                        tax=tax,
+                        grand_total=grand_total,
+                        payment_method="WALLET",
+                        payment_status="Paid",
+                        status="Confirmed",
+                        is_ordered=True,
+                    )
+
+                    WalletTransaction.objects.create(
+                        wallet=wallet,
+                        transaction_type="Debit",
+                        amount=grand_total,
+                        description=f"Wallet payment for Order #{order.order_number}",
+                    )
+
+                    for item in cart_items:
+
+                        OrderItem.objects.create(
+                            order=order,
+                            product=item.product,
+                            variant=item.variant,
+                            quantity=item.quantity,
+                            price=item.variant.salePrice,
+                            total_price=item.variant.salePrice * item.quantity,
+                        )
+
+                        item.variant.stock -= item.quantity
+
+                        item.variant.save()
+
+                    cart_items.delete()
+
+                    messages.success(request, "Order placed using Wallet.")
+
+                    return redirect("order_success", order_id=order.id)
+
             except Exception as e:
 
                 print("RAZORPAY ERROR:", e)
@@ -185,6 +240,7 @@ def checkout(request):
                 messages.error(request, str(e))
 
                 return redirect("checkout")
+        wallet, created = Wallet.objects.get_or_create(user=request.user)
 
         context = {
             "cart_items": cart_items,
@@ -194,6 +250,7 @@ def checkout(request):
             "shipping": shipping,
             "grand_total": grand_total,
             "quantity": quantity,
+            "wallet": wallet,
         }
 
         return render(request, "orders/checkout.html", context)
@@ -210,7 +267,6 @@ def checkout(request):
 
         messages.warning(request, "Cart not found.")
         return redirect("shop")
-
 
 
 @csrf_exempt
@@ -444,9 +500,7 @@ def cancel_order(request, order_id):
     if order.payment_method in ["RAZORPAY", "WALLET"]:
         print("REFUND BLOCK EXECUTED")
 
-        wallet = Wallet.objects.get(
-            user=order.user
-        )
+        wallet = Wallet.objects.get(user=order.user)
         print("OLD BALANCE:", wallet.balance)
         wallet.balance += order.grand_total
 
@@ -457,7 +511,8 @@ def cancel_order(request, order_id):
             wallet=wallet,
             transaction_type="Credit",
             amount=order.grand_total,
-            description=f"Refund for Order #{order.order_number}"
+            description=f"Refund for Order #{order.order_number}",
+            transaction_id=f"TXN-{uuid.uuid4().hex[:8].upper()}",
         )
 
     for item in order_items:
@@ -493,9 +548,7 @@ def cancel_order_item(request, item_id):
 
         refund_amount = order_item.total_price
 
-        wallet = Wallet.objects.get(
-            user=order.user
-        )
+        wallet = Wallet.objects.get(user=order.user)
 
         item_tax = order_item.total_price * Decimal("0.10")
 
@@ -508,7 +561,8 @@ def cancel_order_item(request, item_id):
             wallet=wallet,
             transaction_type="Credit",
             amount=refund_amount,
-            description=f"Refund for cancelled item - {order_item.product.name}"
+            description=f"Refund for cancelled item - {order_item.product.name}",
+            transaction_id=f"TXN-{uuid.uuid4().hex[:8].upper()}",
         )
     variant = order_item.variant
     variant.stock += order_item.quantity
@@ -528,7 +582,6 @@ def cancel_order_item(request, item_id):
         if order.payment_method in ["RAZORPAY", "WALLET"]:
             order.payment_status = "Refunded"
     order.save()
-
 
     messages.success(request, "Item cancelled successfully.")
     return redirect("order_details", order_id=order.id)
