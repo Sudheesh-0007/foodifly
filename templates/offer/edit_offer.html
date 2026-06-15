@@ -1,0 +1,241 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+
+{% block admin_css %}
+<link rel="stylesheet" href="{% static 'css/admin/create_offer.css' %}">
+{% endblock %}
+
+{% block admin_content %}
+<div class="content-body">
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <span class="text-uppercase x-small text-gold fw-bold tracking-wider mb-1 d-block">Campaign Management</span>
+            <h1 class="registry-display-title">Edit offer</h1>
+        </div>
+        <span class="x-small text-muted text-end fw-medium mt-2">Step 1 of 2: Details & Media</span>
+    </div>
+
+    <form id="createOfferForm" method="POST" action="">
+        {% csrf_token %}
+        <div class="form-card p-5 mb-4 border-0 rounded-4 shadow-xs bg-white">
+            
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label-custom">Offer Title</label>
+                    <input
+    type="text"
+    name="name"
+    value="{{ offer.name }}"
+    class="form-control input-custom"
+    required
+>
+                </div>
+<div class="col-md-3">
+
+    <label class="form-label-custom">
+        Offer Type
+    </label>
+
+    <select
+        name="offer_type"
+        class="form-select select-custom"
+        required
+    >
+
+        <option
+            value="PRODUCT"
+            {% if offer.offer_type == "PRODUCT" %}
+            selected
+            {% endif %}
+        >
+            Product Offer
+        </option>
+
+        <option
+            value="CATEGORY"
+            {% if offer.offer_type == "CATEGORY" %}
+            selected
+            {% endif %}
+        >
+            Category Offer
+        </option>
+
+    </select>
+
+</div>                
+                <div class="col-md-3">
+                    <label class="form-label-custom">Offer Type</label>
+                  <select name="discount_type" class="form-select select-custom" required>
+
+    <option value="PERCENTAGE"
+        {% if offer.discount_type == "PERCENTAGE" %}selected{% endif %}>
+        Percentage Discount
+    </option>
+
+    <option value="FIXED"
+        {% if offer.discount_type == "FIXED" %}selected{% endif %}>
+        Fixed Amount Discount
+    </option>
+
+</select>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-3">
+                <div class="col-md-4">
+                    <label class="form-label-custom">Discount Value</label>
+                    <div class="input-group input-group-custom">
+<input
+    type="number"
+    step="0.01"
+    name="discount_value"
+    value="{{ offer.discount_value }}"
+    class="form-control border-0 bg-transparent shadow-none"
+    required
+>
+                        <span class="input-group-text border-0 bg-transparent text-muted fw-medium font-sans">%</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label-custom">Start Date</label>
+<input
+    type="date"
+    name="start_date"
+    value="{{ offer.start_date|date:'Y-m-d' }}"
+    class="form-control input-custom"
+    required
+>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label-custom">End Date</label>
+<input
+    type="date"
+    name="end_date"
+    value="{{ offer.end_date|date:'Y-m-d' }}"
+    class="form-control input-custom"
+    required
+>
+                </div>
+            </div>
+
+<div class="col-md-4">
+
+    <label class="form-label-custom">
+        Offer Status
+    </label>
+
+    <div class="form-check form-switch mt-2">
+
+        <input
+            class="form-check-input"
+            type="checkbox"
+            name="is_active"
+            id="isActiveSwitch"
+
+            {% if offer.is_active %}
+            checked
+            {% endif %}
+        >
+
+        <label
+            class="form-check-label"
+            for="isActiveSwitch"
+        >
+
+            {% if offer.is_active %}
+                Active
+            {% else %}
+                Inactive
+            {% endif %}
+
+        </label>
+
+    </div>
+
+</div>
+<div
+    class="mb-4"
+    {% if offer.offer_type == "PRODUCT" %}
+    style="display:none;"
+    {% endif %}
+>
+    <label class="form-label-custom">
+        Applicable Category
+    </label>
+
+    <select
+        name="category"
+        class="form-select select-custom"
+    >
+
+        <option value="">
+            Select Category
+        </option>
+
+        {% for category in categories %}
+
+        <option
+            value="{{ category.id }}"
+            {% if offer.category and offer.category.id == category.id %}
+            selected
+            {% endif %}
+        >
+            {{ category.category_name }}
+        </option>
+
+        {% endfor %}
+
+    </select>
+
+</div>
+    
+<div
+    class="mb-4"
+    {% if offer.offer_type == "CATEGORY" %}
+    style="display:none;"
+    {% endif %}
+>
+    <label class="form-label-custom">
+        Applicable Product
+    </label>
+
+    <select
+        name="product"
+        class="form-select select-custom"
+    >
+
+        <option value="">
+            Select Product
+        </option>
+
+        {% for product in products %}
+
+        <option
+            value="{{ product.id }}"
+            {% if offer.product and offer.product.id == product.id %}
+            selected
+            {% endif %}
+        >
+            {{ product.name }}
+        </option>
+
+        {% endfor %}
+
+    </select>
+
+</div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center pt-3 actions-footer">
+
+            <button type="submit" class="btn btn-publish px-4 py-2.5 rounded-3 fw-bold small">
+                Publish Offer <i class="bi bi-send-fill ms-2 small"></i>
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block admin_js %}
+<script src="{% static 'js/admin/create_offer.js' %}" defer></script>
+{% endblock %}

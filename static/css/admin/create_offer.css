@@ -1,0 +1,115 @@
+:root {
+    --admin-dark-green: #0b3427;
+    --admin-gold: #c29d63;
+    --text-dark: #0f1a1c;
+    --input-bg: #f3f2ed;
+    --alert-pink: #fdf5f5;
+    --alert-pink-border: #f5d6d6;
+    --alert-pink-text: #a65151;
+}
+
+/* Typography Headings Base */
+.registry-display-title {
+    font-weight: 700;
+    font-size: 2.8rem;
+    color: var(--admin-dark-green);
+    letter-spacing: -0.5px;
+}
+.text-gold { color: var(--admin-gold); }
+
+/* Custom Form Element Structuring */
+.form-label-custom {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #8c9698;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.6rem;
+    display: block;
+}
+
+.input-custom, .select-custom, .input-group-custom {
+    background-color: var(--input-bg) !important;
+    border: 1px solid transparent !important;
+    border-radius: 10px !important;
+    padding: 12px 16px !important;
+    font-size: 0.9rem;
+    color: var(--text-dark) !important;
+    font-weight: 500;
+    box-shadow: none !important;
+}
+
+.input-custom::placeholder {
+    color: #a09f98 !important;
+    font-weight: 400;
+}
+
+.input-group-custom {
+    display: flex;
+    align-items: center;
+    padding: 0 16px !important;
+}
+.input-group-custom input {
+    padding: 12px 0 !important;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+}
+
+/* Interactive custom styled selection strips (pinkish alert outlines) */
+.custom-dropdown-selector {
+    background-color: var(--alert-pink);
+    border: 1px solid var(--alert-pink-border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.custom-dropdown-selector:hover {
+    background-color: #fbeaea;
+}
+.custom-dropdown-selector .placeholder-text {
+    color: var(--alert-pink-text);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.custom-dropdown-selector i {
+    color: var(--alert-pink-text);
+}
+
+/* Native Calendar Date Pickers layout modifiers */
+.icon-date-override {
+    position: relative;
+}
+.icon-date-override::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+    height: auto;
+}
+
+/* Interactive Submission Action buttons */
+.btn-publish {
+    background-color: var(--admin-dark-green);
+    color: white;
+    border: none;
+    transition: background-color 0.2s;
+}
+.btn-publish:hover {
+    background-color: #051a13;
+}
+
+.text-draft {
+    color: #7d652a;
+    font-size: 0.9rem;
+}
+.text-draft:hover {
+    color: var(--admin-dark-green);
+}
+
+.x-small { font-size: 0.7rem; }
+.tracking-wider { letter-spacing: 1px; }

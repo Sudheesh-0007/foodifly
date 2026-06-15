@@ -5,6 +5,7 @@ from utils.decorators import custom_login_required
 from store.models import Product, Variant
 from .models import Cart, CartItem
 from wishlist.models import WishlistItem
+from offers.utils import get_offer_price
 
 
 @custom_login_required
@@ -53,15 +54,10 @@ def add_cart(request, product_id):
 def cart(request):
 
     cart_items = []
-
     total = 0
-
     quantity = 0
-
     tax = 0
-
     grand_total = 0
-
     can_checkout = True
 
     try:
@@ -76,7 +72,7 @@ def cart(request):
         ).select_related("product", "variant")
 
         for item in cart_items:
-           
+
             if item.variant.stock <= 0:
 
                 item.stock_issue = True
@@ -94,10 +90,8 @@ def cart(request):
                 item.stock_issue = True
 
                 messages.warning(
-
                     request,
-
-                    f"{item.product.name} quantity adjusted to available stock."
+                    f"{item.product.name} quantity adjusted to available stock.",
                 )
 
                 messages.warning(
@@ -107,8 +101,12 @@ def cart(request):
             else:
 
                 item.stock_issue = False
+            offer_price, offer = get_offer_price(item.product, item.variant.salePrice)
 
-            item.total_price = item.variant.salePrice * item.quantity
+            item.offer_price = offer_price
+            item.offer = offer
+
+            item.total_price = offer_price * item.quantity
 
             total += item.total_price
 

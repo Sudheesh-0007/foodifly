@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from store.models import Product, Variant
 from .models import Wishlist, WishlistItem
 from utils.decorators import custom_login_required
+from offers.utils import get_offer_price
 
 
 @custom_login_required
@@ -73,7 +74,15 @@ def wishlist_page(request):
         .select_related("product", "variant", "product__category")
         .order_by("-id")
     )
+    for item in wishlist_items:
 
+        offer_price, offer = get_offer_price(
+            item.product,
+            item.variant.salePrice
+        )
+
+        item.offer_price = offer_price
+        item.offer = offer
     paginator = Paginator(wishlist_items, 5)
 
     page = request.GET.get("page")

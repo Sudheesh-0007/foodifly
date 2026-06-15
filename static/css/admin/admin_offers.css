@@ -1,0 +1,175 @@
+
+.brand-title { color: white; font-weight: 700; font-size: 1.35rem; }
+.brand-subtitle { font-size: 0.65rem; color: var(--admin-gold); font-weight: 600; }
+
+
+.avatar-circle { width: 34px; height: 34px; background-color: #122123; border-radius: 50%; }
+
+.registry-display-title {
+    font-weight: 700;
+    font-size: 2.8rem;
+    color:#0a3a2a;
+    letter-spacing: -0.5px;
+}
+.text-gold { color: var(--admin-gold); }
+
+.btn-add-offer {
+    background-color:#0a3a2a;
+    color: white;
+    border: none;
+    transition: background-color 0.2s;
+}
+.btn-add-offer:hover { background-color: #051a13; }
+
+/* Analytical Summary Banner Component */
+.metrics-banner-card {
+    background-color:#0a3a2a;
+    border-radius: 12px;
+}
+.text-gold-muted { color: rgba(197, 164, 126, 0.6); }
+.text-success-trend { color: #a9e0cd; font-size: 0.75rem; }
+.decorative-bg-icon {
+    font-size: 7rem;
+    bottom: -25px;
+    right: 25px;
+    color: rgba(255,255,255,0.03);
+    transform: rotate(-15deg);
+}
+
+/* Data Table Grid Configuration Customization */
+.table-container { border: 1px solid var(--border-color); }
+.text-dark-title { color: var(--text-dark); }
+
+thead th {
+    font-weight: 700;
+    color: #8c9698 !important;
+}
+
+.search-wrapper {
+    position: relative;
+    width: 350px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8c9698;
+}
+
+.search-input {
+    height: 46px;
+    padding-left: 42px;
+    border-radius: 10px;
+    border: 1px solid #e4e7ea;
+    background: #fafafa;
+}
+
+.search-input:focus {
+    border-color: #0b3d2e;
+    box-shadow: none;
+}
+
+.select-sort-custom {
+    min-width: 180px;
+    height: 46px;
+    border-radius: 10px;
+}
+/* Segment Navigation Controls Override */
+.segment-pills .nav-link {
+    background: transparent;
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 6px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+}
+
+.segment-pills .nav-link.active {
+    background-color: #eef3f1;
+    color: var(--admin-dark-green);
+    font-weight: 600;
+}
+.segment-pills .nav-link:hover {
+    background-color: #f5f7f6;
+    color: var(--admin-dark-green);
+}
+
+.select-sort-custom {
+    font-size: 0.85rem;
+    color: var(--text-dark);
+}
+
+/* Decorative Row Elements */
+.icon-avatar-container {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+.bg-mint { background-color: #e6f6f1; } .text-mint-dark { color: #2ea37a; }
+.bg-cream { background-color: #fbf3e6; } .text-cream-dark { color: #d69838; }
+.bg-coral { background-color: #fdeded; } .text-coral-dark { color: #db5a5a; }
+
+.badge-type {
+    background-color: #f0f1f4;
+    color: #6c757d;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+}
+
+/* Interactive State Badge Classes */
+.badge-status {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+}
+.badge-status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 6px;
+    display: inline-block;
+}
+
+.status-active { background-color: var(--status-active-bg); color: var(--status-active-txt); }
+.status-active::before { background-color: var(--status-active-txt); }
+
+.status-inactive { background-color: var(--status-inactive-bg); color: var(--status-inactive-txt); }
+.status-inactive::before { background-color: var(--status-inactive-txt); }
+
+.action-btn-row button i { font-size: 1rem; transition: color 0.15s; }
+.btn-edit-trigger:hover i { color: var(--admin-dark-green); }
+.btn-delete-trigger:hover i { color: #dc3545; }
+
+/* Pagination Components Positioning styling rules */
+.custom-pagination .page-link {
+    border: none;
+    color: #111;
+    font-weight: 500;
+    font-size: 0.8rem;
+    margin: 0 2px;
+    border-radius: 4px;
+    background: transparent;
+}
+.custom-pagination .page-item.active .page-link {
+    background-color: #111 !important;
+    color: white !important;
+}
+
+/* Base Utility Classes */
+.z-index-2 { z-index: 2; }
+.x-small { font-size: 0.72rem; }
+.tracking-wider { letter-spacing: 1px; }

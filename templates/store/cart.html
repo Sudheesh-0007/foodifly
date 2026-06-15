@@ -92,7 +92,21 @@
     <small class="text-muted">
 
         Variant:
-        {{ item.variant.variant_value }}
+        {% if item.offer %}
+
+    <span class="text-danger fw-bold">
+        ₹{{ item.offer_price }}
+    </span>
+
+    <del class="text-muted">
+        ₹{{ item.variant.salePrice }}
+    </del>
+
+{% else %}
+
+    ₹{{ item.variant.salePrice }}
+
+{% endif %}
 
     </small>
 

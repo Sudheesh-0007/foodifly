@@ -121,9 +121,6 @@ document.addEventListener("DOMContentLoaded", function () {
         ".variant-btn"
     );
 
-    const priceElement = document.getElementById(
-        "product-price"
-    );
 
     const stockElement = document.getElementById(
         "stock-status"
@@ -285,15 +282,6 @@ variantButtons.forEach(button => {
                 "active"
             );
 
-            // =========================
-            // UPDATE PRICE
-            // =========================
-
-            const price =
-                this.dataset.price;
-
-            priceElement.innerText =
-                `₹${price}`;
 
             // =========================
             // UPDATE STOCK
@@ -369,6 +357,62 @@ variantButtons.forEach(button => {
 
             const variantId =
                 this.dataset.variantId;
+            fetch(`/store/get-variant-price/?variant_id=${variantId}`)
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                if (!data.success) return;
+
+                const offerPrice =
+                    document.getElementById("offer-price");
+
+                const originalPrice =
+                    document.getElementById("original-price");
+
+                const offerBadge =
+                    document.getElementById("offer-badge");
+
+                if (data.has_offer) {
+
+                    offerPrice.innerHTML =
+                        `₹${data.offer_price}`;
+
+                    originalPrice.style.display =
+                        "inline";
+
+                    originalPrice.innerHTML =
+                        `₹${data.price}`;
+
+                    offerBadge.style.display =
+                        "inline-block";
+
+                    if (data.discount_type === "PERCENTAGE") {
+
+                        offerBadge.innerHTML =
+                            `${data.discount_value}% OFF`;
+
+                    } else {
+
+                        offerBadge.innerHTML =
+                            `₹${data.discount_value} OFF`;
+
+                    }
+
+                } else {
+
+                    offerPrice.innerHTML =
+                        `₹${data.price}`;
+
+                    originalPrice.style.display =
+                        "none";
+
+                    offerBadge.style.display =
+                        "none";
+                }
+
+            });    
 
             selectedVariantInput.value =
                 variantId;

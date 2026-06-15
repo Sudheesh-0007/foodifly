@@ -1,0 +1,222 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+
+{% block admin_css %}
+<link rel="stylesheet" href="{% static 'css/admin/create_offer.css' %}">
+{% endblock %}
+
+{% block admin_content %}
+<div class="content-body">
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <span class="text-uppercase x-small text-gold fw-bold tracking-wider mb-1 d-block">Campaign Management</span>
+            <h1 class="registry-display-title">Create New Offer</h1>
+        </div>
+        <span class="x-small text-muted text-end fw-medium mt-2">Step 1 of 2: Details & Media</span>
+    </div>
+
+   <form id="createOfferForm" method="POST">
+    {% csrf_token %}
+
+    <div class="form-card p-5 mb-4 border-0 rounded-4 shadow-xs bg-white">
+
+        <div class="row g-4 mb-4">
+
+            <div class="col-md-6">
+                <label class="form-label-custom">
+                    Offer Name
+                </label>
+
+                <input
+                    type="text"
+                    name="name"
+                    class="form-control input-custom"
+                    placeholder="Enter offer name"
+                    required
+                >
+            </div>
+
+            <div class="col-md-3">
+
+                <label class="form-label-custom">
+                    Offer Type
+                </label>
+
+                <select
+                    name="offer_type"
+                    id="offerType"
+                    class="form-select select-custom"
+                    required
+                >
+                    <option value="PRODUCT">
+                        Product Offer
+                    </option>
+
+                    <option value="CATEGORY">
+                        Category Offer
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <label class="form-label-custom">
+                    Discount Type
+                </label>
+
+                <select
+                    name="discount_type"
+                    class="form-select select-custom"
+                    required
+                >
+
+                    <option value="PERCENTAGE">
+                        Percentage Discount
+                    </option>
+
+                    <option value="FIXED">
+                        Fixed Amount Discount
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <!-- Discount + Dates -->
+
+        <div class="row g-4 mb-4">
+
+            <div class="col-md-4">
+
+                <label class="form-label-custom">
+                    Discount Value
+                </label>
+
+                <input
+                    type="number"
+                    step="0.01"
+                    name="discount_value"
+                    class="form-control input-custom"
+                    placeholder="Enter discount"
+                    required
+                >
+
+            </div>
+
+            <div class="col-md-4">
+
+                <label class="form-label-custom">
+                    Start Date
+                </label>
+
+                <input
+                    type="date"
+                    name="start_date"
+                    class="form-control input-custom"
+                    required
+                >
+
+            </div>
+
+            <div class="col-md-4">
+
+                <label class="form-label-custom">
+                    End Date
+                </label>
+
+                <input
+                    type="date"
+                    name="end_date"
+                    class="form-control input-custom"
+                    required
+                >
+
+            </div>
+
+        </div>
+
+        <!-- Product Selector -->
+
+        <div id="productSection">
+
+            <label class="form-label-custom">
+                Select Product
+            </label>
+
+            <select
+                name="product"
+                class="form-select select-custom"
+            >
+
+                <option value="">
+                    Select Product
+                </option>
+
+                {% for product in products %}
+
+                <option value="{{ product.id }}">
+                    {{ product.name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <!-- Category Selector -->
+
+        <div id="categorySection" style="display:none;">
+
+            <label class="form-label-custom">
+                Select Category
+            </label>
+
+            <select
+                name="category"
+                class="form-select select-custom"
+            >
+
+                <option value="">
+                    Select Category
+                </option>
+
+                {% for category in categories %}
+
+                <option value="{{ category.id }}">
+                    {{ category.category_name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center pt-3 actions-footer">
+
+
+
+        <button
+            type="submit"
+            class="btn btn-publish px-4 py-2.5 rounded-3 fw-bold small"
+        >
+            Publish Offer
+            <i class="bi bi-send-fill ms-2 small"></i>
+        </button>
+
+    </div>
+
+</form>
+</div>
+{% endblock %}
+
+{% block admin_js %}
+<script src="{% static 'js/admin/create_offer.js' %}" defer></script>
+{% endblock %}

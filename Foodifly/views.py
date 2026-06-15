@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.decorators.cache import never_cache
 from store.models import Product
 from django.db.models import Min, Q
+from offers.utils import get_offer_price
 
 
 def home(request):
@@ -18,6 +19,26 @@ def home(request):
         .distinct()
         .order_by("-createdAt")[:4]
     )
+    for product in latest_products:
+
+        cheapest_variant = (
+            product.variants
+            .filter(is_active=True)
+            .order_by("salePrice")
+            .first()
+        )
+
+        if cheapest_variant:
+
+            offer_price, offer = get_offer_price(
+                product,
+                cheapest_variant.salePrice
+            )
+
+            product.original_price = cheapest_variant.salePrice
+            product.offer_price = offer_price
+            product.offer = offer
+
     featured_product = (
         Product.objects.filter(
             is_deleted=False, isBlocked=False, isActive=True, variants__is_active=True
@@ -27,8 +48,9 @@ def home(request):
         .last()
     )
 
-    context = {"latest_products": latest_products,
-               "featured_product": featured_product,
-               }
+    context = {
+        "latest_products": latest_products,
+        "featured_product": featured_product,
+    }
 
     return render(request, "home.html", context)

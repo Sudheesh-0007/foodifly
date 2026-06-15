@@ -1,0 +1,389 @@
+{% extends 'admin_panel/admin_base.html' %}
+
+{% load static %}
+
+{% block admin_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/admin/admin_offers.css' %}"
+>
+
+{% endblock %}
+
+{% block admin_content %}
+
+
+        <div class="p-5 content-body">
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                    <span class="text-uppercase x-small text-gold fw-bold tracking-wider mb-1 d-block">Marketing Hub</span>
+                    <h1 class="registry-display-title">Offer Management</h1>
+                    <p class="text-muted small mb-0 font-sans mt-2 col-md-10 lh-base">
+                        Curate and monitor your promotional ecosystem. Use these high-performance offers to drive customer loyalty and increase basket value.
+                    </p>
+                </div>
+<a
+    href="{% url 'add_offer' %}"
+    class="btn btn-add-offer px-4 py-2.5 rounded-3 fw-bold small text-nowrap"
+>
+    <i class="bi bi-plus-circle me-2"></i>
+    Add New Offer
+</a>
+            </div>
+
+            <div class="metrics-banner-card p-4 mb-5 text-white position-relative overflow-hidden">
+                <div class="position-relative z-index-2">
+                    <span class="text-uppercase x-small text-gold-muted tracking-wider d-block mb-1">Active Campaigns</span>
+                    <h2 class="display-4 fw-bold mb-1">
+    {{ active_offers }}
+</h2>
+                    <span class="x-small text-success-trend fw-medium"><i class="bi bi-graph-up me-1"></i> +2 since last week</span>
+                </div>
+                <i class="bi bi-megaphone position-absolute decorative-bg-icon"></i>
+            </div>
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+
+    <!-- Search Form -->
+    <form method="GET" class="d-flex align-items-center gap-3">
+
+        <div class="search-wrapper">
+
+            <i class="bi bi-search search-icon"></i>
+
+            <input
+                type="text"
+                name="search"
+                value="{{ search }}"
+                placeholder="Search offers..."
+                class="form-control search-input"
+            >
+
+        </div>
+
+        <input
+            type="hidden"
+            name="type"
+            value="{{ request.GET.type }}"
+        >
+
+        <button
+            type="submit"
+            class="btn btn-add-offer"
+        >
+            Search
+        </button>
+
+    </form>
+
+    <!-- Sort -->
+    <form method="GET">
+
+        <input
+            type="hidden"
+            name="search"
+            value="{{ search }}"
+        >
+
+        <input
+            type="hidden"
+            name="type"
+            value="{{ request.GET.type }}"
+        >
+
+        <select
+            name="sort"
+            class="form-select select-sort-custom"
+            onchange="this.form.submit()"
+        >
+
+            <option value="newest"
+                {% if sort == 'newest' %}selected{% endif %}>
+                Newest First
+            </option>
+
+            <option value="oldest"
+                {% if sort == 'oldest' %}selected{% endif %}>
+                Oldest First
+            </option>
+
+            <option value="name_asc"
+                {% if sort == 'name_asc' %}selected{% endif %}>
+                Name A-Z
+            </option>
+
+            <option value="name_desc"
+                {% if sort == 'name_desc' %}selected{% endif %}>
+                Name Z-A
+            </option>
+
+        </select>
+
+    </form>
+
+</div>
+            <div class="table-container bg-white p-4 rounded-4 shadow-xs">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 pb-3 border-bottom border-light-subtle">
+<ul class="nav nav-pills segment-pills">
+
+    <li class="nav-item">
+        <a
+            href="?"
+            class="nav-link {% if not request.GET.type %}active{% endif %}"
+        >
+            All Offers
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a
+            href="?type=PRODUCT"
+            class="nav-link {% if request.GET.type == 'PRODUCT' %}active{% endif %}"
+        >
+            Product Offers
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a
+            href="?type=CATEGORY"
+            class="nav-link {% if request.GET.type == 'CATEGORY' %}active{% endif %}"
+        >
+            Category Offers
+        </a>
+    </li>
+
+</ul>
+                    </ul>
+
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-borderless table-align-middle align-middle mb-3">
+                        <thead>
+                            <tr class="text-uppercase text-muted x-small tracking-wider border-bottom border-light-subtle">
+                                <th scope="col" class="py-3">Offer Title</th>
+                                <th scope="col" class="py-3">Type</th>
+                                <th scope="col" class="py-3">Applied to</th>
+                                <th scope="col" class="py-3">Value</th>
+                                <th scope="col" class="py-3">Validity Period</th>
+                                <th scope="col" class="py-3">Status</th>
+                                <th scope="col" class="py-3 text-end">Actions</th>
+                            </tr>
+                        </thead>
+<tbody>
+
+{% for offer in offers %}
+
+<tr class="border-bottom border-light-subtle">
+
+    <td class="py-3">
+
+        <div>
+
+            <h6 class="mb-0 small fw-bold text-dark-title">
+                {{ offer.name }}
+            </h6>
+
+            <span class="x-small text-muted">
+                ID: OFF-{{ offer.id }}
+            </span>
+
+        </div>
+
+    </td>
+
+    <td>
+
+        <span class="badge-type">
+
+            {{ offer.discount_type }}
+
+        </span>
+
+    </td>
+    <td>
+
+    {% if offer.offer_type == "CATEGORY" %}
+
+        {{ offer.category.category_name }}
+
+    {% elif offer.offer_type == "PRODUCT" %}
+
+        {{ offer.product.name }}
+
+    {% endif %}
+
+</td>
+
+    <td>
+
+        {% if offer.discount_type == "PERCENTAGE" %}
+
+            <span class="fw-bold">
+
+                {{ offer.discount_value }}%
+
+            </span>
+
+        {% else %}
+
+            <span class="fw-bold">
+
+                ₹{{ offer.discount_value }}
+
+            </span>
+
+        {% endif %}
+
+    </td>
+
+    <td>
+
+        <div class="d-flex flex-column text-muted x-small">
+
+            <span>
+                {{ offer.start_date }}
+            </span>
+
+            <span>
+                {{ offer.end_date }}
+            </span>
+
+        </div>
+
+    </td>
+
+    <td>
+
+        {% if offer.is_active %}
+
+            <span class="badge-status status-active">
+                Active
+            </span>
+
+        {% else %}
+
+            <span class="badge-status status-inactive">
+                Inactive
+            </span>
+
+        {% endif %}
+
+    </td>
+
+    <td class="text-end">
+
+        <a
+            href="{% url "edit_offer" offer.id %}"
+            class="btn p-0 text-muted"
+        >
+            <i class="bi bi-pencil-square"></i>
+        </a>
+
+     {% if offer.is_active %}
+
+<a
+    href="{% url 'toggle_offer_status' offer.id %}"
+    class="btn p-0 text-warning ms-3"
+    onclick="return confirm('Deactivate this offer?')"
+>
+    <i class="bi bi-pause-circle"></i>
+</a>
+
+{% else %}
+
+<a
+    href="{% url 'toggle_offer_status' offer.id %}"
+    class="btn p-0 text-success ms-3"
+    onclick="return confirm('Activate this offer?')"
+>
+    <i class="bi bi-play-circle"></i>
+</a>
+
+{% endif %}
+
+    </td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+    <td colspan="6" class="text-center py-4">
+
+        No offers found.
+
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>                      
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <span class="x-small text-muted">Showing 1-3 of 12 active campaigns</span>
+<nav>
+
+<ul class="pagination custom-pagination">
+
+{% if offers.has_previous %}
+
+<li class="page-item">
+
+<a
+class="page-link"
+href="?page={{ offers.previous_page_number }}"
+>
+
+Previous
+
+</a>
+
+</li>
+
+{% endif %}
+
+<li class="page-item active">
+
+<span class="page-link">
+
+{{ offers.number }}
+
+</span>
+
+</li>
+
+{% if offers.has_next %}
+
+<li class="page-item">
+
+<a
+class="page-link"
+href="?page={{ offers.next_page_number }}"
+>
+
+Next
+
+</a>
+
+</li>
+
+{% endif %}
+
+</ul>
+
+</nav>
+                </div>
+            </div>
+        </div>
+
+
+{% endblock %}
+    {% block admin_js %}
+    <script src="{% static 'js/admin/admin_offer.js' %}" ></script>
+    {% endblock %}

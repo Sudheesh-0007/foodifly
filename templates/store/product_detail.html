@@ -105,28 +105,83 @@
             </h1>
 
             <!-- PRICE -->
+<!-- PRICE -->
 
-            <div class="d-flex align-items-center mb-3">
+<div
+    class="d-flex align-items-center mb-3"
+>
 
-                <span class="price-tag me-3">
+    <div id="price-container">
 
-                    ₹<span id="product-price">
-                        {{ selected_variant.salePrice }}
-                    </span>
+        {% if offer %}
 
-                </span>
+            <span
+                class="price-tag text-danger"
+                id="offer-price"
+            >
+                ₹{{ offer_price }}
+            </span>
 
-                <div class="stars text-warning small">
+            <del
+                class="text-muted ms-2"
+                id="original-price"
+            >
+                ₹{{ selected_variant.salePrice }}
+            </del>
 
-                    ★★★★☆
+            <br>
 
-                    <span class="text-muted ms-1">
-                        (42 Reviews)
-                    </span>
+            <span
+                class="badge bg-success"
+                id="offer-badge"
+            >
 
-                </div>
+                {% if offer.discount_type == "PERCENTAGE" %}
 
-            </div>
+                    {{ offer.discount_value }}% OFF
+
+                {% else %}
+
+                    ₹{{ offer.discount_value }} OFF
+
+                {% endif %}
+
+            </span>
+
+        {% else %}
+
+            <span
+                class="price-tag"
+                id="offer-price"
+            >
+                ₹{{ selected_variant.salePrice }}
+            </span>
+
+            <del
+                id="original-price"
+                style="display:none;"
+            ></del>
+
+            <span
+                id="offer-badge"
+                style="display:none;"
+            ></span>
+
+        {% endif %}
+
+    </div>
+
+    <div class="stars text-warning small ms-3">
+
+        ★★★★☆
+
+        <span class="text-muted ms-1">
+            (42 Reviews)
+        </span>
+
+    </div>
+
+</div>
 
             <!-- STOCK -->
 

@@ -21,6 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 from wallet.models import Wallet, WalletTransaction
+from offers.utils import get_offer_price
 
 
 @login_required(login_url="login")
@@ -58,15 +59,21 @@ def checkout(request):
                 )
 
         total = Decimal("0.00")
-
         quantity = 0
 
         for item in cart_items:
 
-            item.total_price = item.variant.salePrice * item.quantity
+            offer_price, offer = get_offer_price(
+                item.product,
+                item.variant.salePrice
+            )
+
+            item.offer_price = offer_price
+            item.offer = offer
+
+            item.total_price = offer_price * item.quantity
 
             total += item.total_price
-
             quantity += item.quantity
 
         tax = total * Decimal("0.10")
@@ -126,14 +133,15 @@ def checkout(request):
                     )
 
                     for item in cart_items:
+                        offer_price, offer = get_offer_price(item.product,item.variant.salePrice)
 
                         OrderItem.objects.create(
                             order=order,
                             product=item.product,
                             variant=item.variant,
                             quantity=item.quantity,
-                            price=item.variant.salePrice,
-                            total_price=(item.variant.salePrice * item.quantity),
+                            price=offer_price,
+                            total_price=(offer_price * item.quantity),
                         )
 
                         item.variant.stock -= item.quantity
@@ -162,7 +170,10 @@ def checkout(request):
                     request.session["checkout_data"] = {
                         "address_id": address.id,
                     }
-
+                    print("TOTAL:", total)
+                    print("TAX:", tax)
+                    print("GRAND TOTAL:", grand_total)
+                    print("RAZORPAY AMOUNT:", amount)
                     context = {
                         "cart_items": cart_items,
                         "addresses": addresses,
@@ -213,14 +224,18 @@ def checkout(request):
                     )
 
                     for item in cart_items:
+                        offer_price, offer = get_offer_price(
+                            item.product,
+                            item.variant.salePrice
+                        )
 
                         OrderItem.objects.create(
                             order=order,
                             product=item.product,
                             variant=item.variant,
                             quantity=item.quantity,
-                            price=item.variant.salePrice,
-                            total_price=item.variant.salePrice * item.quantity,
+                            price=offer_price,
+                            total_price=offer_price * item.quantity,
                         )
 
                         item.variant.stock -= item.quantity
@@ -263,11 +278,6 @@ def checkout(request):
         print("CHECKOUT ERROR:", e)
         messages.error(request, str(e))
         return redirect("cart")
-    except Cart.DoesNotExist:
-
-        messages.warning(request, "Cart not found.")
-        return redirect("shop")
-
 
 @csrf_exempt
 @login_required(login_url="login")
@@ -299,9 +309,6 @@ def verify_payment(request):
                     "razorpay_signature": razorpay_signature,
                 }
             )
-
-            print("PAYMENT VERIFIED")
-
             checkout_data = request.session.get("checkout_data")
 
             if not checkout_data:
@@ -326,7 +333,12 @@ def verify_payment(request):
 
             for item in cart_items:
 
-                total += item.variant.salePrice * item.quantity
+                offer_price, offer = get_offer_price(
+                    item.product,
+                    item.variant.salePrice
+                )
+
+                total += offer_price * item.quantity
 
             tax = total * Decimal("0.10")
 
@@ -349,13 +361,18 @@ def verify_payment(request):
 
             for item in cart_items:
 
+                offer_price, offer = get_offer_price(
+                    item.product,
+                    item.variant.salePrice
+                )
+
                 OrderItem.objects.create(
                     order=order,
                     product=item.product,
                     variant=item.variant,
                     quantity=item.quantity,
-                    price=item.variant.salePrice,
-                    total_price=item.variant.salePrice * item.quantity,
+                    price=offer_price,
+                    total_price=offer_price * item.quantity,
                 )
 
                 item.variant.stock -= item.quantity

@@ -348,11 +348,51 @@
 
                                     </h5>
 
+                                    {% if product.offer %}
+
+                                    <div class="d-flex align-items-center gap-2">
+
+                                        <span class="item-price text-danger fw-bold">
+
+                                            ₹{{ product.offer_price|floatformat:2 }}
+
+                                        </span>
+
+                                        <small class="text-muted text-decoration-line-through">
+
+                                            ₹{{ product.starting_price }}
+
+                                        </small>
+
+                                    </div>
+
+                                    {% if product.offer.discount_type == "PERCENTAGE" %}
+
+                                    <span class="badge bg-success">
+
+                                        {{ product.offer.discount_value }}% OFF
+
+                                    </span>
+
+                                    {% else %}
+
+                                    <span class="badge bg-success">
+
+                                        ₹{{ product.offer.discount_value }} OFF
+
+                                    </span>
+
+                                    {% endif %}
+
+                                    {% else %}
+
                                     <span class="item-price">
 
                                         ₹{{ product.starting_price }}
 
                                     </span>
+
+                                    {% endif %}
 
                                 </div>
 

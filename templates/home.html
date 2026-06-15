@@ -245,7 +245,21 @@
 
                         <p class="product-price text-gold fw-bold mb-0">
 
-                            ₹{{ product.starting_price }}
+                            {% if product.offer %}
+
+<span class="text-danger fw-bold">
+    ₹{{ product.offer_price }}
+</span>
+
+<del class="text-muted">
+    ₹{{ product.starting_price }}
+</del>
+
+{% else %}
+
+₹{{ product.starting_price }}
+
+{% endif %}
 
                         </p>
 

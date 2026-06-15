@@ -1,9 +1,11 @@
 from django.core.paginator import Paginator
 from django.db.models import Q, Min
-from store.models import Product
+from store.models import Product, Variant
 from category.models import Category
 from wishlist.models import WishlistItem
 from django.shortcuts import render, get_object_or_404, redirect
+from offers.utils import get_offer_price
+from django.http import JsonResponse
 
 
 def shop(request):
@@ -67,6 +69,14 @@ def shop(request):
     page_number = request.GET.get("page")
     paged_products = paginator.get_page(page_number)
 
+    for product in paged_products:
+        first_variant = product.variants.filter(is_active=True).first()
+        if first_variant:
+
+            discounted_price, offer = get_offer_price(product, first_variant.salePrice)
+
+            product.offer_price = discounted_price
+            product.offer = offer
     categories = Category.objects.filter(is_deleted=False, is_active=True)
 
     context = {
@@ -81,12 +91,18 @@ def shop(request):
 def product_detail(request, slug):
 
     product = get_object_or_404(
-        Product.objects.filter(is_deleted=False, isBlocked =False),
+        Product.objects.filter(is_deleted=False, isBlocked=False),
         slug=slug,
     )
     variants = product.variants.filter(is_active=True)
     is_available = product.isActive
     selected_variant = variants.filter(stock__gt=0, is_active=True).first()
+    offer_price = None
+    offer = None
+
+    if selected_variant:
+
+        offer_price, offer = get_offer_price(product, selected_variant.salePrice)
 
     if not variants.exists():
         return redirect("shop")
@@ -124,14 +140,54 @@ def product_detail(request, slug):
             wishlist__user=request.user, product=product
         ).values_list("variant_id", flat=True)
 
+    for related_product in related_products:
+
+        first_variant = related_product.variants.filter(is_active=True).first()
+
+        offer_price = None
+        offer = None
+
+        if selected_variant:
+
+            offer_price, offer = get_offer_price(product, selected_variant.salePrice)
+
     context = {
         "product": product,
         "variants": variants,
         "gallery_images": gallery_images,
         "related_products": related_products,
         "selected_variant": selected_variant,
-       "wishlisted_variant_ids": wishlisted_variant_ids,
-       "is_available": is_available,
+        "wishlisted_variant_ids": wishlisted_variant_ids,
+        "is_available": is_available,
+        "offer_price": offer_price,
+        "offer": offer,
     }
 
     return render(request, "store/product_detail.html", context)
+
+
+def get_variant_price(request):
+
+    variant_id = request.GET.get("variant_id")
+
+    try:
+
+        variant = Variant.objects.get(id=variant_id, is_active=True)
+
+        offer_price, offer = get_offer_price(variant.product, variant.salePrice)
+
+        return JsonResponse(
+            {
+                "success": True,
+                "price": str(variant.salePrice),
+                "offer_price": str(offer_price),
+                "has_offer": offer is not None,
+                "discount_type": offer.discount_type if offer else "",
+                "discount_value": str(offer.discount_value) if offer else "",
+                "stock": variant.stock,
+            }
+        )
+
+    except Variant.DoesNotExist:
+
+        return JsonResponse({"success": False})
