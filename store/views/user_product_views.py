@@ -70,13 +70,25 @@ def shop(request):
     paged_products = paginator.get_page(page_number)
 
     for product in paged_products:
-        first_variant = product.variants.filter(is_active=True).first()
-        if first_variant:
+        cheapest_variant = (
+            product.variants
+            .filter(is_active=True)
+            .order_by("salePrice")
+            .first()
+        )
 
-            discounted_price, offer = get_offer_price(product, first_variant.salePrice)
+        
+        if cheapest_variant:
 
-            product.offer_price = discounted_price
+            offer_price, offer = get_offer_price(
+                product,
+                cheapest_variant.salePrice
+            )
+
+            product.original_price = cheapest_variant.salePrice
+            product.offer_price = offer_price
             product.offer = offer
+            
     categories = Category.objects.filter(is_deleted=False, is_active=True)
 
     context = {
