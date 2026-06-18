@@ -25,10 +25,6 @@ class AlphanumericPasswordValidator:
         return "Your password must contain a mix of letters and numbers."
 
 
-# =========================
-# ADDRESS VALIDATORS
-# =========================
-
 def validate_phone(value):
 
     if not re.fullmatch(r'^[6-9]\d{9}$', value):
