@@ -478,56 +478,54 @@
 
         </div>
 
-        <div class="row g-4 d-flex justify-content-center align-items-center">
+      <div class="row g-4 justify-content-center">
 
-            {% for related in related_products %}
+    {% for related in related_products %}
 
-            <div class="col-md-6 col-lg-3">
+    <div class="col-md-6 col-lg-3">
 
-                <div class="related-card h-100">
+        <div class="related-card h-100">
 
-                    <a
-                        href="{% url 'product_detail' related.slug %}"
-                    >
+            <a href="{% url 'product_detail' related.slug %}"
+               class="related-image-wrapper">
 
-                        <img
-                            src="{{ related.image.url }}"
-                            class="img-fluid related-image"
-                            alt="{{ related.name }}"
-                        >
+                <img
+                    src="{{ related.image.url }}"
+                    class="img-fluid related-image"
+                    alt="{{ related.name }}"
+                >
 
-                    </a>
+            </a>
 
-                    <div class="pt-3">
+            <div class="related-content">
 
-                        <h5 class="related-product-title">
+                <h5 class="related-product-title">
 
-                            {{ related.name }}
+                    {{ related.name }}
 
-                        </h5>
+                </h5>
 
-                        <p class="text-muted small">
+                <p class="related-description">
 
-                            {{ related.description|truncatewords:10 }}
+                    {{ related.description|truncatewords:10 }}
 
-                        </p>
+                </p>
 
-                        <div class="fw-bold">
+                <div class="related-price">
 
-                            ₹{{ related.starting_price }}
-
-                        </div>
-
-                    </div>
+                    ₹{{ related.starting_price }}
 
                 </div>
 
             </div>
 
-            {% endfor %}
-
         </div>
 
+    </div>
+
+    {% endfor %}
+
+</div>
     </div>
 
 </section>
