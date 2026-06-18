@@ -1,7 +1,6 @@
 from django.db import models
 
 
-
 class Coupon(models.Model):
 
     code = models.CharField(max_length=50, unique=True)
@@ -24,6 +23,29 @@ class Coupon(models.Model):
     valid_to = models.DateField()
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.code
+
+
+from accounts.models import Account
+
+
+class CouponUsage(models.Model):
+
+    coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE)
+
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+
+    used_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = (
+            "coupon",
+            "user",
+        )
+
+    def __str__(self):
+
+        return f"{self.user.email} - {self.coupon.code}"

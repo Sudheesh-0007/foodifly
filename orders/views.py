@@ -22,6 +22,73 @@ import json
 
 from wallet.models import Wallet, WalletTransaction
 from offers.utils import get_offer_price
+from coupon.models import Coupon, CouponUsage
+
+
+def calculate_grand_total(total, tax, shipping, coupon_discount):
+
+    grand_total = total + tax + shipping - coupon_discount
+
+    if grand_total < 0:
+
+        grand_total = Decimal("0.00")
+
+    return grand_total
+
+
+def mark_coupon_used(user, coupon):
+
+    if coupon:
+
+        CouponUsage.objects.get_or_create(user=user, coupon=coupon)
+
+
+def create_order_items(order, cart_items):
+
+    for item in cart_items:
+
+        offer_price, offer = get_offer_price(item.product, item.variant.salePrice)
+
+        OrderItem.objects.create(
+            order=order,
+            product=item.product,
+            variant=item.variant,
+            quantity=item.quantity,
+            price=offer_price,
+            total_price=offer_price * item.quantity,
+        )
+
+        item.variant.stock -= item.quantity
+
+        item.variant.save()
+
+
+def get_coupon_details(coupon_code, total):
+
+    coupon = None
+    coupon_discount = Decimal("0.00")
+
+    if not coupon_code:
+
+        return coupon, coupon_discount
+
+    try:
+
+        coupon = Coupon.objects.get(code=coupon_code, is_active=True)
+
+        if coupon.discount_type == "PERCENTAGE":
+
+            coupon_discount = (total * coupon.discount_value) / Decimal("100")
+
+        else:
+
+            coupon_discount = coupon.discount_value
+
+    except Coupon.DoesNotExist:
+
+        coupon = None
+
+    return coupon, coupon_discount
 
 
 @login_required(login_url="login")
@@ -30,6 +97,8 @@ def checkout(request):
     quantity = 0
     tax = Decimal("0.00")
     shipping = Decimal("0.00")
+    coupon = None
+    coupon_discount = Decimal("0.00")
 
     try:
         cart = Cart.objects.get(user=request.user)
@@ -63,10 +132,7 @@ def checkout(request):
 
         for item in cart_items:
 
-            offer_price, offer = get_offer_price(
-                item.product,
-                item.variant.salePrice
-            )
+            offer_price, offer = get_offer_price(item.product, item.variant.salePrice)
 
             item.offer_price = offer_price
             item.offer = offer
@@ -81,12 +147,25 @@ def checkout(request):
         shipping = Decimal("0.00")
 
         grand_total = total + tax + shipping
-        amount = int(grand_total * 100)
 
         if request.method == "POST":
+
             try:
                 address_id = request.POST.get("address")
                 payment_method = request.POST.get("payment_method")
+
+                coupon_code = request.POST.get("coupon_code")
+
+                coupon, coupon_discount = get_coupon_details(coupon_code, total)
+
+                grand_total = calculate_grand_total(
+                    total, tax, shipping, coupon_discount
+                )
+
+                amount = int(grand_total * 100)
+
+                if grand_total < 0:
+                    grand_total = Decimal("0.00")
 
                 if not address_id:
                     messages.error(request, "Please select a shipping address.")
@@ -130,23 +209,14 @@ def checkout(request):
                         is_ordered=True,
                         payment_method="COD",
                         payment_status="Pending",
+                        coupon=coupon,
+                        coupon_discount=coupon_discount,
                     )
 
-                    for item in cart_items:
-                        offer_price, offer = get_offer_price(item.product,item.variant.salePrice)
-
-                        OrderItem.objects.create(
-                            order=order,
-                            product=item.product,
-                            variant=item.variant,
-                            quantity=item.quantity,
-                            price=offer_price,
-                            total_price=(offer_price * item.quantity),
-                        )
-
-                        item.variant.stock -= item.quantity
-                        item.variant.save()
+                    coupon, coupon_discount = get_coupon_details(coupon_code, total)
+                    create_order_items(order, cart_items)
                     cart_items.delete()
+                    mark_coupon_used(request.user, coupon)
 
                     messages.success(request, "Order placed successfully.")
                     return redirect("order_success", order_id=order.id)
@@ -169,11 +239,10 @@ def checkout(request):
 
                     request.session["checkout_data"] = {
                         "address_id": address.id,
+                        "coupon_code": coupon_code,
+                        "coupon_discount": str(coupon_discount),
                     }
-                    print("TOTAL:", total)
-                    print("TAX:", tax)
-                    print("GRAND TOTAL:", grand_total)
-                    print("RAZORPAY AMOUNT:", amount)
+
                     context = {
                         "cart_items": cart_items,
                         "addresses": addresses,
@@ -212,6 +281,8 @@ def checkout(request):
                         grand_total=grand_total,
                         payment_method="WALLET",
                         payment_status="Paid",
+                        coupon=coupon,
+                        coupon_discount=coupon_discount,
                         status="Confirmed",
                         is_ordered=True,
                     )
@@ -223,26 +294,10 @@ def checkout(request):
                         description=f"Wallet payment for Order #{order.order_number}",
                     )
 
-                    for item in cart_items:
-                        offer_price, offer = get_offer_price(
-                            item.product,
-                            item.variant.salePrice
-                        )
-
-                        OrderItem.objects.create(
-                            order=order,
-                            product=item.product,
-                            variant=item.variant,
-                            quantity=item.quantity,
-                            price=offer_price,
-                            total_price=offer_price * item.quantity,
-                        )
-
-                        item.variant.stock -= item.quantity
-
-                        item.variant.save()
+                    create_order_items(order, cart_items)
 
                     cart_items.delete()
+                    mark_coupon_used(request.user, coupon)
 
                     messages.success(request, "Order placed using Wallet.")
 
@@ -266,6 +321,8 @@ def checkout(request):
             "grand_total": grand_total,
             "quantity": quantity,
             "wallet": wallet,
+            "coupon": coupon,
+            "coupon_discount": coupon_discount,
         }
 
         return render(request, "orders/checkout.html", context)
@@ -279,13 +336,14 @@ def checkout(request):
         messages.error(request, str(e))
         return redirect("cart")
 
+
 @csrf_exempt
 @login_required(login_url="login")
 def verify_payment(request):
 
     if request.method == "POST":
 
-        print("VERIFY PAYMENT CALLED")
+        checkout_data = request.session.get("checkout_data")
 
         data = json.loads(request.body)
 
@@ -334,15 +392,20 @@ def verify_payment(request):
             for item in cart_items:
 
                 offer_price, offer = get_offer_price(
-                    item.product,
-                    item.variant.salePrice
+                    item.product, item.variant.salePrice
                 )
 
                 total += offer_price * item.quantity
+            coupon_code = checkout_data.get("coupon_code")
+
+            coupon, coupon_discount = get_coupon_details(coupon_code, total)
 
             tax = total * Decimal("0.10")
 
-            grand_total = total + tax
+            grand_total = total + tax - coupon_discount
+
+            if grand_total < 0:
+                grand_total = Decimal("0.00")
 
             order = Order.objects.create(
                 user=request.user,
@@ -355,31 +418,16 @@ def verify_payment(request):
                 payment_status="Paid",
                 status="Confirmed",
                 is_ordered=True,
+                coupon=coupon,
+                coupon_discount=coupon_discount,
                 razorpay_order_id=razorpay_order_id,
                 razorpay_payment_id=razorpay_payment_id,
             )
 
-            for item in cart_items:
-
-                offer_price, offer = get_offer_price(
-                    item.product,
-                    item.variant.salePrice
-                )
-
-                OrderItem.objects.create(
-                    order=order,
-                    product=item.product,
-                    variant=item.variant,
-                    quantity=item.quantity,
-                    price=offer_price,
-                    total_price=offer_price * item.quantity,
-                )
-
-                item.variant.stock -= item.quantity
-
-                item.variant.save()
+            create_order_items(order, cart_items)
 
             cart_items.delete()
+            mark_coupon_used(request.user, coupon)
 
             if "checkout_data" in request.session:
                 del request.session["checkout_data"]
@@ -589,7 +637,12 @@ def cancel_order_item(request, item_id):
 
     subtotal = sum(item.total_price for item in active_items)
     tax = subtotal * Decimal("0.10")
-    grand_total = subtotal + tax
+    grand_total = subtotal + tax - order.coupon_discount
+
+    if grand_total < 0:
+
+        grand_total = Decimal("0.00")
+        
     order.total_amount = subtotal
     order.tax = tax
     order.grand_total = grand_total

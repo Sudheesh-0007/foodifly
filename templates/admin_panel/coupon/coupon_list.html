@@ -1,0 +1,308 @@
+{% extends "admin_panel/admin_base.html" %}
+{% load static %}
+
+{% block admin_css %}
+<link rel="stylesheet" href="{% static 'css/admin/coupons_list.css' %}">
+{% endblock %}
+
+{% block admin_content %}
+<div class="content-body">
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <span class="text-uppercase x-small text-gold fw-bold tracking-wider mb-1 d-block">Administrative Overview</span>
+            <h1 class="registry-display-title">Operational Insights</h1>
+        </div>
+        <a href="{% url 'add_coupon' %}" class="btn btn-add-coupon px-4 py-2.5 rounded-3 fw-bold small">
+            <i class="bi bi-plus"></i> Add Coupon
+        </a>
+    </div>
+
+<!-- STATS -->
+
+<div class="row g-4 mb-5">
+
+    <div class="col-md-4">
+
+        <div class="stat-card p-4 rounded-4 bg-white border-0 d-flex justify-content-between align-items-start">
+
+            <div>
+
+                <span class="text-uppercase x-small text-muted fw-bold tracking-wider mb-2 d-block">
+                    Total Coupons
+                </span>
+
+                <h2 class="display-5 fw-bold text-dark-title mb-0">
+                    {{ total_coupons }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="stat-card p-4 rounded-4 card-active-now text-white border-0 position-relative">
+
+            <span class="text-uppercase x-small opacity-50 fw-bold tracking-wider mb-2 d-block">
+                Active Now
+            </span>
+
+            <h2 class="display-5 fw-bold mb-0">
+                {{ active_coupons }}
+            </h2>
+
+            <div class="active-pulse-dot position-absolute"></div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="stat-card p-4 rounded-4 bg-white border-0">
+
+            <div>
+
+                <span class="text-uppercase x-small text-muted fw-bold tracking-wider mb-2 d-block">
+                    Expired
+                </span>
+
+                <h2 class="display-5 fw-bold text-dark-title mb-0">
+                    {{ expired_coupons }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<form method="GET" class="coupon-filter-bar mb-4">
+
+    <div class="row g-3">
+
+        <div class="col-lg-6">
+
+            <div class="search-wrapper">
+
+                <i class="bi bi-search"></i>
+
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ search }}"
+                    class="form-control custom-search"
+                    placeholder="Search coupon code..."
+                >
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <select
+                name="status"
+                class="form-select custom-filter"
+            >
+
+                <option value="">
+                    All Coupons
+                </option>
+
+                <option value="active"
+                    {% if status == "active" %}selected{% endif %}
+                >
+                    Active
+                </option>
+
+                <option value="expired"
+                    {% if status == "expired" %}selected{% endif %}
+                >
+                    Expired
+                </option>
+
+                <option value="inactive"
+                    {% if status == "inactive" %}selected{% endif %}
+                >
+                    Inactive
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <button
+                type="submit"
+                class="btn btn-search-coupon w-100"
+            >
+
+                <i class="bi bi-funnel me-2"></i>
+
+                Apply
+
+            </button>
+
+        </div>
+
+    </div>
+
+</form>
+    <div class="table-container bg-white p-4 rounded-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-2">
+            <h3 class="section-title mb-0">Active Promotions</h3>
+
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-borderless table-align-middle align-middle mb-3">
+                <thead>
+                    <tr class="text-uppercase text-muted x-small tracking-wider border-bottom border-light-subtle">
+                        <th scope="col" class="py-3">Coupon Code</th>
+                        <th scope="col" class="py-3">Discount Type</th>
+                        <th scope="col" class="py-3">Expiry Date</th>
+                        <th scope="col" class="py-3">Status</th>
+                        <th scope="col" class="py-3 text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for coupon in coupons %}
+                    <tr class="border-bottom border-light-subtle">
+                        <td class="py-3">
+                            <span class="coupon-code-badge py-1 px-2.5 rounded-1 fw-bold">{{ coupon.code }}</span>
+                        </td>
+                        <td>
+                            <span class="text-dark-title small fw-medium">
+{% if coupon.discount_type == 'PERCENTAGE' %}
+
+    {{ coupon.discount_value|floatformat:0 }}% Off Order
+
+{% else %}
+
+    ₹{{ coupon.discount_value }} Flat Discount
+
+{% endif %}
+                            </span>
+                        </td>
+<td>
+    <span class="text-muted small">
+        {{ coupon.valid_to|date:"M d, Y" }}
+    </span>
+</td>
+                        <td>
+                            {% if coupon.is_active %}
+                                <span class="badge-status status-active">Active</span>
+                            {% else %}
+                                <span class="badge-status status-expired">Expired</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <div class="d-inline-flex gap-3 action-btn-row">
+                                <a href="{% url "edit_coupon" coupon.id %}" class="btn p-0 text-muted btn-edit-trigger" title="Edit"><i class="bi bi-pencil-square"></i></a>
+                                <a
+    href="{% url 'toggle_coupon_status' coupon.id %}"
+    class="{% if coupon.is_active %}text-warning{% else %}text-success{% endif %}"
+>
+
+    {% if coupon.is_active %}
+
+        <i class="bi bi-pause-circle"></i>
+
+    {% else %}
+
+        <i class="bi bi-play-circle"></i>
+
+    {% endif %}
+
+</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted small">No dynamic promotions recorded within the database system.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <span class="x-small text-muted">
+    Showing {{ coupons|length }} of {{ total_coupons }} coupons
+</span>
+        {% if coupons.has_other_pages %}
+
+<nav>
+
+    <ul class="pagination custom-pagination mb-0">
+
+        {% if coupons.has_previous %}
+
+        <li class="page-item">
+            <a
+                class="page-link"
+                href="?page={{ coupons.previous_page_number }}&search={{ search }}&status={{ status }}"
+            >
+                <i class="bi bi-chevron-left"></i>
+            </a>
+        </li>
+
+        {% endif %}
+
+        {% for i in coupons.paginator.page_range %}
+
+            {% if coupons.number == i %}
+
+                <li class="page-item active">
+                    <a class="page-link" href="#">
+                        {{ i }}
+                    </a>
+                </li>
+
+            {% else %}
+
+                <li class="page-item">
+                    <a
+                        class="page-link"
+                        href="?page={{ i }}&search={{ search }}&status={{ status }}"
+                    >
+                        {{ i }}
+                    </a>
+                </li>
+
+            {% endif %}
+
+        {% endfor %}
+
+        {% if coupons.has_next %}
+
+        <li class="page-item">
+            <a
+                class="page-link"
+               href="?page={{ coupons.next_page_number }}&search={{ search }}&status={{ status }}"
+            >
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </li>
+
+        {% endif %}
+
+    </ul>
+
+</nav>
+
+{% endif %}    
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block admin_js %}
+<script src="{% static 'js/admin/coupons.js' %}" ></script>
+{% endblock %}

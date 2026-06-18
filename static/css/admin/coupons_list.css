@@ -1,0 +1,226 @@
+:root {
+    --admin-dark-green: #0b3427;
+    --admin-gold: #c29d63;
+    --bg-workspace: #f8f7f4;
+    --border-color: #f1f0ea;
+    --text-dark: #0f1a1c;
+    
+    /* Internal State Palette */
+    --status-active-bg: #d1f7e4;
+    --status-active-txt: #147246;
+    --status-expired-bg: #eae9e4;
+    --status-expired-txt: #72716e;
+}
+
+/* Typography & Titles */
+.registry-display-title {
+    font-weight: 700;
+    font-size: 2.8rem;
+    color: var(--admin-dark-green);
+    letter-spacing: -0.5px;
+}
+.section-title {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--text-dark);
+}
+.text-gold { color: var(--admin-gold); }
+.text-dark-title { color: var(--text-dark); }
+
+/* Add Coupon Button Override */
+.btn-add-coupon {
+    background-color: var(--admin-dark-green) !important;
+    color: #ffffff !important;
+    border: none !important;
+    transition: background-color 0.2s ease;
+}
+.btn-add-coupon:hover {
+    background-color: #051a13 !important;
+    color: #ffffff !important;
+}
+
+/* Operational Metrics Cards */
+.stat-card {
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.01);
+}
+
+/* Card Active Now - Dark Background Fix */
+.card-active-now {
+    background-color: #0a2d21!important;
+}
+/* Ensure text labels are clear and visible on the dark background */
+.card-active-now h2 {
+    color: #ffffff !important;
+}
+.card-active-now span {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.active-pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #d69838;
+    border-radius: 50%;
+    bottom: 24px;
+    right: 24px;
+    box-shadow: 0 0 0 4px rgba(214, 152, 56, 0.2);
+}
+
+/* Custom Table Outline Design */
+.table-container {
+    border: 1px solid var(--border-color);
+}
+thead th {
+    font-weight: 700;
+    color: #8c9698 !important;
+}
+
+.coupon-code-badge {
+    background-color: #fbf3e6;
+    color: #4a443a;
+    font-size: 0.82rem;
+    letter-spacing: 0.3px;
+    border: 1px dashed rgba(194, 157, 99, 0.25);
+    display: inline-block;
+}
+
+.btn-outline-light-custom {
+    border: 1px solid #e2e1da;
+    background: white;
+    font-size: 0.82rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: background-color 0.15s;
+}
+.btn-outline-light-custom:hover { background-color: #f3f2ed; }
+
+/* Status Pill Indicators Layout */
+.badge-status {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* CSS Pseudo-element to auto-inject the round colored indicator dots */
+.badge-status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 6px;
+    display: inline-block;
+}
+
+/* Green Active Pill Style */
+.status-active { 
+    background-color: var(--status-active-bg) !important; 
+    color: var(--status-active-txt) !important; 
+}
+.status-active::before { 
+    background-color: var(--status-active-txt) !important; 
+}
+
+/* Gray Expired Pill Style */
+.status-expired { 
+    background-color: var(--status-expired-bg) !important; 
+    color: var(--status-expired-txt) !important; 
+}
+.status-expired::before { 
+    background-color: var(--status-expired-txt) !important; 
+}
+
+/* Actions Utility Panel Row */
+.action-btn-row button i, .action-btn-row a i { font-size: 1rem; }
+.btn-edit-trigger:hover i { color: var(--admin-dark-green); }
+.btn-delete-trigger:hover i { color: #dc3545; }
+
+/* Custom Grid Pagination Styles */
+.custom-pagination .page-link {
+    border: none;
+    color: #111;
+    font-weight: 500;
+    font-size: 0.8rem;
+    margin: 0 2px;
+    border-radius: 4px;
+    background: transparent;
+}
+.custom-pagination .page-item.active .page-link {
+    background-color: #111 !important;
+    color: white !important;
+}
+
+/* Global Modifier Helpers */
+.x-small { font-size: 0.7rem; }
+.tracking-wider { letter-spacing: 1px; }
+
+.coupon-filter-bar {
+    margin-bottom: 2rem;
+}
+
+.search-wrapper {
+    position: relative;
+}
+
+.search-wrapper i {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8a8f98;
+    font-size: 15px;
+}
+
+.custom-search {
+    height: 54px;
+    border-radius: 14px;
+    border: 1px solid #e7e7e7;
+    background: #fff;
+    padding-left: 48px;
+    font-size: 15px;
+    box-shadow: none !important;
+    transition: all .25s ease;
+}
+
+.custom-search:focus {
+    border-color: #0b4b3a;
+    box-shadow: 0 0 0 4px rgba(11,75,58,.08) !important;
+}
+
+.custom-filter {
+    height: 54px;
+    border-radius: 14px;
+    border: 1px solid #e7e7e7;
+    font-size: 15px;
+    box-shadow: none !important;
+}
+
+.custom-filter:focus {
+    border-color: #0b4b3a;
+    box-shadow: 0 0 0 4px rgba(11,75,58,.08) !important;
+}
+
+.btn-search-coupon {
+    height: 54px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(
+        135deg,
+        #032f25,
+        #0b4b3a
+    );
+    color: white;
+    font-weight: 600;
+    transition: all .25s ease;
+}
+
+.btn-search-coupon:hover {
+    transform: translateY(-2px);
+    color: white;
+    box-shadow: 0 12px 24px rgba(3,47,37,.18);
+}

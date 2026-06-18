@@ -1,6 +1,7 @@
 from django.db import models
 from accounts.models import Account, Address
 from store.models import Product, Variant
+from coupon.models import Coupon
 
 
 class Order(models.Model):
@@ -43,6 +44,9 @@ class Order(models.Model):
 
     razorpay_order_id = models.CharField(max_length=200,blank=True,null=True)
     razorpay_payment_id = models.CharField(max_length=200,blank=True,null=True)
+
+    coupon = models.ForeignKey(Coupon,on_delete=models.SET_NULL,null=True,blank=True)
+    coupon_discount = models.DecimalField(max_digits=10,decimal_places=2,default=0)
 
 
     def __str__(self):

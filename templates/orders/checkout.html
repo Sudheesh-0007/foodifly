@@ -34,6 +34,17 @@
         <div class="row g-5">
 
             <!-- LEFT SIDE -->
+<input
+    type="hidden"
+    id="hiddenCouponCode"
+    name="coupon_code"
+>
+
+<input
+    type="hidden"
+    id="hiddenCouponDiscount"
+    name="coupon_discount"
+>
 
             <div class="col-lg-7">
 
@@ -362,6 +373,34 @@
                         {% endfor %}
 
                     </div>
+<div class="coupon-card">
+
+    <label class="form-label">
+        Apply Coupon
+    </label>
+
+    <div class="input-group">
+
+        <input
+            type="text"
+            id="couponCode"
+            class="form-control"
+            placeholder="Enter coupon code"
+        >
+
+        <button
+            type="button"
+            id="applyCouponBtn"
+            class="btn"
+        >
+            Apply
+        </button>
+
+    </div>
+
+    <small id="couponMessage"></small>
+
+</div>               
 
                     <!-- TOTALS -->
 
@@ -381,12 +420,9 @@
 
                             </span>
 
-                            <span>
-
+                            <span id="subtotalAmount">
                                 ₹{{ total }}
-
                             </span>
-
                         </div>
 
                         <!-- TAX -->
@@ -400,12 +436,9 @@
                                 Tax
 
                             </span>
-
-                            <span>
-
-                                ₹{{ tax|floatformat:2 }}
-
-                            </span>
+                                <span id="taxAmount">
+                                    ₹{{ tax|floatformat:2 }}
+                                </span>
 
                         </div>
 
@@ -428,6 +461,18 @@
                             </span>
 
                         </div>
+                        <div class="d-flex justify-content-between">
+
+    <span>Coupon Discount</span>
+
+<span
+    id="couponDiscount"
+    class="text-success fw-bold"
+>
+    -₹0.00
+</span>
+
+</div>
 
                         <!-- TOTAL -->
 
@@ -445,13 +490,12 @@
 
                                 </span>
 
-                                <h2
-                                    class="display-5 text-gold-bright mb-0"
-                                >
-
-                                    ₹{{ grand_total|floatformat:2 }}
-
-                                </h2>
+                                    <h2
+                                        id="grandTotalAmount"
+                                        class="display-5 text-gold-bright mb-0"
+                                    >
+                                        ₹{{ grand_total|floatformat:2 }}
+                                    </h2>
 
                             </div>
 
@@ -543,40 +587,78 @@
                 </p>
 
                 <div
-                    class="bg-light rounded-3 p-3 mb-3"
-                >
+    class="bg-light rounded-3 p-3 mb-3"
+>
 
-                    <div
-                        class="d-flex justify-content-between mb-2"
-                    >
+    <div
+        class="d-flex justify-content-between mb-2"
+    >
 
-                        <span>Total Items</span>
+        <span>Total Items</span>
 
-                        <strong>
+        <strong>
 
-                            {{ quantity }}
+            {{ quantity }}
 
-                        </strong>
+        </strong>
 
-                    </div>
+    </div>
 
-                    <div
-                        class="d-flex justify-content-between"
-                    >
+<div
+    class="d-flex justify-content-between mb-2"
+>
 
-                        <span>Grand Total</span>
+    <span>
+        Coupon
+    </span>
 
-                        <strong>
+    <strong
+        class="text-success"
+        id="modalCouponCode"
+    >
+        -
+    </strong>
 
-                            ₹{{ grand_total|floatformat:2 }}
+</div>
 
-                        </strong>
+<div
+    class="d-flex justify-content-between mb-2"
+>
 
-                    </div>
+    <span>
+        Discount
+    </span>
 
-                </div>
+    <strong
+        class="text-success"
+        id="modalCouponDiscount"
+    >
+        -₹0.00
+    </strong>
 
+</div>
 
+    <hr>
+
+    <div
+        class="d-flex justify-content-between"
+    >
+
+        <span>
+
+            Grand Total
+
+        </span>
+
+        <strong id="modalGrandTotal">
+
+            ₹{{ grand_total|floatformat:2 }}
+
+        </strong>
+
+    </div>
+
+</div>
 
             </div>
 
@@ -723,7 +805,88 @@ window.onload = function() {
 
 };
 
+
 </script>
 
 {% endif %}
+<script>
+
+document
+.getElementById("applyCouponBtn")
+.addEventListener("click", function() {
+
+    const couponCode =
+        document.getElementById("couponCode").value;
+
+    const subtotalText =
+        document.getElementById("subtotalAmount")
+        .innerText
+        .replace("₹", "")
+        .trim();
+
+    fetch(
+        `/coupon/apply/?coupon_code=${couponCode}&total=${subtotalText}`
+    )
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        const message =
+            document.getElementById("couponMessage");
+
+        if (data.success) {
+
+            message.className =
+                "text-success mt-2 d-block";
+
+            message.innerText =
+                data.message;
+
+            document
+            .getElementById("couponDiscount")
+            .innerText =
+                `-₹${data.discount}`;
+
+            document
+            .getElementById("modalGrandTotal")
+            .innerText =
+               `₹${data.grand_total}`;
+
+            document.getElementById("grandTotalAmount").innerText =
+            `₹${data.grand_total}`;
+            document
+            .getElementById("hiddenCouponCode")
+            .value =
+                data.coupon_code;
+                
+            document.getElementById(
+                "modalCouponCode"
+            ).innerText =
+                data.coupon_code;
+
+            document.getElementById(
+                "modalCouponDiscount"
+            ).innerText =
+                `-₹${data.discount}`;
+
+            document
+            .getElementById("hiddenCouponDiscount")
+            .value =
+                data.discount;
+
+        } else {
+
+            message.className =
+                "text-danger mt-2 d-block";
+
+            message.innerText =
+                data.message;
+        }
+
+    });
+
+});
+
+</script>
 {% endblock %}

@@ -1,0 +1,161 @@
+{% extends "admin_panel/admin_base.html" %}
+{% load static %}
+
+{% block admin_css %}
+<link rel="stylesheet" href="{% static 'css/admin/add_coupon.css' %}">
+{% endblock %}
+
+{% block admin_content %}
+
+<div class="coupon-page">
+
+    <div class="page-header">
+
+        <div class="breadcrumb-text">
+            COUPON MANAGEMENT
+            <span>›</span>
+            CREATE COUPON
+        </div>
+
+        <h1>Create New Coupon</h1>
+
+        <p>
+            Define discount parameters for a new promotional
+            campaign and engage your audience.
+        </p>
+
+    </div>
+
+    <div class="coupon-card">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <!-- Coupon Code -->
+
+            <div class="form-section">
+
+                <label>COUPON CODE</label>
+
+                <input
+                    type="text"
+                    name="code"
+                    placeholder="E.G., SUMMERSALE25"
+                    required
+                >
+
+                <small>
+                    Use alphanumeric characters only.
+                </small>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <label>DISCOUNT TYPE</label>
+
+                    <select name="discount_type">
+
+                        <option value="PERCENTAGE">
+                            Percentage Discount
+                        </option>
+
+                        <option value="FIXED">
+                            Fixed Discount
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label>DISCOUNT VALUE</label>
+
+                    <input
+                        type="number"
+                        step="0.01"
+                        name="discount_value"
+                        placeholder="20"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="row mt-4">
+
+                <div class="col-md-6">
+
+                    <label>MINIMUM AMOUNT</label>
+
+                    <input
+                        type="number"
+                        step="0.01"
+                        name="minimum_amount"
+                        placeholder="500"
+                        required
+                    >
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label>MAXIMUM DISCOUNT</label>
+
+                    <input
+                        type="number"
+                        step="0.01"
+                        name="maximum_discount"
+                        placeholder="100"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="row mt-4">
+
+                <div class="col-md-6">
+
+                    <label>VALID FROM</label>
+
+                    <input
+                        type="date"
+                        name="valid_from"
+                        required
+                    >
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label>VALID TO</label>
+
+                    <input
+                        type="date"
+                        name="valid_to"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <button
+                type="submit"
+                class="coupon-submit-btn"
+            >
+                Generate Coupon
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+{% endblock %}

@@ -375,3 +375,66 @@ body {
 
     color: rgba(255,255,255,0.5);
 }
+/* Coupon Section */
+.coupon-card {
+    margin-bottom: 24px;
+}
+
+.coupon-card .form-label {
+    color: #f4d19b;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.coupon-card .input-group {
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.08);
+}
+
+.coupon-card input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    height: 48px;
+    font-size: 15px;
+    padding: 0 16px;
+}
+
+.coupon-card input:focus {
+    box-shadow: none;
+    border: none;
+    background: transparent;
+    color: #fff;
+}
+
+.coupon-card input::placeholder {
+    color: rgba(255,255,255,0.55);
+}
+
+.coupon-card .btn {
+    background: #e8d2a7;
+    color: #0d3d2f;
+    border: none;
+    font-weight: 700;
+    padding: 0 24px;
+    transition: all 0.3s ease;
+}
+
+.coupon-card .btn:hover {
+    background: #f4d19b;
+    color: #0d3d2f;
+}
+
+#couponMessage {
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+#couponDiscount {
+    color: #34d399;
+    font-weight: 700;
+}

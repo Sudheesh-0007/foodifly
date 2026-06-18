@@ -178,25 +178,45 @@
 
                 </div>
 
-                <div
-                    class="d-flex justify-content-between mb-2 text-light-muted"
-                >
+{% if order.coupon %}
 
-                    <span>Tax</span>
+<div
+    class="d-flex justify-content-between mb-2"
+>
 
-                    <span>₹{{ order.tax }}</span>
+    <span class="text-gold-muted">
 
-                </div>
+        Coupon Applied
 
-                <div
-                    class="d-flex justify-content-between mb-4 pb-3 border-bottom border-secondary text-light-muted"
-                >
+    </span>
 
-                    <span>Shipping</span>
+    <span class="text-success fw-bold">
 
-                    <span>FREE</span>
+        {{ order.coupon.code }}
 
-                </div>
+    </span>
+
+</div>
+
+<div
+    class="d-flex justify-content-between mb-3"
+>
+
+    <span class="text-gold-muted">
+
+        Discount
+
+    </span>
+
+    <span class="text-success fw-bold">
+
+        -₹{{ order.coupon_discount }}
+
+    </span>
+
+</div>
+
+{% endif %}
 
                 <div
                     class="d-flex justify-content-between align-items-end mb-4"

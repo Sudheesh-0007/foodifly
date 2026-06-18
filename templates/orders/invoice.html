@@ -379,6 +379,21 @@
                     </td>
 
                 </tr>
+                {% if order.coupon_discount > 0 %}
+
+<tr>
+
+    <td>
+        Coupon Discount
+    </td>
+
+    <td>
+        -₹{{ order.coupon_discount }}
+    </td>
+
+</tr>
+
+{% endif %}
 
                 <tr class="grand-total-row">
 

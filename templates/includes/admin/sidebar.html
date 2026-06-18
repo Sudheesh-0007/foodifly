@@ -34,7 +34,7 @@
         <a href="{% url "category_management"%}" class="sidebar-link {% if '/categorys/' in request.path %}active{% endif %}">
             <i class="bi bi-layers"></i> Category
         </a>
-        <a href="#" class="sidebar-link">
+       <a href="{% url "coupon_list"%}" class="sidebar-link {% if '/coupon/' in request.path %}active{% endif %}">
             <i class="bi bi-ticket-perforated"></i> Coupon
         </a>
         <a href="{% url "offer_management"%}" class="sidebar-link {% if '/offer/' in request.path %}active{% endif %}">
