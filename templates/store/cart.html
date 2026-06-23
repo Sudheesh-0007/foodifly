@@ -50,9 +50,10 @@
 
                 {% for item in cart_items %}
 
-                <div
-                    class="cart-item-card d-flex flex-column flex-md-row p-4 mb-4"
-                >
+<div
+    id="cart-item-{{ item.id }}"
+    class="cart-item-card d-flex flex-column flex-md-row p-4 mb-4"
+>
 
                     <!-- PRODUCT IMAGE -->
 
@@ -112,11 +113,9 @@
 
 </div>
 
-                            <span class="item-price">
-
-                                ₹{{ item.total_price }}
-
-                            </span>
+<span class="item-price" id="item-total-{{ item.id }}">
+    ₹{{ item.total_price }}
+</span>
 
                         </div>
                         {% if item.variant.stock <= 0 %}
@@ -175,49 +174,44 @@
                             >
 
                                 <!-- DECREASE -->
-
-                                <a
-                                    href="{% url 'decrease_cart_quantity' item.id %}"
-                                    class="qty-btn text-decoration-none"
-                                >
-
-                                    −
-
-                                </a>
+<button
+    type="button"
+    class="qty-btn border-0 bg-transparent"
+    onclick="decreaseQuantity('{{ item.id }}')"
+>
+    −
+</button>
 
                                 <!-- QUANTITY -->
 
-                                <span class="qty-val">
-
-                                    {{ item.quantity }}
-
-                                </span>
+<span
+    class="qty-val"
+    id="qty-{{ item.id }}"
+>
+    {{ item.quantity }}
+</span>
 
                                 <!-- INCREASE -->
-
-                                <a
-                                    href="{% url 'increase_cart_quantity' item.id %}"
-                                    class="qty-btn text-decoration-none"
-                                >
-
-                                    +
-
-                                </a>
+<button
+    type="button"
+    class="qty-btn border-0 bg-transparent"
+    onclick="increaseQuantity('{{ item.id }}')"
+>
+    +
+</button>
 
                             </div>
 
                             <!-- REMOVE -->
 
-                            <a
-                                href="{% url 'remove_cart_item' item.id %}"
-                                class="btn-remove btn btn-link text-decoration-none p-0"
-                            >
-
-                                <i class="bi bi-trash3"></i>
-
-                                REMOVE
-
-                            </a>
+<button
+    type="button"
+    class="btn-remove btn btn-link text-decoration-none p-0"
+    onclick="removeCartItem('{{ item.id }}')"
+>
+    <i class="bi bi-trash3"></i>
+    REMOVE
+</button>
 
                         </div>
 
@@ -281,11 +275,9 @@
 
                     </span>
 
-                    <span>
-
-                        ₹{{ total }}
-
-                    </span>
+<span id="cart-subtotal">
+    ₹{{ total }}
+</span>
 
                 </div>
 
@@ -301,11 +293,9 @@
 
                     </span>
 
-                    <span>
-
-                        ₹{{ tax|floatformat:2 }}
-
-                    </span>
+<span id="cart-tax">
+    ₹{{ tax|floatformat:2 }}
+</span>
 
                 </div>
 
@@ -321,11 +311,9 @@
 
                     </span>
 
-                    <span>
-
-                        {{ quantity }}
-
-                    </span>
+<span id="cart-items">
+    {{ quantity }}
+</span>
 
                 </div>
 
@@ -341,11 +329,9 @@
 
                     </span>
 
-                    <span class="total-price">
-
-                        ₹{{ grand_total|floatformat:2 }}
-
-                    </span>
+<span class="total-price" id="cart-grand-total">
+    ₹{{ grand_total|floatformat:2 }}
+</span>
 
                 </div>
 

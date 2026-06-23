@@ -6,6 +6,7 @@ from store.models import Product, Variant
 from .models import Cart, CartItem
 from wishlist.models import WishlistItem
 from offers.utils import get_offer_price
+from django.http import JsonResponse
 
 
 @custom_login_required
@@ -132,49 +133,133 @@ def cart(request):
     return render(request, "store/cart.html", context)
 
 
+from django.http import JsonResponse
+
+
+from decimal import Decimal
+
+
 @custom_login_required
 def increase_cart_quantity(request, cart_item_id):
 
-    cart_item = get_object_or_404(CartItem, id=cart_item_id)
+    cart_item = get_object_or_404(CartItem, id=cart_item_id, cart__user=request.user)
 
     if cart_item.quantity >= cart_item.variant.stock:
-        messages.error(request, "Insufficient stock")
-        return redirect("cart")
+        return JsonResponse({"success": False, "message": "Insufficient stock"})
 
     if cart_item.quantity >= 5:
-        messages.warning(request, "Maximum quantity limit reached")
-        return redirect("cart")
+        return JsonResponse(
+            {"success": False, "message": "Maximum quantity limit reached"}
+        )
 
     cart_item.quantity += 1
     cart_item.save()
-    return redirect("cart")
+
+    cart = cart_item.cart
+
+    total = Decimal("0")
+    quantity = 0
+
+    for item in CartItem.objects.filter(cart=cart):
+
+        offer_price, _ = get_offer_price(item.product, item.variant.salePrice)
+
+        total += offer_price * item.quantity
+        quantity += item.quantity
+
+    tax = total / Decimal("10")
+    grand_total = total + tax
+
+    offer_price, _ = get_offer_price(cart_item.product, cart_item.variant.salePrice)
+
+    return JsonResponse(
+        {
+            "success": True,
+            "quantity": cart_item.quantity,
+            "item_total": float(offer_price * cart_item.quantity),
+            "subtotal": float(total),
+            "tax": float(tax),
+            "grand_total": float(grand_total),
+            "cart_items": quantity,
+        }
+    )
 
 
 @custom_login_required
 def decrease_cart_quantity(request, cart_item_id):
 
-    cart_item = get_object_or_404(CartItem, id=cart_item_id)
+    cart_item = get_object_or_404(CartItem, id=cart_item_id, cart__user=request.user)
 
     if cart_item.quantity > 1:
 
         cart_item.quantity -= 1
-
         cart_item.save()
 
     else:
 
         cart_item.delete()
 
-    return redirect("cart")
+        return JsonResponse({"success": True, "deleted": True})
+
+    cart = cart_item.cart
+
+    total = Decimal("0")
+    quantity = 0
+
+    for item in CartItem.objects.filter(cart=cart):
+
+        offer_price, _ = get_offer_price(item.product, item.variant.salePrice)
+
+        total += offer_price * item.quantity
+        quantity += item.quantity
+
+    tax = total / Decimal("10")
+    grand_total = total + tax
+
+    offer_price, _ = get_offer_price(cart_item.product, cart_item.variant.salePrice)
+
+    return JsonResponse(
+        {
+            "success": True,
+            "deleted": False,
+            "quantity": cart_item.quantity,
+            "item_total": float(offer_price * cart_item.quantity),
+            "subtotal": float(total),
+            "tax": float(tax),
+            "grand_total": float(grand_total),
+            "cart_items": quantity,
+        }
+    )
 
 
 @custom_login_required
 def remove_cart_item(request, cart_item_id):
 
-    cart_item = get_object_or_404(CartItem, id=cart_item_id)
+    cart_item = get_object_or_404(CartItem, id=cart_item_id, cart__user=request.user)
+
+    cart = cart_item.cart
 
     cart_item.delete()
 
-    messages.success(request, "Item removed from cart")
+    total = Decimal("0")
+    quantity = 0
 
-    return redirect("cart")
+    for item in CartItem.objects.filter(cart=cart):
+
+        offer_price, _ = get_offer_price(item.product, item.variant.salePrice)
+
+        total += offer_price * item.quantity
+        quantity += item.quantity
+
+    tax = total / Decimal("10")
+    grand_total = total + tax
+
+    return JsonResponse(
+        {
+            "success": True,
+            "subtotal": float(total),
+            "tax": float(tax),
+            "grand_total": float(grand_total),
+            "cart_items": quantity,
+        }
+    )

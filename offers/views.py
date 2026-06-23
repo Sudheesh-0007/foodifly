@@ -41,7 +41,7 @@ def offer_list(request):
     elif sort == "name_desc":
         offers = offers.order_by("-name")
 
-    paginator = Paginator(offers, 10)
+    paginator = Paginator(offers, 5)
 
     page = request.GET.get("page")
 
