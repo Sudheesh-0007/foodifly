@@ -10,13 +10,27 @@
 <div class="content-body animate-fade-in">
     <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
         <div>
-            <span class="text-uppercase x-small text-gold fw-bold tracking-wider mb-1 d-block">Performance Overview</span>
-            <h1 class="registry-display-title">Dashboard</h1>
+            <span class="text-uppercase x-small text-gold fw-bold tracking-wider mb-1 d-block">
+    Sales Analytics
+</span>
+            <h1 class="registry-display-title">Sales Report</h1>
             <p class="text-muted small mb-0">Welcome back! Here's what's happening with your store today.</p>
         </div>
         <div class="d-flex gap-2 align-items-center flex-wrap">
 
-
+<a
+href="{% url 'export_sales_excel' %}?filter={{ filter_type }}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}"
+class="btn btn-success btn-sm"
+>
+    Export Excel
+</a>
+<a
+href="{% url 'export_sales_pdf' %}?filter={{ filter_type }}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}"
+class="btn btn-outline-light-custom text-nowrap"
+>
+    <i class="bi bi-file-earmark-pdf text-danger me-1"></i>
+    PDF
+</a>
         </div>
     </div>
 
@@ -70,15 +84,20 @@
             </div>
         </div>
     </div>
-{% include "includes/alerts.html" %}
+    {% include "includes/alerts.html" %}
+
     <div class="chart-card bg-white p-4 rounded-4 border mb-4">
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
             <div>
-                <h5 class="fw-bold text-dark mb-1">Sales Overview</h5>
-                <span class="x-small text-muted">Daily revenue trend for the current billing cycle</span>
+<h5 class="fw-bold text-dark mb-1">Sales Filters</h5>
+<span class="x-small text-muted">
+    Filter sales reports by date range and period
+</span>
             </div>
             <div class="d-flex align-items-center gap-3">
-                <span class="x-small fw-medium text-dark"><span class="legend-dot"></span> Direct Revenue</span>
+     
+
+
 <form method="GET" class="d-flex align-items-center gap-2">
 
     <input
@@ -128,179 +147,164 @@
 </div>
             </div>
         </div>
-        <div style="position: relative; height: 280px; width: 100%;">
-            <canvas id="salesOverviewChart"></canvas>
-            {{ chart_labels|json_script:"chart-labels" }}
-            {{ chart_values|json_script:"chart-values" }}
-        </div>
+
     </div>
+<div class="mb-3">
+    <h5 class="fw-bold">Sales Insights</h5>
+    <small class="text-muted">
+        Payment and order status distribution
+    </small>
+</div>
 
-    <div class="table-container bg-white p-4 rounded-4 border mb-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold text-dark mb-0">Recent Orders</h5>
-            
-        </div>
-        <div class="table-responsive">
-            <table class="table table-borderless table-align-middle align-middle mb-0">
-                <thead>
-                    <tr class="text-uppercase text-muted x-small tracking-wider border-bottom">
-                        <th class="py-2">Order ID</th>
-                        <th class="py-2">Customer</th>
-                        <th class="py-2">Date</th>
-                        <th class="py-2">Amount</th>
-                        <th class="py-2">Payment</th>
-                        <th class="py-2">Status</th>
-                    </tr>
-                </thead>
-<tbody>
-{% for order in recent_orders %}
-<tr>
-    <td>#{{ order.order_number }}</td>
+<div class="row g-4 mb-4">
 
-    <td>
-        {{ order.user.first_name }}
-        {{ order.user.last_name }}
-    </td>
+    <!-- Payment Distribution -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
 
-    <td>
-        {{ order.created_at|date:"M d, Y" }}
-    </td>
+            <h5 class="fw-bold mb-3">
+                Payment Distribution
+            </h5>
 
-    <td>
-        ₹{{ order.grand_total }}
-    </td>
+            <div style="height:300px">
+                <canvas id="paymentChart"></canvas>
 
-    <td>
-        {{ order.payment_method }}
-    </td>
-
-    <td>
-        <span class="badge-status">
-            {{ order.status }}
-        </span>
-    </td>
-</tr>
-{% endfor %}
-</tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="row g-4 mb-4">
-        <div class="col-lg-6">
-            <div class="table-container bg-white p-4 rounded-4 border h-100">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold text-dark mb-0">Best Selling Products</h5>
-                   
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-borderless align-middle mb-0">
-                        <thead>
-                            <tr class="text-uppercase text-muted x-small tracking-wider border-bottom text-center">
-                                <th class="text-start py-2" style="width: 50px;">#</th>
-                                <th class="text-start py-2">Product</th>
-                                <th class="py-2">Sold</th>
-                                <th class="text-end py-2">Revenue</th>
-                            </tr>
-                        </thead>
-<tbody>
-
-{% for product in best_products %}
-
-<tr class="border-bottom border-light-subtle">
-
-    <td class="fw-bold text-muted small py-3">
-        {{ forloop.counter }}
-    </td>
-
-    <td class="small fw-bold text-dark">
-        {{ product.product__name }}
-    </td>
-
-    <td class="text-center small text-muted">
-        {{ product.total_sold }}
-    </td>
-
-    <td class="text-end fw-bold text-dark">
-        ₹{{ product.revenue }}
-    </td>
-
-</tr>
-
-{% empty %}
-
-<tr>
-    <td colspan="4" class="text-center py-4 text-muted">
-        No product sales found
-    </td>
-</tr>
-
-{% endfor %}
-
-</tbody>                       
-                    </table>
-                </div>
+                {{ payment_labels|json_script:"payment-labels" }}
+                {{ payment_values|json_script:"payment-values" }}
             </div>
-        </div>
 
-        <div class="col-lg-6">
-            <div class="table-container bg-white p-4 rounded-4 border h-100">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold text-dark mb-0">Best Selling Categories</h5>
-                    
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-borderless align-middle mb-0">
-                        <thead>
-                            <tr class="text-uppercase text-muted x-small tracking-wider border-bottom text-center">
-                                <th class="text-start py-2" style="width: 50px;">#</th>
-                                <th class="text-start py-2">Category</th>
-                                <th class="py-2">Sold</th>
-                                <th class="text-end py-2">Revenue</th>
-                            </tr>
-                        </thead>
-<tbody>
-
-{% for category in best_categories %}
-
-<tr class="border-bottom border-light-subtle">
-
-    <td class="fw-bold text-muted small py-3">
-        {{ forloop.counter }}
-    </td>
-
-    <td class="small fw-bold text-dark">
-        {{ category.product__category__category_name }}
-    </td>
-
-    <td class="text-center small text-muted">
-        {{ category.total_sold }}
-    </td>
-
-    <td class="text-end fw-bold text-dark">
-        ₹{{ category.revenue }}
-    </td>
-
-</tr>
-
-{% empty %}
-
-<tr>
-    <td colspan="4" class="text-center py-4 text-muted">
-        No category sales found
-    </td>
-</tr>
-
-{% endfor %}
-
-</tbody>
-                    </table>
-                </div>
-            </div>
         </div>
     </div>
 
-    
+    <!-- Order Status -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+
+            <h5 class="fw-bold mb-3">
+                Order Status
+            </h5>
+
+            <div style="height:300px">
+                <canvas id="statusChart"></canvas>
+
+                {{ status_labels|json_script:"status-labels" }}
+                {{ status_values|json_script:"status-values" }}
+            </div>
+
+        </div>
+    </div>
+
+</div>
+   
+   <div class="table-container bg-white rounded-4 border p-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="fw-bold mb-1">Sales Transaction History</h5>
+            <small class="text-muted">
+                Detailed sales transactions
+            </small>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table align-middle">
+
+            <thead>
+                <tr>
+                    <th>Order No</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Payment</th>
+                    <th>Discount</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for order in context_orders %}
+
+                <tr>
+
+                    <td>
+                        {{ order.order_number }}
+                    </td>
+
+                    <td>
+                        {{ order.user.first_name }}
+                        {{ order.user.last_name }}
+                    </td>
+
+                    <td>
+                        {{ order.created_at|date:"d M Y" }}
+                    </td>
+
+                    <td>
+                        {{ order.payment_method }}
+                    </td>
+
+                    <td>
+                        ₹{{ order.coupon_discount }}
+                    </td>
+
+                    <td>
+                        ₹{{ order.grand_total }}
+                    </td>
+
+                    <td>
+
+                        {% if order.status == "Delivered" %}
+
+                        <span class="badge-status status-completed">
+                            Delivered
+                        </span>
+
+                        {% elif order.status == "Cancelled" %}
+
+                        <span class="badge-status status-refunded">
+                            Cancelled
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge-status status-pending">
+                            {{ order.status }}
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="7" class="text-center py-4">
+                        No sales found
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+<div class="text-end mt-3">
+    <a href="{% url 'admin_orders' %}"
+       class="btn btn-outline-light-custom">
+        View All Orders
+        <i class="bi bi-arrow-right"></i>
+    </a>
+</div>
+
+    </div>
+
+</div>
+
     </div>
 </div>
 {% endblock %}

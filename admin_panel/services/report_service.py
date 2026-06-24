@@ -11,6 +11,7 @@ from orders.models import OrderItem
 from orders.models import Order
 from datetime import datetime
 import calendar
+from django.db.models import Count
 
 
 def get_filtered_orders(filter_type, start_date=None, end_date=None):
@@ -131,7 +132,7 @@ def get_sales_chart_data(filter_type, start_date=None, end_date=None):
             "chart_labels": labels,
             "chart_values": values,
         }
-    # Daily Chart (24 Hours)
+
     if filter_type == "daily":
 
         for hour in range(24):
@@ -146,7 +147,6 @@ def get_sales_chart_data(filter_type, start_date=None, end_date=None):
             labels.append(f"{hour}:00")
             values.append(float(revenue))
 
-    # Weekly Chart (7 Days)
     elif filter_type == "weekly":
 
         for i in range(6, -1, -1):
@@ -164,7 +164,6 @@ def get_sales_chart_data(filter_type, start_date=None, end_date=None):
 
             values.append(float(revenue))
 
-    # Monthly Chart (Days of Month)
     elif filter_type == "monthly":
         days_in_month = calendar.monthrange(today.year, today.month)[1]
 
@@ -180,7 +179,6 @@ def get_sales_chart_data(filter_type, start_date=None, end_date=None):
             labels.append(str(day))
             values.append(float(revenue))
 
-    # Yearly Chart (Months)
     elif filter_type == "yearly":
 
         months = [
@@ -214,3 +212,82 @@ def get_sales_chart_data(filter_type, start_date=None, end_date=None):
         "chart_labels": labels,
         "chart_values": values,
     }
+
+
+def get_payment_distribution(orders):
+
+    data = (
+        orders.values("payment_method")
+        .annotate(total=Sum("grand_total"))
+        .order_by("-total")
+    )
+
+    labels = []
+    values = []
+
+    for item in data:
+
+        labels.append(item["payment_method"])
+        values.append(float(item["total"]))
+
+    return {
+        "payment_labels": labels,
+        "payment_values": values,
+    }
+
+
+def get_order_status_distribution(orders):
+
+    data = orders.values("status").annotate(count=Count("id"))
+    print("STATUS DATA:", list(data))
+
+    labels = []
+    values = []
+
+    for item in data:
+
+        labels.append(item["status"])
+        values.append(item["count"])
+
+    return {
+        "status_labels": labels,
+        "status_values": values,
+    }
+def get_sales_report_orders(filter_type, start_date=None, end_date=None):
+
+    today = timezone.now()
+
+    orders = Order.objects.all()
+
+    if start_date and end_date:
+
+        return orders.filter(
+            created_at__date__range=[start_date, end_date]
+        )
+
+    if filter_type == "daily":
+
+        orders = orders.filter(
+            created_at__date=today.date()
+        )
+
+    elif filter_type == "weekly":
+
+        orders = orders.filter(
+            created_at__gte=today - timedelta(days=7)
+        )
+
+    elif filter_type == "monthly":
+
+        orders = orders.filter(
+            created_at__year=today.year,
+            created_at__month=today.month
+        )
+
+    elif filter_type == "yearly":
+
+        orders = orders.filter(
+            created_at__year=today.year
+        )
+
+    return orders

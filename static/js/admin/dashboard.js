@@ -58,5 +58,98 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-
 });
+// Payment Distribution Chart
+const paymentCanvas = document.getElementById("paymentChart");
+
+if (paymentCanvas) {
+
+    const paymentLabels = JSON.parse(
+        document.getElementById("payment-labels").textContent
+    );
+
+    const paymentValues = JSON.parse(
+        document.getElementById("payment-values").textContent
+    );
+
+    new Chart(paymentCanvas, {
+        type: "doughnut",
+        data: {
+            labels: paymentLabels,
+            datasets: [{
+                data: paymentValues,
+                backgroundColor: [
+                    "#0A2D21",
+                    "#C5A47E",
+                    "#2C7EBF"
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: "bottom"
+                }
+            }
+        }
+    });
+}
+const statusCanvas = document.getElementById("statusChart");
+
+if (statusCanvas) {
+
+    const statusLabels = JSON.parse(
+        document.getElementById("status-labels").textContent
+    );
+
+    const statusValues = JSON.parse(
+        document.getElementById("status-values").textContent
+    );
+
+    new Chart(statusCanvas, {
+        type: "doughnut",
+        data: {
+            labels: statusLabels,
+            datasets: [{
+                data: statusValues
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+}
+const dateForm = document.getElementById("dateFilterForm");
+
+if (dateForm) {
+
+    dateForm.addEventListener("submit", function(e) {
+
+        const startDate =
+            document.querySelector(
+                'input[name="start_date"]'
+            ).value;
+
+        const endDate =
+            document.querySelector(
+                'input[name="end_date"]'
+            ).value;
+
+        if (startDate && endDate) {
+
+            if (startDate > endDate) {
+
+                e.preventDefault();
+
+                alert(
+                    "End date must be greater than or equal to start date."
+                );
+            }
+        }
+
+    });
+
+}
