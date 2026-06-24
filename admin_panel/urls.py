@@ -8,5 +8,7 @@ urlpatterns = [
     path('logout/', views.admin_logout, name='admin_logout'),
     path('reports/', views.report_dashboard, name='admin_report'),
     path("reports/export-excel/",views.export_sales_excel,name="export_sales_excel",),
+    path("reports/export-pdf/",views.export_sales_pdf,name="export_sales_pdf"),
+
     
 ]
