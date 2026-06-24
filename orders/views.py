@@ -208,7 +208,7 @@ def checkout(request):
                         grand_total=grand_total,
                         is_ordered=True,
                         payment_method="COD",
-                        payment_status="Pending",
+                        payment_status="Paid",
                         coupon=coupon,
                         coupon_discount=coupon_discount,
                     )

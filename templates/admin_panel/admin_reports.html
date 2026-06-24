@@ -1,0 +1,402 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+
+{% block admin_css %}
+<link rel="stylesheet" href="{% static 'css/admin/reports.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block admin_content %}
+<div class="content-body animate-fade-in">
+    <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+        <div>
+            <span class="text-uppercase x-small text-gold fw-bold tracking-wider mb-1 d-block">Performance Overview</span>
+            <h1 class="registry-display-title">Dashboard</h1>
+            <p class="text-muted small mb-0">Welcome back! Here's what's happening with your store today.</p>
+        </div>
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+            <div class="input-group-custom bg-white px-3 py-2 rounded-3 border">
+                <i class="bi bi-calendar3 me-2 text-muted"></i>
+                <input type="text" class="border-0 small font-sans bg-transparent" value="Oct 25, 2024 - Oct 25, 2024" style="outline: none; width: 160px;">
+            </div>
+<a
+href="{% url 'export_sales_excel' %}?filter={{ filter_type }}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}"
+class="btn btn-success btn-sm"
+>
+    Export Excel
+</a>
+            <button class="btn btn-outline-light-custom text-nowrap"><i class="bi bi-file-earmark-pdf text-danger me-1"></i> PDF <span class="text-muted x-small">Download</span></button>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-sm-4 col-xl-2">
+            <div class="metric-card p-3 bg-white rounded-4 border">
+                <div class="icon-shape bg-mint mb-3"><i class="bi bi-currency-dollar text-mint-dark"></i></div>
+                <span class="text-uppercase x-small text-muted fw-bold d-block mb-1">Total Sales</span>
+                <h4 class="fw-bold text-dark mb-1">₹{{ total_sales }}</h4>
+                <span class="x-small text-success fw-medium"><i class="bi bi-arrow-up-right me-1"></i>12% vs last period</span>
+            </div>
+        </div>
+        <div class="col-6 col-sm-4 col-xl-2">
+            <div class="metric-card p-3 bg-white rounded-4 border">
+                <div class="icon-shape bg-orange mb-3"><i class="bi bi-bag-check text-orange-dark"></i></div>
+                <span class="text-uppercase x-small text-muted fw-bold d-block mb-1">Total Orders</span>
+                <h4 class="fw-bold text-dark mb-1">{{ total_orders }}</h4>
+                <span class="x-small text-success fw-medium"><i class="bi bi-arrow-up-right me-1"></i>8% vs last period</span>
+            </div>
+        </div>
+        <div class="col-6 col-sm-4 col-xl-2">
+            <div class="metric-card p-3 bg-white rounded-4 border">
+                <div class="icon-shape bg-blue mb-3"><i class="bi bi-people text-blue-dark"></i></div>
+                <span class="text-uppercase x-small text-muted fw-bold d-block mb-1">Total Users</span>
+                <h4 class="fw-bold text-dark mb-1">{{ total_users }}</h4>
+                <span class="x-small text-success fw-medium"><i class="bi bi-arrow-up-right me-1"></i>15% vs last period</span>
+            </div>
+        </div>
+        <div class="col-6 col-sm-4 col-xl-2">
+            <div class="metric-card p-3 bg-white rounded-4 border">
+                <div class="icon-shape bg-coral-light mb-3"><i class="bi bi-box-seam text-coral-dark"></i></div>
+                <span class="text-uppercase x-small text-muted fw-bold d-block mb-1">Total Products</span>
+                <h4 class="fw-bold text-dark mb-1">{{ total_products }}</h4>
+                <span class="x-small text-success fw-medium"><i class="bi bi-arrow-up-right me-1"></i>5% vs last period</span>
+            </div>
+        </div>
+        <div class="col-6 col-sm-4 col-xl-2">
+            <div class="metric-card p-3 bg-white rounded-4 border">
+                <div class="icon-shape bg-slate mb-3"><i class="bi bi-grid-1x2 text-slate-dark"></i></div>
+                <span class="text-uppercase x-small text-muted fw-bold d-block mb-1">Total Categories</span>
+                <h4 class="fw-bold text-dark mb-1">{{ total_categories }}</h4>
+                <span class="x-small text-success fw-medium"><i class="bi bi-arrow-up-right me-1"></i>3% vs last period</span>
+            </div>
+        </div>
+        <div class="col-6 col-sm-4 col-xl-2">
+            <div class="metric-card p-3 bg-white rounded-4 border">
+                <div class="icon-shape bg-pink mb-3"><i class="bi bi-ticket-perforated text-pink-dark"></i></div>
+                <span class="text-uppercase x-small text-muted fw-bold d-block mb-1">Total Coupons</span>
+                <h4 class="fw-bold text-dark mb-1">{{ total_coupons }}</h4>
+                <span class="x-small text-danger fw-medium"><i class="bi bi-arrow-down-left me-1"></i>2% vs last period</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-card bg-white p-4 rounded-4 border mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <div>
+                <h5 class="fw-bold text-dark mb-1">Sales Overview</h5>
+                <span class="x-small text-muted">Daily revenue trend for the current billing cycle</span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <span class="x-small fw-medium text-dark"><span class="legend-dot"></span> Direct Revenue</span>
+<form method="GET" class="d-flex align-items-center gap-2">
+
+    <input
+        type="date"
+        name="start_date"
+        class="form-control form-control-sm"
+        value="{{ start_date }}"
+    >
+
+    <input
+        type="date"
+        name="end_date"
+        class="form-control form-control-sm"
+        value="{{ end_date }}"
+    >
+
+    <button
+        type="submit"
+        class="btn btn-sm btn-dark"
+    >
+        Apply
+    </button>
+
+</form>        
+<div class="btn-group time-btn-group" role="group">
+
+    <a href="?filter=daily"
+       class="btn btn-time small {% if filter_type == 'daily' %}active{% endif %}">
+        Daily
+    </a>
+
+    <a href="?filter=weekly"
+       class="btn btn-time small {% if filter_type == 'weekly' %}active{% endif %}">
+        Weekly
+    </a>
+
+    <a href="?filter=monthly"
+       class="btn btn-time small {% if filter_type == 'monthly' %}active{% endif %}">
+        Monthly
+    </a>
+
+    <a href="?filter=yearly"
+       class="btn btn-time small {% if filter_type == 'yearly' %}active{% endif %}">
+        Yearly
+    </a>
+
+</div>
+            </div>
+        </div>
+        <div style="position: relative; height: 280px; width: 100%;">
+            <canvas id="salesOverviewChart"></canvas>
+            {{ chart_labels|json_script:"chart-labels" }}
+            {{ chart_values|json_script:"chart-values" }}
+        </div>
+    </div>
+
+    <div class="table-container bg-white p-4 rounded-4 border mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-dark mb-0">Recent Orders</h5>
+            <button class="btn btn-outline-light-custom btn-xs px-3">View All</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-borderless table-align-middle align-middle mb-0">
+                <thead>
+                    <tr class="text-uppercase text-muted x-small tracking-wider border-bottom">
+                        <th class="py-2">Order ID</th>
+                        <th class="py-2">Customer</th>
+                        <th class="py-2">Date</th>
+                        <th class="py-2">Amount</th>
+                        <th class="py-2">Payment</th>
+                        <th class="py-2">Status</th>
+                    </tr>
+                </thead>
+<tbody>
+{% for order in recent_orders %}
+<tr>
+    <td>#{{ order.order_number }}</td>
+
+    <td>
+        {{ order.user.first_name }}
+        {{ order.user.last_name }}
+    </td>
+
+    <td>
+        {{ order.created_at|date:"M d, Y" }}
+    </td>
+
+    <td>
+        ₹{{ order.grand_total }}
+    </td>
+
+    <td>
+        {{ order.payment_method }}
+    </td>
+
+    <td>
+        <span class="badge-status">
+            {{ order.status }}
+        </span>
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="table-container bg-white p-4 rounded-4 border h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-dark mb-0">Best Selling Products</h5>
+                    <button class="btn btn-outline-light-custom btn-xs px-3">View All</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-borderless align-middle mb-0">
+                        <thead>
+                            <tr class="text-uppercase text-muted x-small tracking-wider border-bottom text-center">
+                                <th class="text-start py-2" style="width: 50px;">#</th>
+                                <th class="text-start py-2">Product</th>
+                                <th class="py-2">Sold</th>
+                                <th class="text-end py-2">Revenue</th>
+                            </tr>
+                        </thead>
+<tbody>
+
+{% for product in best_products %}
+
+<tr class="border-bottom border-light-subtle">
+
+    <td class="fw-bold text-muted small py-3">
+        {{ forloop.counter }}
+    </td>
+
+    <td class="small fw-bold text-dark">
+        {{ product.product__name }}
+    </td>
+
+    <td class="text-center small text-muted">
+        {{ product.total_sold }}
+    </td>
+
+    <td class="text-end fw-bold text-dark">
+        ₹{{ product.revenue }}
+    </td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+    <td colspan="4" class="text-center py-4 text-muted">
+        No product sales found
+    </td>
+</tr>
+
+{% endfor %}
+
+</tbody>                       
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="table-container bg-white p-4 rounded-4 border h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-dark mb-0">Best Selling Categories</h5>
+                    <button class="btn btn-outline-light-custom btn-xs px-3">View All</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-borderless align-middle mb-0">
+                        <thead>
+                            <tr class="text-uppercase text-muted x-small tracking-wider border-bottom text-center">
+                                <th class="text-start py-2" style="width: 50px;">#</th>
+                                <th class="text-start py-2">Category</th>
+                                <th class="py-2">Sold</th>
+                                <th class="text-end py-2">Revenue</th>
+                            </tr>
+                        </thead>
+<tbody>
+
+{% for category in best_categories %}
+
+<tr class="border-bottom border-light-subtle">
+
+    <td class="fw-bold text-muted small py-3">
+        {{ forloop.counter }}
+    </td>
+
+    <td class="small fw-bold text-dark">
+        {{ category.product__category__category_name }}
+    </td>
+
+    <td class="text-center small text-muted">
+        {{ category.total_sold }}
+    </td>
+
+    <td class="text-end fw-bold text-dark">
+        ₹{{ category.revenue }}
+    </td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+    <td colspan="4" class="text-center py-4 text-muted">
+        No category sales found
+    </td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container bg-white p-4 rounded-4 border">
+        <div class="mb-3">
+            <h5 class="fw-bold text-dark mb-0">Sales Transaction History</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-borderless table-align-middle align-middle mb-3">
+                <thead>
+                    <tr class="text-uppercase text-muted x-small tracking-wider border-bottom">
+                        <th class="py-2">Transaction ID</th>
+                        <th class="py-2">Customer</th>
+                        <th class="py-2">Date</th>
+                        <th class="py-2">Product(s)</th>
+                        <th class="py-2">Amount</th>
+                        <th class="py-2">Payment</th>
+                        <th class="py-2">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-bottom border-light-subtle">
+                        <td class="fw-bold py-3">#TRX-9921</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="avatar-initial bg-mint text-mint-dark me-2">JH</span>
+                                <span class="small fw-medium text-dark">Julianne Holloway</span>
+                            </div>
+                        </td>
+                        <td class="small text-muted">Oct 24, 2024</td>
+                        <td class="small text-muted">Artisanal Aged Cheddar (x2)</td>
+                        <td class="fw-bold text-dark">$48.00</td>
+                        <td class="x-small text-muted"><i class="bi bi-credit-card me-1"></i> Credit Card</td>
+                        <td><span class="badge-status status-completed">Completed</span></td>
+                    </tr>
+                    <tr class="border-bottom border-light-subtle">
+                        <td class="fw-bold py-3">#TRX-9922</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="avatar-initial bg-orange text-orange-dark me-2">MB</span>
+                                <span class="small fw-medium text-dark">Marcus Blackwood</span>
+                            </div>
+                        </td>
+                        <td class="small text-muted">Oct 23, 2024</td>
+                        <td class="small text-muted">Vintage Cabernet, Truffle Honey</td>
+                        <td class="fw-bold text-dark">$156.40</td>
+                        <td class="x-small text-muted"><i class="bi bi-paypal me-1"></i> PayPal</td>
+                        <td><span class="badge-status status-completed">Completed</span></td>
+                    </tr>
+                    <tr class="border-bottom border-light-subtle">
+                        <td class="fw-bold py-3">#TRX-9923</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="avatar-initial bg-blue text-blue-dark me-2">ER</span>
+                                <span class="small fw-medium text-dark">Eleanor Rigby</span>
+                            </div>
+                        </td>
+                        <td class="small text-muted">Oct 23, 2024</td>
+                        <td class="small text-muted">Manchego Wheel (x1)</td>
+                        <td class="fw-bold text-dark">$112.00</td>
+                        <td class="x-small text-muted"><i class="bi bi-credit-card me-1"></i> Credit Card</td>
+                        <td><span class="badge-status status-refunded">Refunded</span></td>
+                    </tr>
+                    <tr class="border-bottom border-light-subtle">
+                        <td class="fw-bold py-3">#TRX-9924</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="avatar-initial bg-coral-light text-coral-dark me-2">TW</span>
+                                <span class="small fw-medium text-dark">Thomas Wright</span>
+                            </div>
+                        </td>
+                        <td class="small text-muted">Oct 22, 2024</td>
+                        <td class="small text-muted">Olive Trio Pack, Crostini</td>
+                        <td class="fw-bold text-dark">$32.50</td>
+                        <td class="x-small text-muted"><i class="bi bi-apple me-1"></i> Apple Pay</td>
+                        <td><span class="badge-status status-completed">Completed</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <span class="x-small text-muted">Showing 4 of 1,240 transactions</span>
+            <div class="d-flex gap-1">
+                <button class="btn btn-outline-light-custom btn-xs px-2 py-1 small">Previous</button>
+                <button class="btn btn-outline-light-custom btn-xs px-2 py-1 small ms-1">Next</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block admin_js %}
+<script src="{% static 'js/admin/dashboard.js' %}"></script>
+{% endblock %}
