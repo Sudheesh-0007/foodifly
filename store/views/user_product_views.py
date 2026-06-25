@@ -6,7 +6,7 @@ from wishlist.models import WishlistItem
 from django.shortcuts import render, get_object_or_404, redirect
 from offers.utils import get_offer_price
 from django.http import JsonResponse
-
+from reviews.models import Review
 
 def shop(request):
 
@@ -71,24 +71,17 @@ def shop(request):
 
     for product in paged_products:
         cheapest_variant = (
-            product.variants
-            .filter(is_active=True)
-            .order_by("salePrice")
-            .first()
+            product.variants.filter(is_active=True).order_by("salePrice").first()
         )
 
-        
         if cheapest_variant:
 
-            offer_price, offer = get_offer_price(
-                product,
-                cheapest_variant.salePrice
-            )
+            offer_price, offer = get_offer_price(product, cheapest_variant.salePrice)
 
             product.original_price = cheapest_variant.salePrice
             product.offer_price = offer_price
             product.offer = offer
-            
+
     categories = Category.objects.filter(is_deleted=False, is_active=True)
 
     context = {
@@ -162,6 +155,11 @@ def product_detail(request, slug):
         if selected_variant:
 
             offer_price, offer = get_offer_price(product, selected_variant.salePrice)
+    reviews = (
+        Review.objects.filter(product=product, is_active=True)
+        .select_related("user")
+        .order_by("-created_at")[:2]
+    )
 
     context = {
         "product": product,
@@ -173,6 +171,7 @@ def product_detail(request, slug):
         "is_available": is_available,
         "offer_price": offer_price,
         "offer": offer,
+        "reviews": reviews,
     }
 
     return render(request, "store/product_detail.html", context)

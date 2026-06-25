@@ -23,4 +23,5 @@ urlpatterns = [
     path("wallet/", include("wallet.urls")),
     path("admin-panel/offers/", include("offers.urls")),
     path("coupon/", include("coupon.urls")),
+    path("reviews/", include("reviews.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
