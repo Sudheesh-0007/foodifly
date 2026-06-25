@@ -85,7 +85,7 @@
                 </p>
 
                 <a
-                    href="#"
+                   href="{% url 'product_detail' slug=hero_product.slug %}" 
                     class="btn btn-gold px-5 py-3 text-uppercase fw-bold letter-spacing-1 rounded-0"
                 >
 
@@ -300,7 +300,7 @@
             <!-- CONTENT -->
 
             <div
-                class="promo-content p-5 d-flex flex-column justify-content-center col-md-6"
+                class="promo-content d-flex flex-column justify-content-center col-md-6"
             >
 
                 <span
@@ -322,7 +322,7 @@
                     style="color: rgba(255,255,255,0.8);"
                 >
 
-                    {{ featured_product.description|truncatewords:30 }}
+                    {{ featured_product.description|truncatewords:18 }}
 
                 </p>
 
@@ -379,7 +379,7 @@
 
     <!-- REVIEWS -->
 
-    <section class="container-fluid px-lg-5 px-3 py-5 mt-5">
+    <section class="container-fluid px-lg-3 px-5 pt-3 pb-4 mt-3">
 
         <div class="text-center mb-5">
 
@@ -395,217 +395,178 @@
 
             <!-- REVIEW 1 -->
 
-            <div class="col-md-4">
+            {% for review in context_reviews %}
 
-                <div class="review-card p-4 rounded bg-white shadow-sm h-100">
+<div class="col-md-4">
 
-                    <div class="stars text-gold mb-3">
+    <div class="review-card p-4 rounded bg-white shadow-sm h-100">
 
-                        ★★★★★
+        <div class="text-warning mb-3">
 
-                    </div>
+            {% for i in "12345" %}
+                {% if forloop.counter <= review.rating %}
+                    ★
+                {% else %}
+                    ☆
+                {% endif %}
+            {% endfor %}
 
-                    <p class="review-text fst-italic mb-4">
+        </div>
 
-                        "The black truffles completely elevated my dinner party.
-                        Unrivaled quality and prompt delivery."
+        <p class="review-text fst-italic">
 
-                    </p>
+            "{{ review.review|truncatewords:25 }}"
 
-                    <div class="d-flex align-items-center">
+        </p>
 
-                        <img
-                            src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=50&auto=format&fit=crop"
-                            class="rounded-circle me-3"
-                            width="40"
-                            height="40"
-                            alt="User"
-                        >
+        <div class="mt-4">
 
-                        <div>
+            <h6 class="fw-bold mb-1">
 
-                            <h6 class="mb-0 fs-6 fw-bold">
+                {{ review.user.first_name }}
 
-                                Elise Valerius
+            </h6>
 
-                            </h6>
+            <small class="text-muted">
 
-                            <small class="text-muted">
+                {{ review.product.name }}
 
-                                Oct 12, 2024
+            </small>
 
-                            </small>
+        </div>
 
-                        </div>
+    </div>
 
-                    </div>
+</div>
 
-                </div>
+{% empty %}
 
-            </div>
+<div class="text-center">
 
-            <!-- REVIEW 2 -->
+    <p class="text-muted">
+        No customer reviews yet.
+    </p>
 
-            <div class="col-md-4">
+</div>
 
-                <div class="review-card p-4 rounded bg-white shadow-sm h-100">
+{% endfor %}
+        </div>
 
-                    <div class="stars text-gold mb-3">
+    </section>
 
-                        ★★★★★
+    <!-- WHY CHOOSE FOODIFLY -->
 
-                    </div>
+<section class="container-fluid px-lg-5 px-3 py-5 mb-5">
 
-                    <p class="review-text fst-italic mb-4">
+    <div class="text-center mb-5">
 
-                        "Truly the best saffron I have ever cooked with.
-                        The aroma is intoxicating."
+        <span class="badge-gold-outline">
+            OUR PROMISE
+        </span>
 
-                    </p>
+        <h2 class="section-title mt-3">
+            Why Choose Foodifly
+        </h2>
 
-                    <div class="d-flex align-items-center">
+        <p class="text-muted">
+            We bring premium gourmet products to your kitchen with quality, trust, and care.
+        </p>
 
-                        <img
-                            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=50&auto=format&fit=crop"
-                            class="rounded-circle me-3"
-                            width="40"
-                            height="40"
-                            alt="User"
-                        >
+    </div>
 
-                        <div>
+    <div class="row g-4">
 
-                            <h6 class="mb-0 fs-6 fw-bold">
+        <!-- Card 1 -->
 
-                                Julian Proctor
+        <div class="col-md-6 col-lg-3">
 
-                            </h6>
+            <div class="feature-card text-center h-100">
 
-                            <small class="text-muted">
+                <div class="feature-icon">
 
-                                Sept 28, 2024
-
-                            </small>
-
-                        </div>
-
-                    </div>
+                    <i class="bi bi-truck"></i>
 
                 </div>
 
-            </div>
+                <h5>Fast Delivery</h5>
 
-            <!-- REVIEW 3 -->
-
-            <div class="col-md-4">
-
-                <div class="review-card p-4 rounded bg-white shadow-sm h-100">
-
-                    <div class="stars text-gold mb-3">
-
-                        ★★★★★
-
-                    </div>
-
-                    <p class="review-text fst-italic mb-4">
-
-                        "The packaging alone is a work of art.
-                        The vintage olive oil has a flavor profile that is unreal."
-
-                    </p>
-
-                    <div class="d-flex align-items-center">
-
-                        <img
-                            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=50&auto=format&fit=crop"
-                            class="rounded-circle me-3"
-                            width="40"
-                            height="40"
-                            alt="User"
-                        >
-
-                        <div>
-
-                            <h6 class="mb-0 fs-6 fw-bold">
-
-                                Amelia Chen
-
-                            </h6>
-
-                            <small class="text-muted">
-
-                                Sept 15, 2024
-
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                </div>
+                <p>
+                    Delivered safely across India with reliable packaging and quick shipping.
+                </p>
 
             </div>
 
         </div>
 
-    </section>
+        <!-- Card 2 -->
 
-    <!-- NEWSLETTER -->
+        <div class="col-md-6 col-lg-3">
 
-    <section class="container-fluid px-lg-5 px-3 py-5 mb-5">
+            <div class="feature-card text-center h-100">
 
-        <div
-            class="newsletter-box bg-green text-center text-white p-5 rounded position-relative shadow"
-            style="
-                background-image:
-                linear-gradient(
-                    rgba(10,58,42,0.9),
-                    rgba(10,58,42,0.9)
-                ),
-                url('https://images.unsplash.com/photo-1615486171448-4fd13f5fb4eb?q=80&w=1000&auto=format&fit=crop');
+                <div class="feature-icon">
 
-                background-size: cover;
-                background-position: center;
-            "
-        >
+                    <i class="bi bi-award"></i>
 
-            <div class="position-relative z-index-2">
+                </div>
 
-                <h2 class="font-playfair fs-1 mb-4">
+                <h5>Premium Quality</h5>
 
-                    Join the Connoisseur Circle
-
-                </h2>
-
-                <form
-                    class="d-flex justify-content-center gap-2 mx-auto flex-column flex-sm-row"
-                    style="max-width: 500px;"
-                >
-
-                    <input
-                        type="email"
-                        class="form-control rounded-0 border-0"
-                        placeholder="Your email address..."
-                        required
-                    >
-
-                    <button
-                        type="submit"
-                        class="btn btn-gold rounded-0 px-4 fw-bold"
-                    >
-
-                        SUBSCRIBE
-
-                    </button>
-
-                </form>
+                <p>
+                    Carefully selected gourmet foods sourced from trusted producers worldwide.
+                </p>
 
             </div>
 
         </div>
 
-    </section>
+        <!-- Card 3 -->
 
+        <div class="col-md-6 col-lg-3">
+
+            <div class="feature-card text-center h-100">
+
+                <div class="feature-icon">
+
+                    <i class="bi bi-shield-check"></i>
+
+                </div>
+
+                <h5>Secure Payments</h5>
+
+                <p>
+                    Pay confidently using Razorpay, UPI, Cards, Wallets or Cash on Delivery.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- Card 4 -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="feature-card text-center h-100">
+
+                <div class="feature-icon">
+
+                    <i class="bi bi-star-fill"></i>
+
+                </div>
+
+                <h5>Trusted Reviews</h5>
+
+                <p>
+                    Read verified customer reviews before choosing your next gourmet experience.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
 </main>
 
 {% endblock %}

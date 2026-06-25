@@ -146,10 +146,7 @@
 }
 
 /* 4. Promo Banner */
-.promo-title {
-    font-size: 3rem;
-    line-height: 1.1;
-}
+
 
 .btn-gold {
     background-color: var(--brand-gold);
@@ -170,7 +167,75 @@
     color: var(--text-gray);
     line-height: 1.6;
 }
+/* ===========================
+FEATURED PRODUCT
+=========================== */
 
+.promo-banner{
+    height: 520px;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.promo-content{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:flex-start;
+
+    padding:55px 50px;
+}
+
+.promo-title {
+    font-size: 2.4rem;
+    line-height: 1.2;
+}
+
+.promo-desc {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(255,255,255,.8);
+    margin-bottom: 25px !important;
+    max-width:460px;
+}
+.btn-gold{
+
+    padding:12px 26px;
+
+    border-radius:4px;
+
+    font-weight:600;
+}
+
+.promo-image{
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    height: 480px;
+
+    background: #fff;
+
+    overflow: hidden;
+}
+
+.promo-image img{
+
+    max-width: 80%;
+
+    max-height: 100%;
+
+    width: auto;
+
+    height: auto;
+
+    object-fit: contain;
+}
 /* 6. Newsletter */
 .placeholder-light::placeholder {
     color: rgba(255,255,255,0.7);
@@ -183,10 +248,33 @@
 
 /* Responsive adjustments */
 @media (max-width: 991px) {
-    .hero-title { font-size: 3rem; }
-    .promo-banner { flex-direction: column !important; }
-    .promo-image { height: 300px !important; }
-    .price-tag-overlay { 
+
+    .hero-title {
+        font-size: 3rem;
+    }
+
+    .promo-banner {
+        flex-direction: column !important;
+        min-height: auto;
+    }
+
+    .promo-content {
+        padding: 35px 25px;
+    }
+
+    .promo-title {
+        font-size: 2rem;
+    }
+
+    .promo-image {
+        min-height: 300px;
+    }
+
+    .promo-image img {
+        height: 300px;
+    }
+
+    .price-tag-overlay {
         bottom: 10px;
         right: 10px;
         left: 10px;
@@ -238,4 +326,79 @@
 .product-price{
 
     font-size: 18px;
+}
+/* ===========================
+WHY CHOOSE FOODIFLY
+=========================== */
+
+.feature-card{
+
+    background: #ffffff;
+
+    padding: 40px 25px;
+
+    border-radius: 16px;
+
+    transition: all .35s ease;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,.05);
+
+    border: 1px solid #f0ece4;
+}
+
+.feature-card:hover{
+
+    transform: translateY(-8px);
+
+    box-shadow: 0 18px 40px rgba(0,0,0,.12);
+}
+
+.feature-icon{
+
+    width: 80px;
+
+    height: 80px;
+
+    margin: auto;
+
+    margin-bottom: 25px;
+
+    background: rgba(212,175,55,.12);
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+.feature-icon i{
+
+    font-size: 34px;
+
+    color: var(--brand-gold);
+}
+
+.feature-card h5{
+
+    color: var(--brand-green);
+
+    font-family: "Playfair Display", serif;
+
+    font-size: 24px;
+
+    margin-bottom: 15px;
+}
+
+.feature-card p{
+
+    color: #777;
+
+    font-size: 15px;
+
+    line-height: 1.8;
+
+    margin: 0;
 }

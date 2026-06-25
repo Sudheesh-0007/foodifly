@@ -47,10 +47,27 @@ def home(request):
         .distinct()
         .last()
     )
+    from reviews.models import Review
+
+    featured_reviews = (
+        Review.objects.filter(is_active=True, rating=5)
+        .select_related("user", "product")
+        .order_by("-created_at")[:3]
+    )
+
+    if featured_reviews.count() < 3:
+        featured_reviews = (
+            Review.objects.filter(is_active=True)
+            .select_related("user", "product")
+            .order_by("-rating", "-created_at")[:3]
+        )
+    hero_product = Product.objects.get(slug="extra-virgin-olive-oil")
 
     context = {
         "latest_products": latest_products,
         "featured_product": featured_product,
+        "context_reviews": featured_reviews,
+        "hero_product": hero_product,
     }
 
     return render(request, "home.html", context)
