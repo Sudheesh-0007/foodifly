@@ -3,4 +3,5 @@ from . import views
 
 urlpatterns = [
     path("", views.wallet_view, name="wallet"),
+
 ]

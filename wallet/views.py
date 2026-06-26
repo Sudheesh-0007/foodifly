@@ -3,9 +3,6 @@ from django.contrib.auth.decorators import login_required
 from .models import Wallet, WalletTransaction
 from django.core.paginator import Paginator
 
-# Create your views here.
-
-
 from django.core.paginator import Paginator
 from wallet.models import Wallet, WalletTransaction
 

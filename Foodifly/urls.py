@@ -3,8 +3,15 @@ from django.urls import path, include
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.shortcuts import render
 
-app_name = "main"
+def custom_404(request, exception):
+    return render(request, "404.html", status=404)
+
+
+handler404 = "Foodifly.urls.custom_404" 
+
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),

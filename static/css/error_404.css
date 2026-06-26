@@ -1,0 +1,82 @@
+:root {
+    --foodifly-green: #0a2d21;
+    --light-cream: #fdfbf7;
+}
+
+body {
+    background-color: var(--light-cream);
+    font-family: 'Inter', sans-serif;
+}
+
+/* Base Wrapper Sizing Constraints */
+.error-page-wrapper {
+    min-height: calc(100vh - 180px); /* Adjust dynamically to clear out head/foot navigation height blocks */
+    position: relative;
+    overflow: hidden;
+}
+
+.error-content-container {
+    max-width: 680px;
+    padding: 40px 20px;
+    width: 100%;
+}
+
+/* Layered Background 404 Text Matrix */
+.giant-error-code {
+    font-family: 'Playfair Display', serif;
+    font-size: 24rem; /* Giant scale factor text formatting rules */
+    font-weight: 600;
+    color: #f1f0e8; /* Faded light tint blend color values */
+    z-index: 1;
+    line-height: 1;
+}
+
+/* Foreground Container Stack Positioning Overrides */
+.foreground-content {
+    z-index: 2;
+}
+
+.error-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    color: var(--foodifly-green);
+    line-height: 1.05;
+    letter-spacing: -1px;
+}
+
+.error-subtext {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    max-width: 520px;
+    font-weight: 400;
+    color: #555555 !important;
+}
+
+/* Interactive Solid Button Control Styling */
+.btn-return-atelier {
+    background-color: var(--foodifly-green);
+    color: #ffffff !important;
+    border: none;
+    font-size: 0.8rem;
+    letter-spacing: 1.5px;
+    transition: all 0.25s ease;
+}
+
+.btn-return-atelier:hover {
+    background-color: #051610;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(10, 45, 33, 0.15);
+}
+
+/* Screen Dimension Adjustments Media Modifiers */
+@media (max-width: 768px) {
+    .error-heading {
+        font-size: 3.5rem;
+    }
+    .giant-error-code {
+        font-size: 14rem;
+    }
+    .error-subtext {
+        font-size: 1rem;
+    }
+}

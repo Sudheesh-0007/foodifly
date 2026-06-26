@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/error_404.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid error-page-wrapper d-flex align-items-center justify-content-center">
+    <div class="text-center error-content-container position-relative">
+        
+        <div class="giant-error-code position-absolute start-50 top-50 translate-middle user-select-none">
+            404
+        </div>
+        
+        <div class="foreground-content position-relative">
+            <h1 class="error-heading mb-3">A Misplaced<br>Delicacy</h1>
+            <p class="error-subtext text-muted mx-auto mb-5">
+                The terroir you are looking for does not seem to exist. May we suggest returning to the collection?
+            </p>
+            <a href="{% url 'shop' %}" class="btn btn-return-atelier px-4 py-3 rounded-3 fw-bold small text-uppercase tracking-wider">
+                Return to the Atelier <i class="bi bi-arrow-right ms-2 small"></i>
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
