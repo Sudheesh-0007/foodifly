@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal import Decimal,ROUND_HALF_UP
 from offers.models import Offer
 from datetime import date
 
@@ -55,6 +55,12 @@ def get_offer_price(product, original_price):
 
     if discounted_price < 0:
 
-        discounted_price = Decimal("0")
+        discounted_price = Decimal("0.00")
+
+    
+    discounted_price = discounted_price.quantize(
+        Decimal("0.01"),
+        rounding=ROUND_HALF_UP,
+    )
 
     return discounted_price, best_offer

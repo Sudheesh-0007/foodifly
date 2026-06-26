@@ -141,7 +141,8 @@ def checkout(request):
 
             total += item.total_price
             quantity += item.quantity
-
+        print(offer_price)
+        print(offer)
         tax = total * Decimal("0.10")
 
         shipping = Decimal("0.00")
