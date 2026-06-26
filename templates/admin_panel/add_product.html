@@ -26,11 +26,11 @@
                     <h5 class="card-title mb-4">Basic Information</h5>
                     <div class="mb-3">
                         <label class="custom-label">Product Name</label>
-                        <input type="text" name="name" id="id_product_name" class="form-control custom-input" required>
+                        <input type="text" value="{{ form_data.name }}" name="name" id="id_product_name" class="form-control custom-input" required>
                     </div>
                     <div class="mb-3">
                         <label class="custom-label">URL Slug</label>
-                        <input type="text" name="slug" id="id_slug" class="form-control custom-input" required readonly>
+                        <input type="text"  value="{{ form_data.slug }}" name="slug" id="id_slug" class="form-control custom-input" required readonly>
                     </div>
                     <!-- Category Selection -->
             <div class="input-group">
@@ -38,13 +38,20 @@
                 <select name="category" required>
                     <option value="" disabled selected>Select a category</option>
                     {% for cat in categories %}
-                        <option value="{{ cat.id }}">{{ cat.category_name }}</option>
+                        <option
+    value="{{ cat.id }}"
+    {% if form_data.category == cat.id|stringformat:"s" %}
+        selected
+    {% endif %}
+>
+    {{ cat.category_name }}
+</option>
                     {% endfor %}
                 </select>
             </div>
                                 <div class="mb-3">
                                     <label class="custom-label">Description</label>
-                                    <textarea name="description" class="form-control custom-input" rows="5" required></textarea>
+                                    <textarea name="description" class="form-control custom-input" rows="5" required>{{ form_data.description }}</textarea>
                                 </div>
                             </div>
 
@@ -178,7 +185,9 @@
             type="checkbox"
             name="is_active"
             id="is_active"
+            {% if form_data.is_active %}
             checked
+            {% endif %}
         >
 
         <label

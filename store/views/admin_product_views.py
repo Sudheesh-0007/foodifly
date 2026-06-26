@@ -93,14 +93,25 @@ def add_product(request):
         description = request.POST.get("description")
         is_active = request.POST.get("is_active") == "on"
         images = request.FILES.getlist("images")
-
+        context = {
+        "categories": categories,
+        "form_data": request.POST,
+    }
         if len(images) < 3:
             messages.error(request, "Minimum 3 images required.")
-            return redirect("add_product")
+            return render(
+                request,
+                "admin_panel/add_product.html",
+                context,
+            )
 
         if Product.objects.filter(slug=slug).exists():
             messages.error(request, "Slug already exists.")
-            return redirect("add_product")
+            return render(
+                request,
+                "admin_panel/add_product.html",
+                context,
+            )
 
         category = Category.objects.get(id=category_id)
 
@@ -122,7 +133,11 @@ def add_product(request):
 
             messages.error(request, e.message)
 
-            return redirect("add_product")
+            return render(
+                request,
+                "admin_panel/add_product.html",
+                context,
+            )
         main_image = images[0]
 
         product = Product.objects.create(
@@ -213,7 +228,9 @@ def edit_product(request, product_id):
 
             if index < len(variant_ids):
 
-                variant = get_object_or_404(Variant, id=variant_ids[index], product=product)
+                variant = get_object_or_404(
+                    Variant, id=variant_ids[index], product=product
+                )
 
                 variant.variant_value = value
 
