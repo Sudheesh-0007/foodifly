@@ -474,10 +474,15 @@ def download_invoice(request, order_id):
 
     order_items = OrderItem.objects.filter(order=order)
     template_path = "orders/invoice.html"
-
+    total = int(order.total_amount)
+    tax = total* Decimal("0.10")
+    sub = total + tax
+    discount = sub - order.grand_total
     context = {
         "order": order,
         "order_items": order_items,
+        "discount": discount,
+        'tax':tax
     }
 
     response = HttpResponse(content_type="application/pdf")

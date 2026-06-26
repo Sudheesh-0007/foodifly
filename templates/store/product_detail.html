@@ -109,39 +109,63 @@
 
 <div class="d-flex justify-content-between align-items-start mb-3">
 
-    <div id="price-container">
+   <div id="price-container">
 
-        {% if offer %}
+    {% if offer %}
 
-            <span class="price-tag text-danger">
-                ₹{{ offer_price }}
-            </span>
+        <span
+            id="offer-price"
+            class="price-tag text-danger"
+        >
+            ₹{{ offer_price }}
+        </span>
 
-            <del class="text-muted ms-2">
-                ₹{{ selected_variant.salePrice }}
-            </del>
+        <del
+            id="original-price"
+            class="text-muted ms-2"
+        >
+            ₹{{ selected_variant.salePrice }}
+        </del>
 
-            <br>
+        <br>
 
-            <span class="badge bg-success">
+        <span
+            id="offer-badge"
+            class="badge bg-success"
+        >
+            {% if offer.discount_type == "PERCENTAGE" %}
+                {{ offer.discount_value }}% OFF
+            {% else %}
+                ₹{{ offer.discount_value }} OFF
+            {% endif %}
+        </span>
 
-                {% if offer.discount_type == "PERCENTAGE" %}
-                    {{ offer.discount_value }}% OFF
-                {% else %}
-                    ₹{{ offer.discount_value }} OFF
-                {% endif %}
+    {% else %}
 
-            </span>
+        <span
+            id="offer-price"
+            class="price-tag"
+        >
+            ₹{{ selected_variant.salePrice }}
+        </span>
 
-        {% else %}
+        <del
+            id="original-price"
+            class="text-muted ms-2"
+            style="display:none;"
+        ></del>
 
-            <span class="price-tag">
-                ₹{{ selected_variant.salePrice }}
-            </span>
+        <br>
 
-        {% endif %}
+        <span
+            id="offer-badge"
+            class="badge bg-success"
+            style="display:none;"
+        ></span>
 
-    </div>
+    {% endif %}
+
+</div>
 
     <div class="text-end">
 

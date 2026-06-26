@@ -1,237 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>Foodifly Invoice</title>
     <style>
+        /* CSS Reset & Box Sizing */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        
+        /* Print Configuration for Single A4 page */
 @page {
     size: A4;
-    margin: 20px;
+    margin: 10mm;
+}
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #2b2b2b;
+            background-color: #ffffff;
+            font-size: 10pt;
+            line-height: 1.5;
+        }
+        
+        /* Header & Brand Identity */
+        .header {
+            border-bottom: 2px solid #1a1a1a;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        .header-table {
+            width: 100%;
+            display: table;
+        }
+        .header-cell {
+            display: table-cell;
+            vertical-align: bottom;
+        }
+        .brand-title {
+            font-size: 24pt;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #1a1a1a;
+            margin: 0;
+        }
+        .brand-subtitle {
+            font-size: 10pt;
+            color: #666666;
+            margin: 3px 0 0 0;
+            font-style: italic;
+        }
+        .invoice-title {
+            font-size: 20pt;
+            font-weight: 300;
+            text-align: right;
+            color: #555555;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        /* Metadata section */
+        .meta-section {
+            width: 100%;
+            display: table;
+            margin-bottom: 30px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .meta-cell {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+        }
+        .meta-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .meta-list li {
+            margin-bottom: 5px;
+        }
+        .meta-list strong {
+            color: #1a1a1a;
+            display: inline-block;
+            width: 130px;
+        }
+
+        /* Billing and Shipping Layout */
+        .address-section {
+            width: 100%;
+            display: table;
+            margin-bottom: 35px;
+        }
+.address-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    margin:20px 0;
 }
 
-body {
-    font-family: Helvetica, Arial, sans-serif;
-    color: #333;
-    background: #fff;
-    font-size: 12px;
+.address-column{
+
+    width:50%;
+
+    vertical-align:top;
+
+    padding-right:20px;
 }
 
-.invoice-wrapper {
-    max-width: 800px;
-    margin: auto;
+.address-column:last-child{
+
+    padding-right:0;
+
+    padding-left:20px;
 }
 
-.header-table {
-    width: 100%;
-    border-bottom: 3px solid #143d35;
-    padding-bottom: 15px;
-    margin-bottom: 25px;
+.address-title{
+
+    font-size:11pt;
+
+    font-weight:bold;
+
+    text-transform:uppercase;
+
+    border-bottom:1px solid #ddd;
+
+    margin-bottom:8px;
+
+    padding-bottom:5px;
 }
 
-.brand {
-    font-size: 34px;
-    font-weight: 700;
-    color: #143d35;
-    margin: 0;
+.address-text{
+
+    font-size:10pt;
+
+    line-height:1.5;
+
+    color:#444;
 }
 
-.tagline {
-    color: #777;
-    font-size: 12px;
-    margin-top: 5px;
-}
+        /* Product Table Formatting */
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .items-table th {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 9pt;
+            padding: 10px 12px;
+            text-align: left;
+            letter-spacing: 0.5px;
+        }
+        .items-table th.text-right, .items-table td.text-right {
+            text-align: right;
+        }
+        .items-table th.text-center, .items-table td.text-center {
+            text-align: center;
+        }
+        .items-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eeeeee;
+            color: #333333;
+        }
+        
+        /* Summary Table Section */
+        .summary-container {
+            width: 100%;
+            display: table;
+            margin-bottom: 40px;
+        }
+        .summary-left {
+            display: table-cell;
+            width: 55%;
+            vertical-align: bottom;
+        }
+        .summary-right {
+            display: table-cell;
+            width: 45%;
+            vertical-align: top;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .summary-table td {
+            padding: 5px 12px;
+            font-size: 10pt;
+        }
+        .summary-label {
+            text-align: right;
+            color: #555555;
+        }
+        .summary-value {
+            text-align: right;
+            font-weight: 600;
+            color: #1a1a1a;
+            width: 120px;
+        }
+        .grand-total-row td {
+            border-top: 1px solid #1a1a1a;
+            border-bottom: 2px double #1a1a1a;
+            font-size: 12pt;
+            font-weight: 700;
+            padding: 12px 12px;
+        }
+        .grand-total-row .summary-label {
+            color: #1a1a1a;
+            text-transform: uppercase;
+        }
 
-.invoice-title-cell {
-    text-align: right;
-}
+        .status-badge {
+            display: inline-block;
+            background-color: #e6f4ea;
+            color: #137333;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 9pt;
+            text-transform: uppercase;
+        }
 
-.invoice-title-cell h2 {
-    margin: 0;
-    font-size: 32px;
-    color: #143d35;
-}
-
-.invoice-meta {
-    margin-top: 10px;
-    line-height: 1.8;
-}
-
-.info-table {
-    width: 100%;
-    margin-bottom: 30px;
-}
-
-.info-box {
-    width: 48%;
-    vertical-align: top;
-}
-
-.box-title {
-    color: #143d35;
-    font-weight: 700;
-    font-size: 13px;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-}
-
-.address-box {
-    border: 1px solid #e5e7eb;
-    background: #f9fafb;
-    padding: 15px;
-    border-radius: 8px;
-}
-
-.product-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-}
-
-.product-table thead {
-    background: #143d35;
-    color: white;
-}
-
-.product-table th {
-    padding: 12px;
-    font-size: 11px;
-}
-
-.product-table td {
-    padding: 12px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.product-table tbody tr:nth-child(even) {
-    background: #fafafa;
-}
-
-.product-name {
-    font-weight: 600;
-}
-
-.summary-table {
-    width: 320px;
-    margin-left: auto;
-    margin-top: 25px;
-}
-
-.summary-table td {
-    padding: 8px 0;
-}
-
-.summary-label {
-    color: #666;
-}
-
-.summary-value {
-    text-align: right;
-    font-weight: 600;
-}
-
-.grand-total-row td {
-    border-top: 3px solid #143d35;
-    padding-top: 12px;
-    font-size: 18px;
-    font-weight: 700;
-    color: #143d35;
-}
-
-.payment-badge {
-    display: inline-block;
-    background: #dcfce7;
-    color: #166534;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-}
-
-.footer {
-    margin-top: 50px;
-    border-top: 1px solid #ddd;
-    padding-top: 20px;
-    text-align: center;
-    color: #777;
-}
-
-.thank-you {
-    font-size: 18px;
-    color: #143d35;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
+        .footer {
+            border-top: 1px solid #eeeeee;
+            padding-top: 20px;
+            text-align: center;
+            color: #666666;
+        }
+        .footer h3 {
+            font-size: 12pt;
+            color: #1a1a1a;
+            margin: 0 0 8px 0;
+            font-weight: 600;
+        }
+        .footer p {
+            margin: 5px 0;
+            font-size: 9.5pt;
+        }
+        .footer a {
+            color: #1a1a1a;
+            text-decoration: none;
+            font-weight: 600;
+        }
     </style>
 </head>
-
 <body>
-    <div class="invoice-wrapper">
 
-        <table class="header-table">
-            <tr>
-                <td>
-                    <h1 class="brand">Foodifly</h1>
-                    <div class="tagline">Curated Gourmet Marketplace</div>
-                </td>
-                <td class="invoice-title-cell">
-                    <h2>INVOICE</h2>
-                    <div class="invoice-meta">
-                        <div>Order ID: <strong>{{ order.order_number }}</strong></div>
-                        <div>Date: <strong>{{ order.created_at|date:"d M Y" }}</strong></div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-
-        <div class="section">
-            <div class="section-title">Billing Details</div>
-            <div class="address-box">
-                <strong>{{ order.user.first_name }} {{ order.user.last_name }}</strong><br>
-                {{ order.address.address_line_1 }}<br>
-                {{ order.address.city }}, {{ order.address.state }}<br>
-                {{ order.address.country }} - {{ order.address.pincode }}
-                <br><br>
-                <strong>Payment Method:</strong><br>
-                <div class="payment-badge">{{ order.payment_method }}</div>
+    <div class="header">
+        <div class="header-table">
+            <div class="header-cell">
+                <h1 class="brand-title">FOODIFLY</h1>
+                <p class="brand-subtitle">Curated Gourmet Marketplace</p>
+            </div>
+            <div class="header-cell">
+                <div class="invoice-title">Invoice</div>
             </div>
         </div>
+    </div>
 
-        <div class="section">
-            <table class="product-table">
-                <thead>
-                    <tr>
-                        <th class="text-left">Product</th>
-                        <th class="text-left">Variant</th>
-                        <th class="text-center">Qty</th>
-                        <th class="text-right">Price</th>
-                        <th class="text-right">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in order_items %}
-                    <tr>
-                        <td class="product-name">{{ item.product.name }}</td>
-                        <td>{{ item.variant.variant_value }}</td>
-                        <td class="text-center">{{ item.quantity }}</td>
-                        <td class="text-right">₹{{ item.price }}</td>
-                        <td class="text-right">₹{{ item.total_price }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <div class="meta-section">
+        <div class="meta-cell">
+            <ul class="meta-list">
+<li><strong>Invoice No:</strong> {{ order.order_number }}</li>
+<li><strong>Order Date:</strong> {{ order.created_at|date:"d M Y" }}</li>
+            </ul>
         </div>
+        <div class="meta-cell" style="text-align: right;">
+            <ul class="meta-list" style="display: inline-block; text-align: left;">
+                <li><strong>Payment Method:</strong> {{ order.payment_method }}</li>
+                <li><strong>Order Status:</strong> <span class="status-badge">{{ order.status }}</span></li>
+            </ul>
+        </div>
+    </div>
 
-        <div class="summary-container">
-<table class="info-table">
+    <table class="address-table">
+
     <tr>
-        <td class="info-box">
 
-            <div class="box-title">
-                Billing Details
+        <td class="address-column">
+
+            <div class="address-title">
+                Billing Address
             </div>
 
-            <div class="address-box">
+            <div class="address-text">
 
                 <strong>
                     {{ order.user.first_name }}
@@ -244,46 +304,134 @@ body {
                 {{ order.address.state }}<br>
 
                 {{ order.address.country }}
-                - {{ order.address.pincode }}
+                -
+                {{ order.address.pincode }}<br>
+
+                {{ order.user.phone_number }}
 
             </div>
 
         </td>
 
-        <td class="info-box">
+        <td class="address-column">
 
-            <div class="box-title">
-                Order Details
+            <div class="address-title">
+                Shipping Address
             </div>
 
-            <div class="address-box">
+            <div class="address-text">
 
-                <strong>Order Number:</strong>
-                {{ order.order_number }}<br><br>
+                <strong>
+                    {{ order.user.first_name }}
+                    {{ order.user.last_name }}
+                </strong><br>
 
-                <strong>Order Date:</strong>
-                {{ order.created_at|date:"d M Y" }}<br><br>
+                {{ order.address.address_line_1 }}<br>
 
-                <strong>Payment Method:</strong><br>
+                {{ order.address.city }},
+                {{ order.address.state }}<br>
 
-                <span class="payment-badge">
-                    {{ order.payment_method }}
-                </span>
+                {{ order.address.country }}
+                -
+                {{ order.address.postal_code}}<br>
+
+                {{ order.user.phone_number }}
 
             </div>
 
         </td>
+
     </tr>
+
 </table>
-        </div>
 
-        <div class="footer">
-            <div class="thank-you">Thank you for shopping with Foodifly.</div>
-            <div>This invoice was generated electronically and is valid without an authorized signature.</div>
-            <div style="margin-top: 4px; font-weight: 600;">© Foodifly Gourmet Marketplace</div>
-        </div>
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th style="width: 45%;">Product Description</th>
+                <th style="width: 15%; text-align: center;">Variant</th>
+                <th style="width: 10%; text-align: center;">Qty</th>
+                <th style="width: 15%; text-align: right;">Unit Price</th>
+                <th style="width: 15%; text-align: right;">Total Price</th>
+            </tr>
+        </thead>
+   <tbody>
 
+{% for item in order_items %}
+
+<tr>
+
+    <td>{{ item.product.name }}</td>
+
+    <td class="text-center">
+        {{ item.variant.variant_value }}
+    </td>
+
+    <td class="text-center">
+        {{ item.quantity }}
+    </td>
+
+    <td class="text-right">
+        ₹{{ item.price }}
+    </td>
+
+    <td class="text-right">
+        ₹{{ item.total_price }}
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+    </table>
+
+    <div class="summary-container">
+        <div class="summary-left"></div>
+        <div class="summary-right">
+            <table class="summary-table">
+
+
+<tr>
+    <td class="summary-label">Tax</td>
+    <td class="summary-value" >
+        + ₹{{ tax }}
+    </td>
+</tr>
+<tr>
+    <td class="summary-label">Discount</td>
+    <td class="summary-value" style="color:#c00000;">
+        - ₹{{ discount }}
+    </td>
+</tr>
+
+<tr>
+    <td class="summary-label">Shipping</td>
+    <td class="summary-value">
+        FREE
+    </td>
+</tr>
+
+<tr class="grand-total-row">
+    <td class="summary-label">
+        <br>
+        Grand Total
+    </td>
+
+    <td class="summary-value">
+        <br>
+        ₹{{ order.grand_total }}
+    </td>
+</tr>
+            </table>
+        </div>
     </div>
-</body>
 
+    <div class="footer">
+        <h3>Thank you for choosing Foodifly!</h3>
+        <p>This invoice was generated electronically and does not require a signature.</p>
+        <p>© Foodifly Gourmet Marketplace</p>
+    </div>
+
+</body>
 </html>
