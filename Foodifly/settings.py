@@ -29,9 +29,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =  os.getenv("DEBUG") == "True"
+DEBUG = os.getenv("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ['*', 'localhost']
+ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS",
+    "127.0.0.1,localhost"
+).split(",")
+
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
 
 
@@ -112,8 +116,8 @@ DATABASES = {
         'NAME':  os.getenv("DB_NAME"),
         'USER': os.getenv("DB_USER"),
         'PASSWORD': os.getenv("DB_PASSWORD"),
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'HOST': os.getenv("DB_HOST"),
+        'PORT': os.getenv("DB_PORT"),
     }
 }
 
@@ -158,7 +162,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 STATICFILES_DIRS = [
@@ -179,11 +183,11 @@ MESSAGE_TAGS = {
 }
 
 #SMTP 
-EMAIL_HOST  = 'smtp.gmail.com'
-EMAIL_PORT = 587
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS   = True
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
 
 
 SITE_ID = 1
@@ -218,12 +222,20 @@ CLOUDINARY_STORAGE = {
     'API_KEY': os.getenv("CLOUDINARY_API_KEY"),
     'API_SECRET': os.getenv("CLOUDINARY_API_SECRET"),
 }
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
-FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = int(
+    os.getenv("DATA_UPLOAD_MAX_MEMORY_SIZE", 10485760)
+)
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = int(
+    os.getenv("FILE_UPLOAD_MAX_MEMORY_SIZE", 10485760)
+)
 
 #  session time
 
-SESSION_COOKIE_AGE = 28800
+SESSION_COOKIE_AGE = int(
+    os.getenv("SESSION_COOKIE_AGE", 28800)
+)
 
 SESSION_SAVE_EVERY_REQUEST = True
 
@@ -231,7 +243,8 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 
 
-RAZORPAY_KEY_ID = "rzp_test_SxQKipX4UqqYSS"
-RAZORPAY_KEY_SECRET = "sQux32sMUEkkb1P66Fo8MV4E"
+# RAZORPAY_KEY_ID = "rzp_test_SxQKipX4UqqYSS"
+# RAZORPAY_KEY_SECRET = "sQux32sMUEkkb1P66Fo8MV4E"
 
-
+RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
+RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET")
