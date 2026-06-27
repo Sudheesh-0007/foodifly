@@ -14,7 +14,9 @@
         {% csrf_token %}
         <div class="d-flex justify-content-between align-items-center mb-1">
             <h3 class="security-card-title m-0">Email</h3>
-            <i class="bi bi-at text-muted fs-5"></i>
+            
+            
+             <p> </i>{{ user.email|default:"sudheesh0027@gmail.com" }}</p>
         </div>
         <p class="text-muted small mb-2" style="font-size: 0.8rem;">The primary email address used for system alerts and security recovery.</p>
 

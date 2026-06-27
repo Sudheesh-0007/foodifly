@@ -43,7 +43,7 @@ def admin_login(request):
 
         if user is not None and user.is_admin:
             auth.login(request, user)
-            return redirect("admin_user_management")
+            return redirect("admin_report")
         else:
             messages.error(request, "Admin access only.")
             return redirect("admin_login")

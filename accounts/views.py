@@ -22,6 +22,7 @@ from .forms import UserForm, UserProfileForm
 
 from .models import Address
 from .forms import AddressForm
+from django.contrib.auth import logout
 
 
 def register(request):
@@ -336,9 +337,9 @@ def update_email_validate(request, uidb64, token, encoded_email):
         user.email = new_email
         user.username = new_email.split("@")[0]
         user.save()
-
+        logout(request)
         messages.success(request, "Your email address has been successfully updated!")
-        return redirect("account_settings")
+        return redirect("login")
     else:
         messages.error(
             request, "The email verification link is invalid or has expired."
@@ -347,8 +348,6 @@ def update_email_validate(request, uidb64, token, encoded_email):
 
 
 login_required(login_url="login")
-
-
 def edit_profile(request):
     userprofile, created = UserProfile.objects.get_or_create(user=request.user)
 
