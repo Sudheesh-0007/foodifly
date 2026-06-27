@@ -147,7 +147,6 @@ def product_detail(request, slug):
 
     for related_product in related_products:
 
-        first_variant = related_product.variants.filter(is_active=True).first()
 
         offer_price = None
         offer = None
@@ -160,10 +159,17 @@ def product_detail(request, slug):
         .select_related("user")
         .order_by("-created_at")[:2]
     )
+    selected_variant = variants.filter(stock__gt=0, is_active=True).first()
+
+    low_stock = False
+
+    if selected_variant and selected_variant.stock < 5:
+        low_stock = True
 
     context = {
         "product": product,
         "variants": variants,
+        "low_stock": low_stock,
         "gallery_images": gallery_images,
         "related_products": related_products,
         "selected_variant": selected_variant,

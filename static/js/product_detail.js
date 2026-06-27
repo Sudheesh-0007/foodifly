@@ -287,69 +287,50 @@ variantButtons.forEach(button => {
             // UPDATE STOCK
             // =========================
 
-            const stock =
-                parseInt(
-                    this.dataset.stock
-                );
+const stock = parseInt(this.dataset.stock);
 
-            if (stock > 0) {
+if (stock === 0) {
 
-                stockElement.innerText =
-                    "In Stock";
+    stockElement.innerHTML =
+        '<span class="text-danger">Out Of Stock</span>';
 
-                stockElement.classList.remove(
-                    "text-danger"
-                );
+    addToCartBtn.disabled = true;
 
-                stockElement.classList.add(
-                    "text-success"
-                );
+    addToCartBtn.innerText = "Out Of Stock";
 
-                // ENABLE BUTTON
+    addToCartBtn.classList.remove("btn-dark");
 
-                addToCartBtn.disabled =
-                    false;
+    addToCartBtn.classList.add("btn-secondary");
 
-                addToCartBtn.innerText =
-                    "Add To Cart";
+}
+else if (stock < 5) {
 
-                addToCartBtn.classList.remove(
-                    "btn-secondary"
-                );
+    stockElement.innerHTML =
+        `<span class="text-warning">Only ${stock} left in stock!</span>`;
 
-                addToCartBtn.classList.add(
-                    "btn-dark"
-                );
+    addToCartBtn.disabled = false;
 
-            } else {
+    addToCartBtn.innerText = "Add To Cart";
 
-                stockElement.innerText =
-                    "Out Of Stock";
+    addToCartBtn.classList.remove("btn-secondary");
 
-                stockElement.classList.remove(
-                    "text-success"
-                );
+    addToCartBtn.classList.add("btn-dark");
 
-                stockElement.classList.add(
-                    "text-danger"
-                );
+}
+else {
 
-                // DISABLE BUTTON
+    stockElement.innerHTML =
+        '<span class="text-success">In Stock</span>';
 
-                addToCartBtn.disabled =
-                    true;
+    addToCartBtn.disabled = false;
 
-                addToCartBtn.innerText =
-                    "Out Of Stock";
+    addToCartBtn.innerText = "Add To Cart";
 
-                addToCartBtn.classList.remove(
-                    "btn-dark"
-                );
+    addToCartBtn.classList.remove("btn-secondary");
 
-                addToCartBtn.classList.add(
-                    "btn-secondary"
-                );
-            }
+    addToCartBtn.classList.add("btn-dark");
+
+}
 
             // =========================
             // UPDATE VARIANT IDS

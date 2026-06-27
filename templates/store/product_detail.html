@@ -197,18 +197,29 @@
 
             <!-- STOCK -->
 
-            <p
-                id="stock-status"
-                class="fw-bold {% if selected_variant.stock > 0 %}text-success{% else %}text-danger{% endif %} mb-4"
-            >
+<div id="stock-status">
 
-                {% if selected_variant.stock > 0 %}
-                    In Stock
-                {% else %}
-                    Out Of Stock
-                {% endif %}
+    {% if selected_variant.stock == 0 %}
 
-            </p>
+        <span class="text-danger">
+            Out Of Stock
+        </span>
+
+    {% elif selected_variant.stock < 5 %}
+
+        <span class="text-warning">
+            Only {{ selected_variant.stock }} left in stock!
+        </span>
+
+    {% else %}
+
+        <span class="text-success">
+            In Stock
+        </span>
+
+    {% endif %}
+
+</div>
 
             <!-- DESCRIPTION -->
 
