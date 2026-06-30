@@ -8,6 +8,8 @@ from wishlist.models import WishlistItem
 from offers.utils import get_offer_price
 from django.http import JsonResponse
 
+from decimal import Decimal
+
 
 @custom_login_required
 def add_cart(request, product_id):
@@ -29,7 +31,12 @@ def add_cart(request, product_id):
 
     cart, created = Cart.objects.get_or_create(user=request.user)
     cart_item = CartItem.objects.filter(cart=cart, variant=variant).first()
+    
+    if not product.category.is_active or product.category.is_deleted:
 
+        messages.error(request, "This product category is currently unavailable.")
+
+        return redirect("product_detail", slug=product.slug)
     if cart_item:
         if cart_item.quantity >= variant.stock:
             messages.error(request, "Insufficient stock")
@@ -131,12 +138,6 @@ def cart(request):
     }
 
     return render(request, "store/cart.html", context)
-
-
-from django.http import JsonResponse
-
-
-from decimal import Decimal
 
 
 @custom_login_required

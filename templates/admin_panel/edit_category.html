@@ -49,7 +49,7 @@
                     <label class="custom-label">STATUS</label>
                     <select name="status" class="form-select custom-input text-muted">
                         <option value="active" {% if category.is_active %}selected{% endif %}>Active</option>
-                        <option value="draft" {% if not category.is_active %}selected{% endif %}>Draft</option>
+                        <option value="draft" {% if not category.is_active %}selected{% endif %}>Deactive</option>
                     </select>
                 </div>
 

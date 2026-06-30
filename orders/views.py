@@ -106,6 +106,16 @@ def checkout(request):
             "product", "variant"
         )
 
+        for item in cart_items:
+
+            if not item.product.category.is_active or item.product.category.is_deleted:
+
+                messages.error(
+                    request,
+                    f"{item.product.name} cannot be purchased because its category is unavailable."
+                )
+
+                return redirect("cart")
         if not cart_items.exists():
             messages.warning(request, "Your cart is empty.")
             return redirect("cart")

@@ -18,7 +18,10 @@ def shop(request):
 
     products = (
         Product.objects.filter(
-            is_deleted=False, isBlocked=False, isActive=True, variants__is_active=True
+            is_deleted=False, isBlocked=False, isActive=True,
+            variants__is_active=True,
+            category__is_active=True,
+            category__is_deleted=False,
         )
         .annotate(starting_price=Min("variants__salePrice"))
         .distinct()
@@ -96,7 +99,9 @@ def shop(request):
 def product_detail(request, slug):
 
     product = get_object_or_404(
-        Product.objects.filter(is_deleted=False, isBlocked=False),
+        Product.objects.filter(is_deleted=False, isBlocked=False,
+        category__is_active=True,
+        category__is_deleted=False,),
         slug=slug,
     )
     variants = product.variants.filter(is_active=True)
