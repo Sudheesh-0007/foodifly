@@ -76,10 +76,29 @@ def cart(request):
             cart=cart,
             product__is_deleted=False,
             product__isBlocked=False,
-            product__isActive=True,
-        ).select_related("product", "variant")
+        ).select_related("product", "variant", "product__category")
 
         for item in cart_items:
+            if (
+                not item.product.isActive
+                or item.product.is_deleted
+                or not item.product.category.is_active
+                or item.product.category.is_deleted
+            ):
+
+                item.stock_issue = False
+                item.unavailable = True
+
+                can_checkout = False
+
+                messages.warning(
+                    request,
+                    f"{item.product.name} is currently unavailable."
+                )
+
+                continue
+
+            item.unavailable = False
 
             if item.variant.stock <= 0:
 

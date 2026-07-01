@@ -105,14 +105,36 @@ def checkout(request):
         cart_items = CartItem.objects.filter(cart=cart).select_related(
             "product", "variant"
         )
-
         for item in cart_items:
 
-            if not item.product.category.is_active or item.product.category.is_deleted:
+            if (
+                not item.product.isActive
+                or item.product.isBlocked
+                or item.product.is_deleted
+                or not item.product.category.is_active
+                or item.product.category.is_deleted
+            ):
 
                 messages.error(
+                    request, f"{item.product.name} is currently unavailable."
+                )
+
+                return redirect("cart")
+
+            if item.variant.stock <= 0:
+
+                messages.error(request, f"{item.product.name} is out of stock.")
+
+                return redirect("cart")
+
+            if item.quantity > item.variant.stock:
+
+                item.quantity = item.variant.stock
+                item.save()
+
+                messages.warning(
                     request,
-                    f"{item.product.name} cannot be purchased because its category is unavailable."
+                    f"Only {item.variant.stock} quantity available for {item.product.name}.",
                 )
 
                 return redirect("cart")
@@ -399,6 +421,34 @@ def verify_payment(request):
             cart_items = CartItem.objects.filter(cart=cart)
 
             total = Decimal("0.00")
+            for item in cart_items:
+
+                if (
+                    not item.product.isActive
+                    or item.product.isBlocked
+                    or item.product.is_deleted
+                    or not item.product.category.is_active
+                    or item.product.category.is_deleted
+                ):
+
+                    return JsonResponse({
+                        "success": False,
+                        "error": f"{item.product.name} is no longer available."
+                    })
+
+                if item.variant.stock <= 0:
+
+                    return JsonResponse({
+                        "success": False,
+                        "error": f"{item.product.name} is out of stock."
+                    })
+
+                if item.quantity > item.variant.stock:
+
+                    return JsonResponse({
+                        "success": False,
+                        "error": f"Only {item.variant.stock} units of {item.product.name} are available."
+                    })
 
             for item in cart_items:
 
@@ -486,14 +536,14 @@ def download_invoice(request, order_id):
     order_items = OrderItem.objects.filter(order=order)
     template_path = "orders/invoice.html"
     total = int(order.total_amount)
-    tax = total* Decimal("0.10")
+    tax = total * Decimal("0.10")
     sub = total + tax
     discount = sub - order.grand_total
     context = {
         "order": order,
         "order_items": order_items,
         "discount": discount,
-        'tax':tax
+        "tax": tax,
     }
 
     response = HttpResponse(content_type="application/pdf")
@@ -658,7 +708,7 @@ def cancel_order_item(request, item_id):
     if grand_total < 0:
 
         grand_total = Decimal("0.00")
-        
+
     order.total_amount = subtotal
     order.tax = tax
     order.grand_total = grand_total

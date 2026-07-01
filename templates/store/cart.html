@@ -90,32 +90,43 @@
 
     </h5>
 
+<div class="d-flex flex-column gap-1">
+
+    <small class="text-muted">
+        <strong>Variant:</strong>
+        {{ item.variant.variant_value }}
+    </small>
+
     <small class="text-muted">
 
-        Price:
+        <strong>Price:</strong>
+
         {% if item.offer %}
 
-    <span class="text-danger fw-bold">
-        ₹{{ item.offer_price }}
-    </span>
+            <span class="text-danger fw-bold">
+                ₹{{ item.offer_price }}
+            </span>
 
-    <del class="text-muted">
-        ₹{{ item.variant.salePrice }}
-    </del>
+            <del class="text-muted">
+                ₹{{ item.variant.salePrice }}
+            </del>
 
-{% else %}
+        {% else %}
 
-    ₹{{ item.variant.salePrice }}
+            ₹{{ item.variant.salePrice }}
 
-{% endif %}
+        {% endif %}
 
     </small>
+
+</div>
 
 </div>
 
 <span class="item-price" id="item-total-{{ item.id }}">
     ₹{{ item.total_price }}
 </span>
+
 
                         </div>
                         {% if item.variant.stock <= 0 %}
@@ -128,6 +139,7 @@
 
 {% endif %}
 
+
                         <!-- DESCRIPTION -->
 
                         <p class="item-meta text-muted small mt-3">
@@ -138,19 +150,52 @@
 
                         <!-- STOCK -->
 
-                        {% if item.variant.stock <= 0 %}
+ {% if item.unavailable %}
 
-                        <div class="mb-3">
+<div class="mb-3">
 
-                            <span class="badge bg-danger">
+    <span class="badge bg-secondary">
 
-                                Out Of Stock
+        Not Available
 
-                            </span>
+    </span>
 
-                        </div>
+</div>
 
-                        {% endif %}
+<div class="alert alert-danger mt-2 py-2">
+
+    This product is currently unavailable.
+
+</div>
+
+{% elif item.variant.stock <= 0 %}
+
+<div class="mb-3">
+
+    <span class="badge bg-danger">
+
+        Out Of Stock
+
+    </span>
+
+</div>
+
+<div class="alert alert-danger mt-2 py-2">
+
+    This item is currently out of stock.
+
+</div>
+
+{% elif item.stock_issue %}
+
+<div class="alert alert-warning mt-2 py-2">
+
+    Only {{ item.variant.stock }} item{{ item.variant.stock|pluralize }} left in stock.
+
+</div>
+
+{% endif %}
+
                         {% if item.stock_issue %}
 
 <div class="alert alert-warning mt-2 py-2">
@@ -178,24 +223,20 @@
     type="button"
     class="qty-btn border-0 bg-transparent"
     onclick="decreaseQuantity('{{ item.id }}')"
+    {% if item.unavailable %}disabled{% endif %}
 >
     −
 </button>
 
-                                <!-- QUANTITY -->
-
-<span
-    class="qty-val"
-    id="qty-{{ item.id }}"
->
+<span class="qty-val" id="qty-{{ item.id }}">
     {{ item.quantity }}
 </span>
 
-                                <!-- INCREASE -->
 <button
     type="button"
     class="qty-btn border-0 bg-transparent"
     onclick="increaseQuantity('{{ item.id }}')"
+    {% if item.unavailable %}disabled{% endif %}
 >
     +
 </button>
