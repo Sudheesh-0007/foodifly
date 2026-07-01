@@ -4,6 +4,27 @@ from store.models import Product, Variant
 from coupon.models import Coupon
 
 
+class OrderAddress(models.Model):
+
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    phone = models.CharField(max_length=15)
+    address_line_1 = models.CharField(max_length=100)
+    city = models.CharField(max_length=50)
+    district = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    state = models.CharField(max_length=50)
+    postal_code = models.CharField(max_length=20)
+    country = models.CharField(max_length=50)
+
+    def __str__(self):
+
+        return f"{self.first_name} {self.last_name}"
+
+
 class Order(models.Model):
 
     STATUS_CHOICES = (
@@ -22,14 +43,15 @@ class Order(models.Model):
     )
 
     PAYMENT_STATUS_CHOICES = (
-    ("Pending", "Pending"),
-    ("Paid", "Paid"),
-    ("Failed", "Failed"),
-    ("Refunded", "Refunded"),
-)
+        ("Pending", "Pending"),
+        ("Paid", "Paid"),
+        ("Failed", "Failed"),
+        ("Refunded", "Refunded"),
+    )
 
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
+    shipping_address = models.ForeignKey(OrderAddress,on_delete=models.SET_NULL,null=True,blank=True,)
     order_number = models.CharField(max_length=20, unique=True)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     tax = models.DecimalField(max_digits=10, decimal_places=2)
@@ -40,14 +62,15 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    payment_status = models.CharField(max_length=20,choices=PAYMENT_STATUS_CHOICES,default="Pending")
+    payment_status = models.CharField(
+        max_length=20, choices=PAYMENT_STATUS_CHOICES, default="Pending"
+    )
 
-    razorpay_order_id = models.CharField(max_length=200,blank=True,null=True)
-    razorpay_payment_id = models.CharField(max_length=200,blank=True,null=True)
+    razorpay_order_id = models.CharField(max_length=200, blank=True, null=True)
+    razorpay_payment_id = models.CharField(max_length=200, blank=True, null=True)
 
-    coupon = models.ForeignKey(Coupon,on_delete=models.SET_NULL,null=True,blank=True)
-    coupon_discount = models.DecimalField(max_digits=10,decimal_places=2,default=0)
-
+    coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True, blank=True)
+    coupon_discount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return self.order_number
@@ -77,9 +100,13 @@ class OrderItem(models.Model):
 
     return_requested = models.BooleanField(default=False)
     return_reason = models.TextField(blank=True, null=True)
-    return_status = models.CharField(max_length=20, choices=RETURN_STATUS, default="Not Requested" )
-    coupon_discount = models.DecimalField(max_digits=10,decimal_places=2,default=0)
+    return_status = models.CharField(
+        max_length=20, choices=RETURN_STATUS, default="Not Requested"
+    )
+    coupon_discount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
 
         return self.product.name
+
+

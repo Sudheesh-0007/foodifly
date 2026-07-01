@@ -43,6 +43,23 @@ def mark_coupon_used(user, coupon):
         CouponUsage.objects.get_or_create(user=user, coupon=coupon)
 
 
+from .models import OrderAddress
+
+
+def create_order_address(address):
+    return OrderAddress.objects.create(
+        first_name=address.first_name,
+        last_name=address.last_name,
+        phone=address.phone,
+        address_line_1=address.address_line_1,
+        city=address.city,
+        district=address.district,
+        state=address.state,
+        postal_code=address.postal_code,
+        country=address.country,
+    )
+
+
 def create_order_items(order, cart_items):
 
     total_coupon = order.coupon_discount
@@ -263,6 +280,8 @@ def checkout(request):
                     return redirect("checkout")
 
                 address = get_object_or_404(Address, id=address_id, user=request.user)
+                order_address = create_order_address(address)
+                
 
                 for item in cart_items:
 
@@ -289,6 +308,7 @@ def checkout(request):
                     order = Order.objects.create(
                         user=request.user,
                         address=address,
+                        shipping_address=order_address,
                         order_number=str(uuid.uuid4()).split("-")[0].upper(),
                         total_amount=total,
                         tax=tax,
@@ -366,6 +386,7 @@ def checkout(request):
                     order = Order.objects.create(
                         user=request.user,
                         address=address,
+                        shipping_address=order_address,
                         order_number=str(uuid.uuid4()).split("-")[0].upper(),
                         total_amount=total,
                         tax=tax,
@@ -474,6 +495,7 @@ def verify_payment(request):
                 id=checkout_data["address_id"],
                 user=request.user,
             )
+            order_address = create_order_address(address)
 
             cart = Cart.objects.get(user=request.user)
 
@@ -542,6 +564,7 @@ def verify_payment(request):
             order = Order.objects.create(
                 user=request.user,
                 address=address,
+                shipping_address=order_address,
                 order_number=str(uuid.uuid4()).split("-")[0].upper(),
                 total_amount=total,
                 tax=tax,
@@ -554,6 +577,7 @@ def verify_payment(request):
                 coupon_discount=coupon_discount,
                 razorpay_order_id=razorpay_order_id,
                 razorpay_payment_id=razorpay_payment_id,
+
             )
 
             create_order_items(order, cart_items)
@@ -604,7 +628,7 @@ def download_invoice(request, order_id):
 
     order = get_object_or_404(Order, id=order_id, user=request.user)
 
-    order_items = OrderItem.objects.filter(order=order)
+    order_items = OrderItem.objects.filter(order=order).exclude(status="Cancelled")
     template_path = "orders/invoice.html"
     total = int(order.total_amount)
     tax = total * Decimal("0.10")

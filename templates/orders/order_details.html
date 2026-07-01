@@ -370,26 +370,26 @@
 
             <div class="address-body">
 
-                <h6>{{ order.address.first_name }} {{ order.address.last_name }}</h6>
+                <h6>{{ order.shipping_address.first_name }} {{ order.shipping_address.last_name }}</h6>
               
 
                 <p>
-                    {{ order.address.address_line_1 }},
-                    {{ order.address.city }},
-                    {{ order.address.state }}
+                    {{ order.shipping_address.address_line_1 }},
+                    {{ order.shipping_address.city }},
+                    {{ order.shipping_address.state }}
                 </p>
 
                 <p>
-                    {{ order.address.country }}
+                    {{ order.shipping_address.country }}
                     -
-                    {{ order.address.postal_code }}
+                    {{ order.shipping_address.postal_code }}
                 </p>
 
                 <p>
 
                     <strong>Phone:</strong>
 
-                    {{ order.address.phone }}
+                    {{ order.shipping_address.phone }}
 
                 </p>
 
@@ -416,26 +416,26 @@
 
             <div class="address-body">
 
-                <h6>{{ order.address.first_name }} {{ order.address.last_name }}</h6>
+                <h6>{{ order.shipping_address.first_name }} {{ order.shipping_address.last_name }}</h6>
               
 
                 <p>
-                    {{ order.address.address_line_1 }},
-                    {{ order.address.city }},
-                    {{ order.address.state }}
+                    {{ order.shipping_address.address_line_1 }},
+                    {{ order.shipping_address.city }},
+                    {{ order.shipping_address.state }}
                 </p>
 
                 <p>
-                    {{ order.address.country }}
+                    {{ order.shipping_address.country }}
                     -
-                    {{ order.address.postal_code }}
+                    {{ order.shipping_address.postal_code }}
                 </p>
 
                 <p>
 
                     <strong>Phone:</strong>
 
-                    {{ order.address.phone }}
+                    {{ order.shipping_address.phone }}
 
                 </p>
 
@@ -462,16 +462,18 @@
 
                 <!-- DOWNLOAD INVOICE -->
 
-                <a
-                    href="{% url 'download_invoice' order.id %}"
-                    class="btn btn-dark"
-                >
+{% if not has_returned_items %}
 
-                    <i class="bi bi-download me-2"></i>
+<a href="{% url 'download_invoice' order.id %}"
+   class="btn btn-dark">
 
-                    Download Invoice
+    <i class="bi bi-download me-2"></i>
 
-                </a>
+    Download Invoice
+
+</a>
+
+{% endif %}
 
             </div>
 

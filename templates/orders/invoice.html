@@ -294,20 +294,20 @@
             <div class="address-text">
 
                 <strong>
-                    {{ order.user.first_name }}
-                    {{ order.user.last_name }}
+                    {{ order.shipping_address.first_name }}
+                    {{ order.shipping_address.last_name }}
                 </strong><br>
 
-                {{ order.address.address_line_1 }}<br>
+                {{ order.shipping_address.address_line_1 }}<br>
 
-                {{ order.address.city }},
-                {{ order.address.state }}<br>
+                {{ order.shipping_address.city }},
+                {{ order.shipping_address.state }}<br>
 
-                {{ order.address.country }}
+                {{ order.shipping_address.country }}
                 -
-                {{ order.address.pincode }}<br>
+                {{ order.shipping_address.postal_code}}<br>
 
-                {{ order.user.phone_number }}
+                {{ order.shipping_address.phone }}
 
             </div>
 
@@ -322,20 +322,20 @@
             <div class="address-text">
 
                 <strong>
-                    {{ order.user.first_name }}
-                    {{ order.user.last_name }}
+                    {{ order.shipping_address.first_name }}
+                    {{ order.shipping_address.last_name }}
                 </strong><br>
 
-                {{ order.address.address_line_1 }}<br>
+                {{ order.shipping_address.address_line_1 }}<br>
 
-                {{ order.address.city }},
-                {{ order.address.state }}<br>
+                {{ order.shipping_address.city }},
+                {{ order.shipping_address.state }}<br>
 
-                {{ order.address.country }}
+                {{ order.shipping_address.country }}
                 -
-                {{ order.address.postal_code}}<br>
+                {{ order.shipping_address.postal_code}}<br>
 
-                {{ order.user.phone_number }}
+                {{ order.shipping_address.phone }}
 
             </div>
 
