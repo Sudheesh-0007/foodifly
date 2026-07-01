@@ -202,7 +202,7 @@ def update_return_status(request, item_id):
         if status == "Approved":
 
             if (
-                order_item.order.payment_method in ["RAZORPAY", "WALLET"]
+                order_item.order.payment_method in ["RAZORPAY", "WALLET", "COD"]
                 and not already_approved
             ):
 
@@ -233,7 +233,7 @@ def update_return_status(request, item_id):
 
                 order_item.order.status = "Returned"
 
-                if order_item.order.payment_method in ["RAZORPAY", "WALLET"]:
+                if order_item.order.payment_method in ["RAZORPAY", "WALLET", "COD"]:
 
                     order_item.order.payment_status = "Refunded"
 

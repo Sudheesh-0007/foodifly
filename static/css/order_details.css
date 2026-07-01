@@ -29,10 +29,28 @@ body { background-color: #fdfbf7; font-family: 'Inter', sans-serif; }
 .progress-line { position: absolute; top: 16px; left: 0; right: 0; height: 3px; background-color: #dedcd3; z-index: 1; }
 .progress-fill { height: 100%; background-color: var(--tracker-accent); transition: width 0.4s ease; }
 
-.step-node { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 2; width: 60px; }
-.node-icon { width: 34px; height: 34px; background-color: #e6e4dc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; color: #777; transition: all 0.3s ease; }
-.node-label { font-size: 0.62rem; font-weight: 700; color: #888; text-align: center; margin-top: 8px; white-space: nowrap; letter-spacing: 0.5px; }
-
+.step-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    width: 80px; /* Slightly wider boundaries for each step text area */
+}.node-icon { width: 34px; height: 34px; background-color: #e6e4dc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; color: #777; transition: all 0.3s ease; }
+.node-label {
+    font-size: 0.58rem; /* Slightly reduced font size for maximum readability when 6 items exist */
+    font-weight: 700;
+    color: #888;
+    text-align: center;
+    margin-top: 8px;
+    
+    /* REMOVE white-space: nowrap; and replace with these to allow elegant line breaking */
+    white-space: normal; 
+    line-height: 1.2;
+    max-width: 100%;
+    
+    letter-spacing: 0.5px;
+}
 .step-node.completed .node-icon { background-color: var(--tracker-accent); color: white; }
 .step-node.completed .node-label { color: var(--tracker-accent); }
 .step-node.active .node-icon { background-color: var(--tracker-accent); color: white; transform: scale(1.15); box-shadow: 0 0 0 5px rgba(125, 101, 42, 0.15); }
@@ -244,4 +262,104 @@ body { background-color: #fdfbf7; font-family: 'Inter', sans-serif; }
     background: rgba(255,255,255,0.08);
 
     color: white;
+}
+/* Modified Tracker Node System to fix overlapping step labels */
+.step-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    width: 75px; /* Increased wrapper block to absorb label shifts */
+}
+
+/* Base adjustment fallback to guarantee line centers exactly with icons */
+.progress-line {
+    position: absolute;
+    top: 17px; 
+    left: 15px;
+    right: 15px;
+    height: 3px;
+    background-color: #dedcd3;
+    z-index: 1;
+}
+
+/* Pulse animation variant for luxury active nodes (Optional refinement) */
+.step-node.active .node-icon {
+    background-color: var(--tracker-accent);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 0 0 5px rgba(125, 101, 42, 0.2);
+}
+/* ===========================
+   ADDRESS CARDS
+=========================== */
+
+.address-card{
+
+    background:#ffffff;
+
+    border:1px solid var(--border-color);
+
+    border-radius:16px;
+
+    padding:28px;
+
+    transition:.3s;
+}
+
+.address-card:hover{
+
+    box-shadow:0 10px 25px rgba(0,0,0,.05);
+
+    transform:translateY(-2px);
+}
+
+.address-header{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-bottom:22px;
+
+    padding-bottom:14px;
+
+    border-bottom:1px solid #ececec;
+}
+
+.address-header i{
+
+    font-size:1.3rem;
+
+    color:var(--foodifly-dark);
+}
+
+.address-header h5{
+
+    margin:0;
+
+    font-family:'Playfair Display',serif;
+
+    color:var(--foodifly-dark);
+}
+
+.address-body h6{
+
+    font-weight:700;
+
+    margin-bottom:12px;
+
+    color:#111;
+}
+
+.address-body p{
+
+    margin-bottom:8px;
+
+    color:#666;
+
+    line-height:1.6;
 }

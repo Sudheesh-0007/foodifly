@@ -677,10 +677,15 @@ def order_details(request, order_id):
     order_items = OrderItem.objects.filter(order=order).select_related(
         "product", "variant"
     )
+    has_return_request = order_items.filter(return_status="Requested").exists()
+
+    has_returned_items = order_items.filter(status="Returned").exists()
 
     context = {
         "order": order,
         "order_items": order_items,
+        "has_return_request": has_return_request,
+        "has_returned_items": has_returned_items,
     }
 
     return render(request, "orders/order_details.html", context)
@@ -699,7 +704,7 @@ def cancel_order(request, order_id):
 
     order_items = OrderItem.objects.filter(order=order)
 
-    if order.payment_method in ["RAZORPAY", "WALLET"]:
+    if order.payment_method in ["RAZORPAY", "WALLET", "COD"]:
         print("REFUND BLOCK EXECUTED")
 
         wallet = Wallet.objects.get(user=order.user)
@@ -747,7 +752,7 @@ def cancel_order_item(request, item_id):
     order_item.status = "Cancelled"
     order_item.save()
 
-    if order.payment_method in ["RAZORPAY", "WALLET"]:
+    if order.payment_method in ["RAZORPAY", "WALLET", "COD"]:
 
         wallet = Wallet.objects.get(user=order.user)
 
@@ -794,7 +799,7 @@ def cancel_order_item(request, item_id):
 
     if not active_items.exists():
         order.status = "Cancelled"
-        if order.payment_method in ["RAZORPAY", "WALLET"]:
+        if order.payment_method in ["RAZORPAY", "WALLET", "COD"]:
             order.payment_status = "Refunded"
     order.save()
 

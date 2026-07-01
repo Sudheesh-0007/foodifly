@@ -146,125 +146,55 @@
                     </h5>
 
                     <!-- TRACKER -->
+<div class="tracker-wrapper position-relative px-3 mb-4">
 
-                    <div
-                        class="tracker-wrapper position-relative px-3 mb-4"
-                    >
+    <div class="progress-line">
+        <div class="progress-fill"
+            {% if order.status == "Pending" %} style="width: 0%;"
+            {% elif order.status == "Confirmed" %} style="width: 20%;"
+            {% elif order.status == "Shipped" %} style="width: 40%;"
+            {% elif order.status == "Delivered" and not has_return_request and not has_returned_items %} style="width: 60%;"
+            {% elif has_return_request and not has_returned_items %} style="width: 80%;"
+            {% elif has_returned_items %} style="width: 100%;"
+            {% elif order.status == "Cancelled" %} style="width: 0%;"
+            {% endif %}
+        ></div>
+    </div>
 
-                        <div class="progress-line">
+    <div class="d-flex justify-content-between position-relative z-index-2">
 
-                            <div
-                                class="progress-fill"
+        <div class="step-node completed">
+            <div class="node-icon"><i class="bi bi-check"></i></div>
+            <span class="node-label">PENDING</span>
+        </div>
 
-                                {% if order.status == "Pending" %}
-                                    style="width: 25%;"
+        <div class="step-node {% if order.status != 'Pending' and order.status != 'Cancelled' %}completed{% endif %}">
+            <div class="node-icon"><i class="bi bi-box-seam"></i></div>
+            <span class="node-label">CONFIRMED</span>
+        </div>
 
-                                {% elif order.status == "Confirmed" %}
-                                    style="width: 50%;"
+        <div class="step-node {% if order.status == 'Shipped' or order.status == 'Delivered' or has_return_request or has_returned_items %}completed{% endif %}">
+            <div class="node-icon"><i class="bi bi-truck"></i></div>
+            <span class="node-label">SHIPPED</span>
+        </div>
 
-                                {% elif order.status == "Shipped" %}
-                                    style="width: 75%;"
+        <div class="step-node {% if order.status == 'Delivered' or has_return_request or has_returned_items %}completed{% endif %} {% if order.status == 'Delivered' and not has_return_request and not has_returned_items %}active{% endif %}">
+            <div class="node-icon"><i class="bi bi-house-door"></i></div>
+            <span class="node-label">DELIVERED</span>
+        </div>
 
-                                {% elif order.status == "Delivered" %}
-                                    style="width: 100%;"
+        <div class="step-node {% if has_return_request or has_returned_items %}completed{% endif %} {% if has_return_request and not has_returned_items %}active{% endif %}">
+            <div class="node-icon"><i class="bi bi-arrow-counterclockwise"></i></div>
+            <span class="node-label">RETURN REQUESTED</span>
+        </div>
 
-                                {% elif order.status == "Cancelled" %}
-                                    style="width: 0%;"
+        <div class="step-node {% if has_returned_items %}completed active{% endif %}">
+            <div class="node-icon"><i class="bi bi-arrow-left-right"></i></div>
+            <span class="node-label">RETURNED</span>
+        </div>
 
-                                {% endif %}
-                            >
-
-                            </div>
-
-                        </div>
-
-                        <div
-                            class="d-flex justify-content-between position-relative z-index-2"
-                        >
-
-                            <!-- CONFIRMED -->
-
-                            <div
-                                class="step-node completed"
-                            >
-
-                                <div class="node-icon">
-
-                                    <i class="bi bi-check"></i>
-
-                                </div>
-
-                                <span class="node-label">
-
-                                    PENDING
-
-                                </span>
-
-                            </div>
-
-                            <!-- PREPARED -->
-
-                            <div
-                                class="step-node {% if order.status != 'Pending' %}completed{% endif %}"
-                            >
-
-                                <div class="node-icon">
-
-                                    <i class="bi bi-box-seam"></i>
-
-                                </div>
-
-                                <span class="node-label">
-
-                                    CONFIRMED
-
-                                </span>
-
-                            </div>
-
-                            <!-- SHIPPED -->
-
-                            <div
-                                class="step-node {% if order.status == 'Shipped' or order.status == 'Delivered' %}active{% endif %}"
-                            >
-
-                                <div class="node-icon">
-
-                                    <i class="bi bi-truck"></i>
-
-                                </div>
-
-                                <span class="node-label">
-
-                                    SHIPPED
-
-                                </span>
-
-                            </div>
-
-                            <!-- DELIVERED -->
-
-                            <div
-                                class="step-node {% if order.status == 'Delivered' %}completed{% endif %}"
-                            >
-
-                                <div class="node-icon">
-
-                                    <i class="bi bi-house-door"></i>
-
-                                </div>
-
-                                <span class="node-label">
-
-                                    DELIVERED
-
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+    </div>
+</div>
 
                     <!-- INFO -->
 
@@ -420,7 +350,102 @@
             </div>
 
         </div>
+<!-- ADDRESS SECTION -->
 
+<div class="row g-4 mb-5">
+
+    <!-- SHIPPING ADDRESS -->
+
+    <div class="col-lg-6">
+
+        <div class="address-card h-100">
+
+            <div class="address-header">
+
+                <i class="bi bi-truck"></i>
+
+                <h5>Shipping Address</h5>
+
+            </div>
+
+            <div class="address-body">
+
+                <h6>{{ order.address.first_name }} {{ order.address.last_name }}</h6>
+              
+
+                <p>
+                    {{ order.address.address_line_1 }},
+                    {{ order.address.city }},
+                    {{ order.address.state }}
+                </p>
+
+                <p>
+                    {{ order.address.country }}
+                    -
+                    {{ order.address.postal_code }}
+                </p>
+
+                <p>
+
+                    <strong>Phone:</strong>
+
+                    {{ order.address.phone }}
+
+                </p>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- BILLING ADDRESS -->
+
+    <div class="col-lg-6">
+
+        <div class="address-card h-100">
+
+            <div class="address-header">
+
+                <i class="bi bi-receipt"></i>
+
+                <h5>Billing Address</h5>
+
+            </div>
+
+            <div class="address-body">
+
+                <h6>{{ order.address.first_name }} {{ order.address.last_name }}</h6>
+              
+
+                <p>
+                    {{ order.address.address_line_1 }},
+                    {{ order.address.city }},
+                    {{ order.address.state }}
+                </p>
+
+                <p>
+                    {{ order.address.country }}
+                    -
+                    {{ order.address.postal_code }}
+                </p>
+
+                <p>
+
+                    <strong>Phone:</strong>
+
+                    {{ order.address.phone }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
         <!-- ORDER ITEMS -->
 
         <section class="selection-module">

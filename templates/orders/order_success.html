@@ -177,6 +177,16 @@
                     <span>₹{{ order.total_amount }}</span>
 
                 </div>
+                
+                <div
+                    class="d-flex justify-content-between mb-2 text-light-muted"
+                >
+
+                    <span>Taxes</span>
+
+                    <span>₹{{ order.tax }}</span>
+
+                </div>
 
 {% if order.coupon %}
 

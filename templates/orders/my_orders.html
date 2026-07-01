@@ -280,44 +280,58 @@
 
                 <!-- DELIVERY STATUS -->
 
-                {% if item.status == "Cancelled" %}
+{% if item.status == "Cancelled" %}
 
-                <p
-                    class="delivery-note text-danger x-small mb-0"
-                >
+<p class="delivery-note text-danger x-small mb-0">
 
-                    <i class="bi bi-x-circle"></i>
+    <i class="bi bi-x-circle"></i>
 
-                    This item has been cancelled
+    This item has been cancelled
 
-                </p>
+</p>
 
-                {% elif item.order.status == "Delivered" %}
+{% elif item.status == "Returned" %}
 
-                <p
-                    class="delivery-note text-success x-small mb-0"
-                >
+<p class="delivery-note text-primary x-small mb-0">
 
-                    <i class="bi bi-check2-circle"></i>
+    <i class="bi bi-arrow-counterclockwise"></i>
 
-                    Delivered:
-                    {{ item.order.updated_at|date:"M d, Y" }}
+    Returned
 
-                </p>
+</p>
 
-                {% else %}
+{% elif item.return_status == "Requested" %}
 
-                <p
-                    class="delivery-note text-warning-dark x-small mb-0"
-                >
+<p class="delivery-note text-warning x-small mb-0">
 
-                    <i class="bi bi-clock"></i>
+    <i class="bi bi-arrow-repeat"></i>
 
-                    Order is being processed
+    Return Requested
 
-                </p>
+</p>
 
-                {% endif %}
+{% elif item.order.status == "Delivered" %}
+
+<p class="delivery-note text-success x-small mb-0">
+
+    <i class="bi bi-check2-circle"></i>
+
+    Delivered:
+    {{ item.order.updated_at|date:"M d, Y" }}
+
+</p>
+
+{% else %}
+
+<p class="delivery-note text-warning-dark x-small mb-0">
+
+    <i class="bi bi-clock"></i>
+
+    Order is being processed
+
+</p>
+
+{% endif %}
 
             </div>
 
