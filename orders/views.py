@@ -45,9 +45,31 @@ def mark_coupon_used(user, coupon):
 
 def create_order_items(order, cart_items):
 
-    for item in cart_items:
+    total_coupon = order.coupon_discount
+    distributed_coupon = Decimal("0.00")
 
-        offer_price, offer = get_offer_price(item.product, item.variant.salePrice)
+    cart_items = list(cart_items)
+
+    for index, item in enumerate(cart_items):
+
+        offer_price, offer = get_offer_price(
+            item.product,
+            item.variant.salePrice,
+        )
+
+        item_total = offer_price * item.quantity
+
+        if index == len(cart_items) - 1:
+
+            coupon_share = total_coupon - distributed_coupon
+
+        else:
+
+            coupon_share = (item_total / order.total_amount) * total_coupon
+
+            coupon_share = coupon_share.quantize(Decimal("0.01"))
+
+            distributed_coupon += coupon_share
 
         OrderItem.objects.create(
             order=order,
@@ -55,17 +77,18 @@ def create_order_items(order, cart_items):
             variant=item.variant,
             quantity=item.quantity,
             price=offer_price,
-            total_price=offer_price * item.quantity,
+            total_price=item_total,
+            coupon_discount=coupon_share,
         )
 
         item.variant.stock -= item.quantity
-
         item.variant.save()
 
 
 def get_coupon_details(coupon_code, total):
 
     coupon = None
+
     coupon_discount = Decimal("0.00")
 
     if not coupon_code:
@@ -74,15 +97,29 @@ def get_coupon_details(coupon_code, total):
 
     try:
 
-        coupon = Coupon.objects.get(code=coupon_code, is_active=True)
+        coupon = Coupon.objects.get(
+            code=coupon_code.upper(),
+            is_active=True,
+        )
 
         if coupon.discount_type == "PERCENTAGE":
 
             coupon_discount = (total * coupon.discount_value) / Decimal("100")
 
+            if coupon.maximum_discount:
+
+                coupon_discount = min(
+                    coupon_discount,
+                    coupon.maximum_discount,
+                )
+
         else:
 
             coupon_discount = coupon.discount_value
+
+        if coupon_discount > total:
+
+            coupon_discount = total
 
     except Coupon.DoesNotExist:
 
@@ -173,13 +210,30 @@ def checkout(request):
 
             total += item.total_price
             quantity += item.quantity
-        print(offer_price)
-        print(offer)
+
         tax = total * Decimal("0.10")
 
         shipping = Decimal("0.00")
 
         grand_total = total + tax + shipping
+
+        checkout_data = request.session.get("checkout_data", {})
+
+        coupon_code = checkout_data.get("coupon_code", "")
+
+        if coupon_code:
+
+            coupon, coupon_discount = get_coupon_details(
+                coupon_code,
+                total,
+            )
+
+            grand_total = calculate_grand_total(
+                total,
+                tax,
+                shipping,
+                coupon_discount,
+            )
 
         if request.method == "POST":
 
@@ -274,6 +328,10 @@ def checkout(request):
                         "address_id": address.id,
                         "coupon_code": coupon_code,
                         "coupon_discount": str(coupon_discount),
+                        "total": str(total),
+                        "tax": str(tax),
+                        "shipping": str(shipping),
+                        "grand_total": str(grand_total),
                     }
 
                     context = {
@@ -331,6 +389,7 @@ def checkout(request):
 
                     cart_items.delete()
                     mark_coupon_used(request.user, coupon)
+                    request.session.pop("checkout_data", None)
 
                     messages.success(request, "Order placed using Wallet.")
 
@@ -355,6 +414,7 @@ def checkout(request):
             "quantity": quantity,
             "wallet": wallet,
             "coupon": coupon,
+            "coupon_code": coupon_code,
             "coupon_discount": coupon_discount,
         }
 
@@ -400,7 +460,6 @@ def verify_payment(request):
                     "razorpay_signature": razorpay_signature,
                 }
             )
-            checkout_data = request.session.get("checkout_data")
 
             if not checkout_data:
 
@@ -419,8 +478,6 @@ def verify_payment(request):
             cart = Cart.objects.get(user=request.user)
 
             cart_items = CartItem.objects.filter(cart=cart)
-
-            total = Decimal("0.00")
             for item in cart_items:
 
                 if (
@@ -431,40 +488,54 @@ def verify_payment(request):
                     or item.product.category.is_deleted
                 ):
 
-                    return JsonResponse({
-                        "success": False,
-                        "error": f"{item.product.name} is no longer available."
-                    })
+                    return JsonResponse(
+                        {
+                            "success": False,
+                            "error": f"{item.product.name} is no longer available.",
+                        }
+                    )
 
                 if item.variant.stock <= 0:
 
-                    return JsonResponse({
-                        "success": False,
-                        "error": f"{item.product.name} is out of stock."
-                    })
+                    return JsonResponse(
+                        {
+                            "success": False,
+                            "error": f"{item.product.name} is out of stock.",
+                        }
+                    )
 
                 if item.quantity > item.variant.stock:
 
-                    return JsonResponse({
-                        "success": False,
-                        "error": f"Only {item.variant.stock} units of {item.product.name} are available."
-                    })
+                    return JsonResponse(
+                        {
+                            "success": False,
+                            "error": f"Only {item.variant.stock} units of {item.product.name} are available.",
+                        }
+                    )
 
-            for item in cart_items:
+            checkout_data = request.session.get("checkout_data")
 
-                offer_price, offer = get_offer_price(
-                    item.product, item.variant.salePrice
-                )
+            total = Decimal(checkout_data["total"])
 
-                total += offer_price * item.quantity
+            tax = Decimal(checkout_data["tax"])
+
+            shipping = Decimal(checkout_data["shipping"])
+
+            coupon_discount = Decimal(checkout_data["coupon_discount"])
+
+            grand_total = Decimal(checkout_data["grand_total"])
             coupon_code = checkout_data.get("coupon_code")
+            coupon = None
 
-            coupon, coupon_discount = get_coupon_details(coupon_code, total)
+            if coupon_code:
 
-            tax = total * Decimal("0.10")
-
-            grand_total = total + tax - coupon_discount
-
+                try:
+                    coupon = Coupon.objects.get(
+                        code=coupon_code,
+                        is_active=True,
+                    )
+                except Coupon.DoesNotExist:
+                    coupon = None
             if grand_total < 0:
                 grand_total = Decimal("0.00")
 
@@ -675,15 +746,17 @@ def cancel_order_item(request, item_id):
 
     order_item.status = "Cancelled"
     order_item.save()
-    if order.payment_method in ["RAZORPAY", "WALLET"]:
 
-        refund_amount = order_item.total_price
+    if order.payment_method in ["RAZORPAY", "WALLET"]:
 
         wallet = Wallet.objects.get(user=order.user)
 
         item_tax = order_item.total_price * Decimal("0.10")
 
-        refund_amount = order_item.total_price + item_tax
+        refund_amount = (
+            order_item.total_price + item_tax - order_item.coupon_discount
+        ).quantize(Decimal("0.01"))
+
         wallet.balance += refund_amount
 
         wallet.save()
@@ -699,14 +772,20 @@ def cancel_order_item(request, item_id):
     variant.stock += order_item.quantity
     variant.save()
 
-    active_items = OrderItem.objects.filter(order=order, status="Active")
+    active_items = OrderItem.objects.filter(
+        order=order,
+        status="Active",
+    )
 
     subtotal = sum(item.total_price for item in active_items)
+
     tax = subtotal * Decimal("0.10")
-    grand_total = subtotal + tax - order.coupon_discount
+
+    remaining_coupon = sum(item.coupon_discount for item in active_items)
+
+    grand_total = subtotal + tax - remaining_coupon
 
     if grand_total < 0:
-
         grand_total = Decimal("0.00")
 
     order.total_amount = subtotal

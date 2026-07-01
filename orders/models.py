@@ -78,6 +78,7 @@ class OrderItem(models.Model):
     return_requested = models.BooleanField(default=False)
     return_reason = models.TextField(blank=True, null=True)
     return_status = models.CharField(max_length=20, choices=RETURN_STATUS, default="Not Requested" )
+    coupon_discount = models.DecimalField(max_digits=10,decimal_places=2,default=0)
 
     def __str__(self):
 

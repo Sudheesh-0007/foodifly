@@ -9,6 +9,7 @@ from decimal import Decimal
 from accounts.models import Account
 import uuid
 
+
 @staff_member_required(login_url="admin_login")
 def admin_orders(request):
 
@@ -205,21 +206,24 @@ def update_return_status(request, item_id):
                 and not already_approved
             ):
 
-                item_tax = order_item.total_price * Decimal("0.10")
-
-                refund_amount = order_item.total_price + item_tax
-
                 wallet = Wallet.objects.get(user=order_item.order.user)
 
-                wallet.balance += refund_amount
+                item_tax = order_item.total_price * Decimal("0.10")
 
+                refund_amount = (
+                    order_item.total_price
+                    + item_tax
+                    - order_item.coupon_discount
+                ).quantize(Decimal("0.01"))
+
+                wallet.balance += refund_amount
                 wallet.save()
 
                 WalletTransaction.objects.create(
                     wallet=wallet,
                     transaction_type="Credit",
                     amount=refund_amount,
-                    description=(f"Return refund - " f"{order_item.product.name}"),
+                    description=f"Return refund - {order_item.product.name}",
                     transaction_id=f"TXN-{uuid.uuid4().hex[:8].upper()}",
                 )
 
@@ -234,8 +238,8 @@ def update_return_status(request, item_id):
                     order_item.order.payment_status = "Refunded"
 
                 order_item.order.save()
-            elif order_item.order.status ==  "Delivered":
-                pass   
+            elif order_item.order.status == "Delivered":
+                pass
 
         messages.success(request, f"Return request {status.lower()} successfully.")
 
