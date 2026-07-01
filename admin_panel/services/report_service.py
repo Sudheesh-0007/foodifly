@@ -17,7 +17,7 @@ from django.db.models import Count
 def get_filtered_orders(filter_type, start_date=None, end_date=None):
 
     today = timezone.now()
-
+    # only deliverd product is showing in sales report if you want add pending , shipped, conformed
     orders = Order.objects.filter(status="Delivered", payment_status="Paid")
 
     if start_date and end_date:
@@ -103,7 +103,7 @@ def get_sales_chart_data(filter_type, start_date=None, end_date=None):
 
     today = timezone.now()
 
-    orders = get_filtered_orders(filter_type, start_date, end_date)
+    orders = get_sales_report_orders(filter_type, start_date, end_date)
 
     if start_date and end_date:
 

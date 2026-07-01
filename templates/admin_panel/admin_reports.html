@@ -134,7 +134,22 @@
             {{ chart_values|json_script:"chart-values" }}
         </div>
     </div>
+        <div class="col-lg-12">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
 
+            <h5 class="fw-bold mb-3">
+                Order Status
+            </h5>
+
+            <div style="height:300px">
+                <canvas id="statusChart"></canvas>
+
+                {{ status_labels|json_script:"status-labels" }}
+                {{ status_values|json_script:"status-values" }}
+            </div>
+
+        </div>
+    </div>
     <div class="table-container bg-white p-4 rounded-4 border mb-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="fw-bold text-dark mb-0">Recent Orders</h5>

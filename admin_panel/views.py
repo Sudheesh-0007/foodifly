@@ -120,7 +120,7 @@ def report_dashboard(request):
             messages.error(
                 request, "End date must be greater than or equal to start date."
             )
-    orders = get_filtered_orders(filter_type, start_date, end_date).select_related(
+    orders = get_sales_report_orders(filter_type, start_date, end_date).select_related(
         "user"
     )
 
@@ -133,9 +133,13 @@ def report_dashboard(request):
     best_categories = get_best_selling_categories(orders)
 
     chart_data = get_sales_chart_data(filter_type, start_date, end_date)
+    # summary = get_sales_summary(orders)
+    status_data = get_order_status_distribution(orders)
+    
 
     context = {
         **summary,
+        **status_data,
         "recent_orders": recent_orders,
         "best_products": best_products,
         "best_categories": best_categories,
@@ -405,7 +409,7 @@ def sales_report(request):
             )
 
             return redirect("sales_report")
-    orders = get_sales_report_orders(filter_type, start_date, end_date)
+    orders = get_filtered_orders(filter_type, start_date, end_date)
     payment_data = get_payment_distribution(orders)
 
     summary = get_sales_summary(orders)
@@ -414,7 +418,6 @@ def sales_report(request):
 
     context = {
         **summary,
-        **payment_data,
         **payment_data,
         **status_data,
         "filter_type": filter_type,
