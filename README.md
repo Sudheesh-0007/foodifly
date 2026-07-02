@@ -133,21 +133,27 @@ Foodifly is a full-stack Django-based e-commerce platform designed for gourmet f
 
 ```text
 Foodifly/
+
+│── Foodifly/
+│── accounts/
+│── admin_panel/
+│── cart/
+│── category/
+│── coupon/
+│── offers/
+│── orders/
+│── reviews/
+│── store/
+│── wallet/
+│── wishlist/
+│── static/
+│── templates/
+│── media/
+│── manage.py
 │
-├── accounts/
-├── store/
-├── cart/
-├── wishlist/
-├── orders/
-├── coupon/
-├── offers/
-├── wallet/
-├── admin_panel/
-├── templates/
-├── static/
-├── media/
-└── manage.py
+│── README.md
 ```
+
 
 ---
 
@@ -271,14 +277,80 @@ Admin Dashboard
 
 ---
 
-## Future Enhancements
+## Project Setup & Local Running Instructions
 
-* Product Reviews & Ratings
-* Referral System
-* Advanced Analytics Dashboard
-* Inventory Reports
-* Sales Charts
+### 1. Clone the repository
 
+```bash
+git clone <repository-url>
+cd Foodifly
+```
+
+### 2. Create and activate a virtual environment
+
+**Windows**
+
+```bash
+python -m venv env
+env\Scripts\activate
+```
+
+**Linux / macOS**
+
+```bash
+python3 -m venv env
+source env/bin/activate
+```
+
+### 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Create a `.env` file
+
+Create a `.env` file in the project root and add the required environment variables such as:
+
+- `SECRET_KEY`
+- `DEBUG`
+- `DB_NAME`
+- `DB_USER`
+- `DB_PASSWORD`
+- `DB_HOST`
+- `DB_PORT`
+- `EMAIL_HOST_USER`
+- `EMAIL_HOST_PASSWORD`
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
+- `RAZORPAY_KEY_ID`
+- `RAZORPAY_KEY_SECRET`
+
+### 5. Apply database migrations
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### 6. Create a superuser (optional)
+
+```bash
+python manage.py createsuperuser
+```
+
+### 7. Run the development server
+
+```bash
+python manage.py runserver
+```
+
+Open the application in your browser:
+
+```
+http://127.0.0.1:8000/
+```
 ---
 
 ## Author
