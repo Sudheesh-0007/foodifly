@@ -683,8 +683,10 @@ def my_orders(request):
     page = request.GET.get("page")
 
     paged_orders = paginator.get_page(page)
+    has_returned_items = order_items.filter(status="Returned").exists()
 
     context = {
+        "has_returned_items": has_returned_items,
         "order_items": paged_orders,
         "search": search,
         "status": status,

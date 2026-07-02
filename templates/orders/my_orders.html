@@ -343,7 +343,7 @@
 
                 <!-- DOWNLOAD INVOICE -->
 
-                <a
+                {% comment %} <a
                     href="{% url 'download_invoice' item.order.id %}"
                     class="btn btn-outline-dark btn-action w-100"
                 >
@@ -352,7 +352,7 @@
 
                     Invoice
 
-                </a>
+                </a> {% endcomment %}
 
                 <!-- VIEW DETAILS -->
 

@@ -235,3 +235,20 @@ input#phone {
         font-size: 2.8rem;
     }
 }
+.password-toggle-btn {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.1rem; /* Slightly larger to make the icon clear */
+    color: #888;
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.2s ease;
+}
+
+.password-toggle-btn:hover {
+    color: #111;
+}

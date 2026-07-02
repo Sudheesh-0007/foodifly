@@ -165,3 +165,28 @@ body {
     color: #8c7344;
     text-decoration: underline;
 }
+/* Password Toggle Wrapper and Layout */
+.password-input-wrapper {
+    display: relative;
+    width: 100%;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #888; /* Matches your quiet-luxury muted color palette */
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.2s ease;
+}
+
+.password-toggle-btn:hover {
+    color: #111; /* Darkens subtlely on hover */
+}
