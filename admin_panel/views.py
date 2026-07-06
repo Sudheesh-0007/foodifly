@@ -1,30 +1,23 @@
-from django.shortcuts import render, redirect
-from django.contrib import auth, messages
-from django.shortcuts import render, get_object_or_404, redirect
-from accounts.models import Account
-from django.db.models import Q
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.contrib import messages
-from django.views.decorators.cache import never_cache
-from .decorators import admin_required
-from admin_panel.services.report_service import *
-from django.http import HttpResponse
+from io import BytesIO
+
 import openpyxl
-from openpyxl.styles import Font
+from django.contrib import auth, messages
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+from django.views.decorators.cache import never_cache
+from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
-from openpyxl.styles import PatternFill
-from openpyxl.styles import Alignment
-from reportlab.platypus import (
-    SimpleDocTemplate,
-    Paragraph,
-    Spacer,
-    Table,
-    TableStyle,
-)
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
-from django.utils import timezone
-from io import BytesIO
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+
+from accounts.models import Account
+from admin_panel.services.report_service import *
+
+from .decorators import admin_required
 
 
 @never_cache
@@ -102,6 +95,7 @@ def admin_logout(request):
     )
     return redirect("admin_login")
 
+
 @never_cache
 @admin_required
 def report_dashboard(request):
@@ -135,7 +129,6 @@ def report_dashboard(request):
     chart_data = get_sales_chart_data(filter_type, start_date, end_date)
     # summary = get_sales_summary(orders)
     status_data = get_order_status_distribution(orders)
-    
 
     context = {
         **summary,
@@ -389,6 +382,7 @@ def export_sales_pdf(request):
     pdf_buffer.close()
     response.write(pdf)
     return response
+
 
 @never_cache
 @admin_required

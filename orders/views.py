@@ -1,28 +1,26 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-
-from decimal import Decimal
+import json
 import uuid
-from django.core.paginator import Paginator
-from cart.models import Cart, CartItem
-from accounts.models import Address
-from .models import Order, OrderItem
-
-from django.http import HttpResponse
-from django.template.loader import get_template
-from xhtml2pdf import pisa
-from django.db.models import Q
+from decimal import Decimal
 
 import razorpay
 from django.conf import settings
-from django.http import JsonResponse
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import get_template
 from django.views.decorators.csrf import csrf_exempt
-import json
+from xhtml2pdf import pisa
 
-from wallet.models import Wallet, WalletTransaction
-from offers.utils import get_offer_price
+from accounts.models import Address
+from cart.models import Cart, CartItem
 from coupon.models import Coupon, CouponUsage
+from offers.utils import get_offer_price
+from wallet.models import Wallet, WalletTransaction
+
+from .models import Order, OrderItem
 
 
 def calculate_grand_total(total, tax, shipping, coupon_discount):
@@ -281,7 +279,6 @@ def checkout(request):
 
                 address = get_object_or_404(Address, id=address_id, user=request.user)
                 order_address = create_order_address(address)
-                
 
                 for item in cart_items:
 
@@ -577,7 +574,6 @@ def verify_payment(request):
                 coupon_discount=coupon_discount,
                 razorpay_order_id=razorpay_order_id,
                 razorpay_payment_id=razorpay_payment_id,
-
             )
 
             create_order_items(order, cart_items)
@@ -844,6 +840,11 @@ def request_return(request, item_id):
 
     if order_item.return_requested:
         messages.warning(request, "Return already requested.")
+        return redirect("order_details", order_id=order_item.order.id)
+
+    if order_item.status == "Cancelled":
+
+        messages.error(request, "Cancelled items cannot be returned.")
         return redirect("order_details", order_id=order_item.order.id)
 
     if request.method == "POST":

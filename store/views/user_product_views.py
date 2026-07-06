@@ -1,12 +1,14 @@
 from django.core.paginator import Paginator
-from django.db.models import Q, Min
-from store.models import Product, Variant
-from category.models import Category
-from wishlist.models import WishlistItem
-from django.shortcuts import render, get_object_or_404, redirect
-from offers.utils import get_offer_price
+from django.db.models import Min, Q
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+
+from category.models import Category
+from offers.utils import get_offer_price
 from reviews.models import Review
+from store.models import Product, Variant
+from wishlist.models import WishlistItem
+
 
 def shop(request):
 
@@ -18,7 +20,9 @@ def shop(request):
 
     products = (
         Product.objects.filter(
-            is_deleted=False, isBlocked=False, isActive=True,
+            is_deleted=False,
+            isBlocked=False,
+            isActive=True,
             variants__is_active=True,
             category__is_active=True,
             category__is_deleted=False,
@@ -99,9 +103,12 @@ def shop(request):
 def product_detail(request, slug):
 
     product = get_object_or_404(
-        Product.objects.filter(is_deleted=False, isBlocked=False,
-        category__is_active=True,
-        category__is_deleted=False,),
+        Product.objects.filter(
+            is_deleted=False,
+            isBlocked=False,
+            category__is_active=True,
+            category__is_deleted=False,
+        ),
         slug=slug,
     )
     variants = product.variants.filter(is_active=True)
@@ -151,7 +158,6 @@ def product_detail(request, slug):
         ).values_list("variant_id", flat=True)
 
     for related_product in related_products:
-
 
         offer_price = None
         offer = None

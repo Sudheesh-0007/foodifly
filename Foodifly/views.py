@@ -1,8 +1,9 @@
+from django.db.models import Min, Q
 from django.shortcuts import render
 from django.views.decorators.cache import never_cache
-from store.models import Product
-from django.db.models import Min, Q
+
 from offers.utils import get_offer_price
+from store.models import Product
 
 
 def home(request):
@@ -22,18 +23,12 @@ def home(request):
     for product in latest_products:
 
         cheapest_variant = (
-            product.variants
-            .filter(is_active=True)
-            .order_by("salePrice")
-            .first()
+            product.variants.filter(is_active=True).order_by("salePrice").first()
         )
 
         if cheapest_variant:
 
-            offer_price, offer = get_offer_price(
-                product,
-                cheapest_variant.salePrice
-            )
+            offer_price, offer = get_offer_price(product, cheapest_variant.salePrice)
 
             product.original_price = cheapest_variant.salePrice
             product.offer_price = offer_price

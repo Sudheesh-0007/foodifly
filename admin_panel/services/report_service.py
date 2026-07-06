@@ -1,17 +1,14 @@
+import calendar
+from datetime import datetime, timedelta
+
+from django.db.models import Count, Sum
 from django.utils import timezone
-from datetime import timedelta
-from django.db.models import Sum
 
 from accounts.models import Account
-from store.models import Product
 from category.models import Category
 from coupon.models import Coupon
-from orders.models import OrderItem
-
-from orders.models import Order
-from datetime import datetime
-import calendar
-from django.db.models import Count
+from orders.models import Order, OrderItem
+from store.models import Product
 
 
 def get_filtered_orders(filter_type, start_date=None, end_date=None):
@@ -253,6 +250,8 @@ def get_order_status_distribution(orders):
         "status_labels": labels,
         "status_values": values,
     }
+
+
 def get_sales_report_orders(filter_type, start_date=None, end_date=None):
 
     today = timezone.now()
@@ -261,33 +260,24 @@ def get_sales_report_orders(filter_type, start_date=None, end_date=None):
 
     if start_date and end_date:
 
-        return orders.filter(
-            created_at__date__range=[start_date, end_date]
-        )
+        return orders.filter(created_at__date__range=[start_date, end_date])
 
     if filter_type == "daily":
 
-        orders = orders.filter(
-            created_at__date=today.date()
-        )
+        orders = orders.filter(created_at__date=today.date())
 
     elif filter_type == "weekly":
 
-        orders = orders.filter(
-            created_at__gte=today - timedelta(days=7)
-        )
+        orders = orders.filter(created_at__gte=today - timedelta(days=7))
 
     elif filter_type == "monthly":
 
         orders = orders.filter(
-            created_at__year=today.year,
-            created_at__month=today.month
+            created_at__year=today.year, created_at__month=today.month
         )
 
     elif filter_type == "yearly":
 
-        orders = orders.filter(
-            created_at__year=today.year
-        )
+        orders = orders.filter(created_at__year=today.year)
 
     return orders

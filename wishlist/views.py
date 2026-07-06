@@ -1,11 +1,13 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from store.models import Product, Variant
-from .models import Wishlist, WishlistItem
-from utils.decorators import custom_login_required
+from django.shortcuts import get_object_or_404, redirect, render
+
 from offers.utils import get_offer_price
+from store.models import Product, Variant
+from utils.decorators import custom_login_required
+
+from .models import Wishlist, WishlistItem
 
 
 @custom_login_required
@@ -76,10 +78,7 @@ def wishlist_page(request):
     )
     for item in wishlist_items:
 
-        offer_price, offer = get_offer_price(
-            item.product,
-            item.variant.salePrice
-        )
+        offer_price, offer = get_offer_price(item.product, item.variant.salePrice)
 
         item.offer_price = offer_price
         item.offer = offer

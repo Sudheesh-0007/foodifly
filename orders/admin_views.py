@@ -1,13 +1,16 @@
-from django.shortcuts import render, redirect, get_object_or_404
+import uuid
+from decimal import Decimal
+
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
-from django.contrib import messages
 from django.db.models import Q
-from .models import Order, OrderItem
-from wallet.models import Wallet, WalletTransaction
-from decimal import Decimal
+from django.shortcuts import get_object_or_404, redirect, render
+
 from accounts.models import Account
-import uuid
+from wallet.models import Wallet, WalletTransaction
+
+from .models import Order, OrderItem
 
 
 @staff_member_required(login_url="admin_login")
@@ -211,9 +214,7 @@ def update_return_status(request, item_id):
                 item_tax = order_item.total_price * Decimal("0.10")
 
                 refund_amount = (
-                    order_item.total_price
-                    + item_tax
-                    - order_item.coupon_discount
+                    order_item.total_price + item_tax - order_item.coupon_discount
                 ).quantize(Decimal("0.01"))
 
                 wallet.balance += refund_amount

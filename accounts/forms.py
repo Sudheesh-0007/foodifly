@@ -1,10 +1,9 @@
 from django import forms
-from .models import Account, UserProfile
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
-from .models import Address
-from .validators import validate_phone, validate_postal_code, validate_name
+from .models import Account, Address, UserProfile
+from .validators import validate_name, validate_phone, validate_postal_code
 
 
 class RegistrationForm(forms.ModelForm):

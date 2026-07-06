@@ -38,6 +38,7 @@ function decreaseQuantity(cartItemId) {
                 if (data.deleted) {
 
                     location.reload();
+                    
 
                 } else {
 

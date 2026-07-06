@@ -1,6 +1,7 @@
 from django.db import models
-from store.models import Product
+
 from category.models import Category
+from store.models import Product
 
 
 class Offer(models.Model):

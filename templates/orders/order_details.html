@@ -462,7 +462,7 @@
 
                 <!-- DOWNLOAD INVOICE -->
 
-{% if not has_returned_items %}
+{% comment %} {% if not has_returned_items %}
 
 <a href="{% url 'download_invoice' order.id %}"
    class="btn btn-dark">
@@ -473,7 +473,14 @@
 
 </a>
 
-{% endif %}
+{% endif %} {% endcomment %}
+ <a
+    href="{% url 'download_invoice' order.id %}"
+    class="btn btn-dark"
+>
+    <i class="bi bi-download"></i>
+    Download Invoice
+</a>
 
             </div>
 
@@ -601,7 +608,7 @@
 
                         <!-- RETURN -->
 
-                        {% if order.status == "Delivered" %}
+                        {% if order.status == "Delivered" and item.status == "Active" %}
 
                             {% if item.return_status == "Not Requested" %}
 

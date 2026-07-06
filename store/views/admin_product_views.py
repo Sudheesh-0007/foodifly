@@ -1,13 +1,14 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django import forms
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Q, Sum, Min
-from django.contrib import messages
-from store.models import Product, Variant, ProductGallery
-from category.models import Category
+from django.db.models import Min, Q, Sum
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
+
+from category.models import Category
 from store.forms import ProductForm
-from django import forms
+from store.models import Product, ProductGallery, Variant
 
 
 @login_required(login_url="admin_login")
@@ -94,9 +95,9 @@ def add_product(request):
         is_active = request.POST.get("is_active") == "on"
         images = request.FILES.getlist("images")
         context = {
-        "categories": categories,
-        "form_data": request.POST,
-    }
+            "categories": categories,
+            "form_data": request.POST,
+        }
         if len(images) < 3:
             messages.error(request, "Minimum 3 images required.")
             return render(

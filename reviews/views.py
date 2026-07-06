@@ -1,11 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404, redirect
 
-from store.models import Product
 from orders.models import OrderItem
-from .models import Review
-from django.db.models import Avg
+from store.models import Product
+
 from .models import Review
 
 
@@ -86,7 +86,7 @@ def submit_review(request, product_id):
     product.reviewCount = review_count
 
     product.save()
-    
+
     if created:
 
         messages.success(request, "Review submitted successfully.")

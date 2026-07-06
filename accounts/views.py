@@ -1,28 +1,22 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegistrationForm, AddressForm
-from .models import Account, UserProfile, Address
-from django.contrib import messages, auth
-from django.http import HttpResponse
+from allauth.socialaccount.signals import pre_social_login
+from django.contrib import auth, messages
+from django.contrib.auth import logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ValidationError
+from django.core.mail import EmailMessage
+from django.dispatch import receiver
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.decorators.cache import never_cache
 
-
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes
-from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import EmailMessage
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
-from django.dispatch import receiver
-from allauth.socialaccount.signals import pre_social_login
-from django.contrib.auth import update_session_auth_hash
-from .forms import UserForm, UserProfileForm
-
-from .models import Address
-from .forms import AddressForm
-from django.contrib.auth import logout
+from .forms import AddressForm, RegistrationForm, UserForm, UserProfileForm
+from .models import Account, Address, UserProfile
 
 
 def register(request):
@@ -348,6 +342,8 @@ def update_email_validate(request, uidb64, token, encoded_email):
 
 
 login_required(login_url="login")
+
+
 def edit_profile(request):
     userprofile, created = UserProfile.objects.get_or_create(user=request.user)
 
@@ -385,8 +381,6 @@ def manage_addresses(request):
         "addresses": addresses,
     }
     return render(request, "accounts/manage_addresses.html", context)
-
-
 
 
 @login_required(login_url="login")

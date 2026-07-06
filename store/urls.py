@@ -1,9 +1,13 @@
 from django.urls import path
-from . import views
 
+from . import views
 
 urlpatterns = [
     path("", views.shop, name="shop"),
     path("product/<slug:slug>/", views.product_detail, name="product_detail"),
-    path("get-variant-price/",views.get_variant_price,name="get_variant_price",),
+    path(
+        "get-variant-price/",
+        views.get_variant_price,
+        name="get_variant_price",
+    ),
 ]

@@ -1,14 +1,16 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from decimal import Decimal
+
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
-from utils.decorators import custom_login_required
-from store.models import Product, Variant
-from .models import Cart, CartItem
-from wishlist.models import WishlistItem
-from offers.utils import get_offer_price
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 
-from decimal import Decimal
+from offers.utils import get_offer_price
+from store.models import Product, Variant
+from utils.decorators import custom_login_required
+from wishlist.models import WishlistItem
+
+from .models import Cart, CartItem
 
 
 @custom_login_required
@@ -31,7 +33,7 @@ def add_cart(request, product_id):
 
     cart, created = Cart.objects.get_or_create(user=request.user)
     cart_item = CartItem.objects.filter(cart=cart, variant=variant).first()
-    
+
     if not product.category.is_active or product.category.is_deleted:
 
         messages.error(request, "This product category is currently unavailable.")
@@ -55,7 +57,7 @@ def add_cart(request, product_id):
 
     WishlistItem.objects.filter(wishlist__user=request.user, variant=variant).delete()
     messages.success(request, "Product added to cart")
-    return redirect("cart")
+    return redirect("product_detail", slug=product.slug)
 
 
 @custom_login_required
@@ -92,8 +94,7 @@ def cart(request):
                 can_checkout = False
 
                 messages.warning(
-                    request,
-                    f"{item.product.name} is currently unavailable."
+                    request, f"{item.product.name} is currently unavailable."
                 )
 
                 continue
@@ -218,7 +219,6 @@ def decrease_cart_quantity(request, cart_item_id):
     else:
 
         cart_item.delete()
-
         return JsonResponse({"success": True, "deleted": True})
 
     cart = cart_item.cart

@@ -1,10 +1,10 @@
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import Wallet, WalletTransaction
 from django.core.paginator import Paginator
+from django.shortcuts import render
 
-from django.core.paginator import Paginator
 from wallet.models import Wallet, WalletTransaction
+
+from .models import Wallet, WalletTransaction
 
 
 @login_required(login_url="login")
