@@ -75,9 +75,7 @@ def cart(request):
         cart = Cart.objects.get(user=request.user)
 
         cart_items = CartItem.objects.filter(
-            cart=cart,
-            product__is_deleted=False,
-            product__isBlocked=False,
+            cart=cart
         ).select_related("product", "variant", "product__category")
 
         for item in cart_items:
