@@ -380,6 +380,7 @@ def edit_profile(request):
     else:
         user_form = UserForm(instance=request.user)
         profile_form = UserProfileForm(instance=userprofile)
+        
 
     context = {
         "user_form": user_form,
@@ -483,14 +484,11 @@ def edit_address(request, id):
             next_page = request.POST.get("next")
 
             if next_page == "checkout":
-
                 return redirect("checkout")
-
             return redirect("address")
 
 
     else:
-
         form = AddressForm(instance=address)
 
     context = {

@@ -7,7 +7,15 @@
     font-weight: 500;
     letter-spacing: -0.5px;
 }
+.text-danger.small {
+    font-size: 0.85rem;
+    margin-top: 4px;
+    color: #dc3545;
+}
 
+.custom-input.is-invalid {
+    border-color: #dc3545;
+}
 /* Card Container */
 .address-form-card {
     background-color: #fbfbfb; 

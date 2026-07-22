@@ -59,12 +59,10 @@ def create_order_address(address):
 
 
 def create_order_items(order, cart_items):
-
+    
     total_coupon = order.coupon_discount
     distributed_coupon = Decimal("0.00")
-
     cart_items = list(cart_items)
-
     for index, item in enumerate(cart_items):
 
         offer_price, offer = get_offer_price(
@@ -75,15 +73,12 @@ def create_order_items(order, cart_items):
         item_total = offer_price * item.quantity
 
         if index == len(cart_items) - 1:
-
             coupon_share = total_coupon - distributed_coupon
 
         else:
 
             coupon_share = (item_total / order.total_amount) * total_coupon
-
             coupon_share = coupon_share.quantize(Decimal("0.01"))
-
             distributed_coupon += coupon_share
 
         OrderItem.objects.create(
@@ -93,53 +88,42 @@ def create_order_items(order, cart_items):
             quantity=item.quantity,
             price=offer_price,
             total_price=item_total,
-            coupon_discount=coupon_share,
-        )
+            coupon_discount=coupon_share,)
 
         item.variant.stock -= item.quantity
         item.variant.save()
 
 
 def get_coupon_details(coupon_code, total):
-
     coupon = None
-
     coupon_discount = Decimal("0.00")
 
     if not coupon_code:
-
         return coupon, coupon_discount
 
     try:
-
         coupon = Coupon.objects.get(
             code=coupon_code.upper(),
             is_active=True,
         )
 
         if coupon.discount_type == "PERCENTAGE":
-
             coupon_discount = (total * coupon.discount_value) / Decimal("100")
 
             if coupon.maximum_discount:
-
                 coupon_discount = min(
                     coupon_discount,
                     coupon.maximum_discount,
                 )
 
         else:
-
             coupon_discount = coupon.discount_value
 
         if coupon_discount > total:
-
             coupon_discount = total
 
     except Coupon.DoesNotExist:
-
         coupon = None
-
     return coupon, coupon_discount
 
 
