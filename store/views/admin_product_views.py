@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 from django.db.models import Min, Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
-
+import re
 from category.models import Category
 from store.forms import ProductForm
 from store.models import Product, ProductGallery, Variant
@@ -193,6 +193,30 @@ def edit_product(request, product_id):
     if request.method == "POST":
 
         product.name = request.POST.get("name")
+        name = " ".join(product.name.split())
+
+        if len(name) < 3:
+            messages.error(request, "Product name must contain at least 3 characters.")
+            return redirect("edit_product", product_id=product.id)
+
+        if name.isdigit():
+            messages.error(request, "Product name cannot contain only numbers.")
+            return redirect("edit_product", product_id=product.id)
+
+        if not re.match(r"^[A-Za-z0-9\s&()'\-]+$", name):
+            messages.error(
+                request,
+                "Only letters, numbers, spaces, &, -, apostrophe ('), and parentheses are allowed.",
+            )
+            return redirect("edit_product", product_id=product.id)
+
+        duplicate = Product.objects.filter(name__iexact=name).exclude(id=product.id)
+
+        if duplicate.exists():
+            messages.error(request, "A product with this name already exists.")
+            return redirect("edit_product", product_id=product.id)
+
+        product.name = name
         product.slug = request.POST.get("slug")
         product.description = request.POST.get("description")
         category_id = request.POST.get("category")
