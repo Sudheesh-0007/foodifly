@@ -441,13 +441,6 @@ def add_address(request):
 
             return redirect("address")
 
-        else:
-
-            for field, errors in form.errors.items():
-
-                for error in errors:
-
-                    messages.error(request, error)
 
     else:
 
@@ -495,13 +488,6 @@ def edit_address(request, id):
 
             return redirect("address")
 
-        else:
-
-            for field, errors in form.errors.items():
-
-                for error in errors:
-
-                    messages.error(request, error)
 
     else:
 
