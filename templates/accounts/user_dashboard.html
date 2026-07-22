@@ -7,6 +7,7 @@
     <p class="welcome-subtitle text-muted mb-0">Welcome to your digital pantry.</p>
 </div>
 
+
 <div class="row g-4">
     
     <div class="col-xl-4 col-lg-5">
@@ -70,6 +71,43 @@
 
         </div>
     </div>
+    <div class="card">
+    <div class="card-body">
+        <h5>Refer & Earn</h5>
+
+        <p>Your Referral Code</p>
+
+        <div class="input-group">
+            <input
+                type="text"
+                class="form-control"
+                value="{{ request.user.referral_code }}"
+                id="referralCode"
+                readonly
+            >
+
+            <button
+                class="btn btn-success"
+                onclick="copyReferralCode()"
+            >
+                Copy
+            </button>
+        </div>
+
+        <small>
+            Invite your friends and earn ₹200 when they complete their first delivered order.
+        </small>
+    </div>
+</div>
+<script>
+    function copyReferralCode() {
+    const input = document.getElementById("referralCode");
+
+    navigator.clipboard.writeText(input.value);
+
+    alert("Referral code copied!");
+}
+</script>
 
 </div>
 {% endblock %}

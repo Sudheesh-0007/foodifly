@@ -1,6 +1,6 @@
 import uuid
 from decimal import Decimal
-
+from accounts.utils import process_referral_reward
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
@@ -87,10 +87,18 @@ def update_order_status(request, order_id):
 
                 item.variant.save()
 
+        previous_status = order.status
         order.status = status
-
         order.save()
-
+        if previous_status != "Delivered" and status == "Delivered":
+            try:
+                process_referral_reward(order)
+            except Exception as e:
+                print("=" * 50)
+                print("REFERRAL ERROR:", e)
+                import traceback
+                traceback.print_exc()
+                print("=" * 50)
         messages.success(request, "Order status updated successfully.")
 
     return redirect("admin_orders")

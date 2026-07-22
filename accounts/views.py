@@ -16,7 +16,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.decorators.cache import never_cache
 
 from .forms import AddressForm, RegistrationForm, UserForm, UserProfileForm
-from .models import Account, Address, UserProfile
+from .models import Account, Address, UserProfile,Referral
 
 
 def register(request):
@@ -29,7 +29,18 @@ def register(request):
             email = form.cleaned_data["email"]
             password = form.cleaned_data["password"]
             username = email.split("@")[0]
+            referral_code = form.cleaned_data.get("referral_code", "").strip().upper()
+            referred_by = None
+            if referral_code:
+                try:
+                    referred_by = Account.objects.get(
+                        referral_code=referral_code
+                    )
 
+                except Account.DoesNotExist:
+                    messages.error(request, "Invalid referral code.")
+                    return redirect("register")
+            
             user = Account.objects.create_user(
                 first_name=first_name,
                 last_name=last_name,
@@ -38,7 +49,16 @@ def register(request):
                 password=password,
             )
             user.phone_number = phone_number
+            user.referred_by = referred_by
             user.save()
+            if referred_by and referred_by.email.lower() == email.lower():
+                messages.error(request, "You cannot use your own referral code.")
+                return redirect("register")
+            if referred_by:
+                Referral.objects.create(
+                    referrer=referred_by,
+                    referred_user=user,
+                )
 
             current_site = get_current_site(request)
             mail_subject = "Please activate your account"
@@ -204,7 +224,6 @@ def activate_user_from_social(sender, request, sociallogin, **kwargs):
     if user and user.id and not user.is_active:
         user.is_active = True
         user.save()
-
 
 @login_required(login_url="login")
 @login_required(login_url="login")
