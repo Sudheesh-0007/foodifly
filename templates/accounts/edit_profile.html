@@ -14,27 +14,53 @@
     
     <div class="row g-4 align-items-start">
         
-        <div class="col-xl-4 col-lg-5">
-            <div class="edit-profile-card text-center py-5 px-4 h-100">
-                <div class="photo-wrapper mx-auto mb-4">
-                    {% if userprofile.profile_image %}
-                        <img src="{{ userprofile.profile_image.url }}" alt="Profile" class="profile-avatar-edit" id="imagePreview">
-                    {% else %}
-                        <img src="https://res.cloudinary.com/djf3afshd/image/upload/v1779767394/default-user_by6maw.png" alt="Profile" class="profile-avatar-edit" id="imagePreview">
-                    {% endif %}
-                    
-                    <button class="camera-btn shadow-sm" type="button" title="Upload new photo" onclick="document.getElementById('profileImageInput').click()">
-                        <i class="bi bi-camera"></i>
-                    </button>
-                </div>
-                
-                <h3 class="profile-name-edit mb-4">{{ user.first_name|default:"Julianne"|title }} {{ user.last_name|default:"Moore"|title }}</h3>
-                
-                {{ profile_form.profile_image }}
-                
-                <button type="button" class="btn btn-change-photo w-100 mb-3" onclick="document.getElementById('profileImageInput').click()">CHANGE PHOTO</button>
-            </div>
+<div class="col-xl-4 col-lg-5">
+    <div class="edit-profile-card text-center py-5 px-4 h-100">
+
+        <div class="photo-wrapper mx-auto mb-4">
+            {% if userprofile.profile_image %}
+                <img src="{{ userprofile.profile_image.url }}"
+                     alt="Profile"
+                     class="profile-avatar-edit"
+                     id="imagePreview">
+            {% else %}
+                <img src="https://res.cloudinary.com/djf3afshd/image/upload/v1779767394/default-user_by6maw.png"
+                     alt="Profile"
+                     class="profile-avatar-edit"
+                     id="imagePreview">
+            {% endif %}
+
+            <button class="camera-btn shadow-sm"
+                    type="button"
+                    onclick="document.getElementById('profileImageInput').click()">
+                <i class="bi bi-camera"></i>
+            </button>
         </div>
+
+        <h3 class="profile-name-edit mb-4">
+            {{ user.first_name|default:"Julianne"|title }}
+            {{ user.last_name|default:"Moore"|title }}
+        </h3>
+
+        {{ profile_form.profile_image }}
+
+        <!-- Image validation errors -->
+        {% if profile_form.profile_image.errors %}
+            <div class="text-danger small mt-2">
+                {% for error in profile_form.profile_image.errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <button type="button"
+                class="btn btn-change-photo w-100 mb-3"
+                onclick="document.getElementById('profileImageInput').click()">
+            CHANGE PHOTO
+        </button>
+
+    </div>
+</div>
 
         <div class="col-xl-8 col-lg-7">
             <div class="edit-profile-card p-4 p-md-5">
