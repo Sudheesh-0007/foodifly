@@ -346,16 +346,11 @@
         value="{{ selected_variant.id }}"
     >
 
-    <button
-
-        type="submit"
-
-        class="btn wishlist-btn px-3 h-100 {% if is_wishlisted %}btn-danger{% else %}btn-outline-secondary{% endif %}"
-    >
-
-        <i class="bi {% if is_wishlisted %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
-
-    </button>
+<button
+    type="submit"
+    class="btn wishlist-btn px-3 h-100 {% if is_in_wishlist %}btn-danger{% else %}btn-outline-secondary{% endif %}">
+    <i class="bi {% if is_in_wishlist %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+</button>
 
 </form>
             </div>

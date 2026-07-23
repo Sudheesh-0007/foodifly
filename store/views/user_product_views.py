@@ -157,6 +157,14 @@ def product_detail(request, slug):
             wishlist__user=request.user, product=product
         ).values_list("variant_id", flat=True)
 
+    is_in_wishlist = False
+
+    if request.user.is_authenticated and selected_variant:
+        is_in_wishlist = WishlistItem.objects.filter(
+            wishlist__user=request.user,
+            variant=selected_variant
+        ).exists()        
+
     for related_product in related_products:
 
         offer_price = None
@@ -170,7 +178,6 @@ def product_detail(request, slug):
         .select_related("user")
         .order_by("-created_at")[:2]
     )
-    selected_variant = variants.filter(stock__gt=0, is_active=True).first()
 
     low_stock = False
 
@@ -189,6 +196,7 @@ def product_detail(request, slug):
         "offer_price": offer_price,
         "offer": offer,
         "reviews": reviews,
+        "is_in_wishlist": is_in_wishlist,
     }
 
     return render(request, "store/product_detail.html", context)
