@@ -72,10 +72,13 @@ def add_coupon(request):
         discount_type = request.POST.get("discount_type")
         discount_value = request.POST.get("discount_value")
         minimum_amount = request.POST.get("minimum_amount")
+
         maximum_discount = request.POST.get("maximum_discount")
         valid_from = request.POST.get("valid_from")
         valid_to = request.POST.get("valid_to")
-
+        form_data = request.POST
+        context = {
+        "form_data": form_data}
         if Coupon.objects.filter(code=code).exists():
 
             messages.error(request, "Coupon code already exists.")
@@ -107,6 +110,19 @@ def add_coupon(request):
             messages.error(request, "Valid To date must be after Valid From date.")
 
             return redirect("add_coupon")
+        print(discount_type)
+        # Flat coupon validation
+        if (
+            discount_type == "FIXED"
+            and Decimal(minimum_amount) <= Decimal(discount_value)
+        ):
+
+            messages.error(
+                request,
+                "For a flat amount coupon, the minimum purchase amount must be greater than the discount amount.",
+            )
+
+            return render(request, "admin_panel/coupon/add_coupon.html",context)
 
         Coupon.objects.create(
             code=code,
@@ -123,9 +139,10 @@ def add_coupon(request):
 
         return redirect("coupon_list")
 
+
     return render(
         request,
-        "admin_panel/coupon/add_coupon.html",
+        "admin_panel/coupon/add_coupon.html", context ,
     )
 
 
