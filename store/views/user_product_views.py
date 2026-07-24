@@ -221,9 +221,10 @@ def get_variant_price(request):
                 "discount_type": offer.discount_type if offer else "",
                 "discount_value": str(offer.discount_value) if offer else "",
                 "stock": variant.stock,
-            }
+            },
+            status=200,
         )
 
     except Variant.DoesNotExist:
 
-        return JsonResponse({"success": False})
+        return JsonResponse({"success": False},status=404)
