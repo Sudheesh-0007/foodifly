@@ -111,7 +111,7 @@ def update_order_status(request, order_id):
             )
 
             order.payment_status = "Refunded"
-            
+
         previous_status = order.status
         order.status = status
         order.save()
@@ -122,6 +122,7 @@ def update_order_status(request, order_id):
                 print("=" * 50)
                 print("REFERRAL ERROR:", e)
                 import traceback
+
                 traceback.print_exc()
                 print("=" * 50)
         messages.success(request, "Order status updated successfully.")
@@ -222,14 +223,15 @@ def update_return_status(request, item_id):
 
             return redirect(request.META.get("HTTP_REFERER", "admin_return_requests"))
 
-        already_approved = order_item.return_status == "Approved"
-
         order_item.return_status = status
 
         if status == "Approved":
 
-            order_item.variant.stock += order_item.quantity
-            order_item.variant.save()
+            if not order_item.stock_restored:
+                order_item.variant.stock += order_item.quantity
+                order_item.variant.save(update_fields=["stock"])
+
+                order_item.stock_restored = True
 
             order_item.status = "Returned"
 
@@ -239,7 +241,7 @@ def update_return_status(request, item_id):
 
             if (
                 order_item.order.payment_method in ["RAZORPAY", "WALLET", "COD"]
-                and not already_approved
+                and not order_item.refund_processed
             ):
 
                 wallet = Wallet.objects.get(user=order_item.order.user)
@@ -260,16 +262,23 @@ def update_return_status(request, item_id):
                     description=f"Return refund - {order_item.product.name}",
                     transaction_id=f"TXN-{uuid.uuid4().hex[:8].upper()}",
                 )
+                order_item.refund_processed = True
+                order_item.save(
+                    update_fields=[
+                        "return_status",
+                        "status",
+                        "stock_restored",
+                        "refund_processed",
+                    ]
+                )
 
             remaining_items = order_item.order.items.exclude(status="Returned").exists()
 
             if not remaining_items:
 
-                order_item.order.status = "Returned"
-
                 if order_item.order.payment_method in ["RAZORPAY", "WALLET", "COD"]:
 
-                    order_item.order.payment_status = "Refunded"
+                    order_item.order.payment_status = "Returned"
 
                 order_item.order.save()
             elif order_item.order.status == "Delivered":
