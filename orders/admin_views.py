@@ -83,10 +83,35 @@ def update_order_status(request, order_id):
 
             for item in order.items.select_related("variant"):
 
-                item.variant.stock += item.quantity
+                if not item.stock_restored:
+                    item.variant.stock += item.quantity
+                    item.variant.save(update_fields=["stock"])
 
-                item.variant.save()
+                    item.stock_restored = True
+                    item.status = "Cancelled"
+                    item.save(update_fields=["stock_restored", "status"])
+        if (
+            order.payment_method in ["RAZORPAY", "WALLET"]
+            and order.payment_status != "Refunded"
+        ):
 
+            wallet, _ = Wallet.objects.get_or_create(user=order.user)
+
+            refund_amount = order.grand_total
+
+            wallet.balance += refund_amount
+            wallet.save(update_fields=["balance"])
+
+            WalletTransaction.objects.create(
+                wallet=wallet,
+                transaction_type="Credit",
+                amount=refund_amount,
+                description=f"Refund for cancelled order #{order.id}",
+                transaction_id=f"TXN-{uuid.uuid4().hex[:8].upper()}",
+            )
+
+            order.payment_status = "Refunded"
+            
         previous_status = order.status
         order.status = status
         order.save()

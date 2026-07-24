@@ -711,14 +711,11 @@ def cancel_order(request, order_id):
     order_items = OrderItem.objects.filter(order=order)
 
     if order.payment_method in ["RAZORPAY", "WALLET", "COD"]:
-        print("REFUND BLOCK EXECUTED")
 
         wallet = Wallet.objects.get(user=order.user)
-        print("OLD BALANCE:", wallet.balance)
         wallet.balance += order.grand_total
 
         wallet.save()
-        print("NEW BALANCE:", wallet.balance)
 
         WalletTransaction.objects.create(
             wallet=wallet,
@@ -731,9 +728,14 @@ def cancel_order(request, order_id):
     for item in order_items:
         if item.status != "Cancelled":
             item.status = "Cancelled"
-            item.save()
+
+        if not item.stock_restored:
             item.variant.stock += item.quantity
-            item.variant.save()
+            item.variant.save(update_fields=["stock"])
+
+            item.stock_restored = True
+
+        item.save(update_fields=["status", "stock_restored"])
 
     order.save()
 
@@ -779,9 +781,14 @@ def cancel_order_item(request, item_id):
             description=f"Refund for cancelled item - {order_item.product.name}",
             transaction_id=f"TXN-{uuid.uuid4().hex[:8].upper()}",
         )
-    variant = order_item.variant
-    variant.stock += order_item.quantity
-    variant.save()
+    if not order_item.stock_restored:
+        variant = order_item.variant
+        variant.stock += order_item.quantity
+        variant.save(update_fields=["stock"])
+
+        order_item.stock_restored = True
+        order_item.status = "Cancelled"
+        order_item.save(update_fields=["stock_restored", "status"])
 
     active_items = OrderItem.objects.filter(
         order=order,
