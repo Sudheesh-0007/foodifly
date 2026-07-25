@@ -4,11 +4,18 @@
 
 {% autoescape off %}
 
-Hi {{user.first_name}},
+Hi {{ user.first_name }},
 
-Please Click on below link to confirm your registration.
-http://{{domain}}{% url 'activate' uidb64=uid token=token %}
+Welcome to Foodifly!
 
-If you think it's not you please ignore this email
+Thank you for creating your account. To activate your account, please verify your email address by clicking the link below:
+
+http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+If you did not create a Foodifly account, you can safely ignore this email.
+
+Thank you,
+
+The Foodifly Team
 
 {% endautoescape %}

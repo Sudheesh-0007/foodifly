@@ -425,3 +425,9 @@ def sales_report(request):
         "admin_panel/sales_report.html",
         context,
     )
+from django.shortcuts import redirect
+
+def admin_root(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        return redirect("admin_report")   
+    return redirect("admin_login")

@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
 
+
 from category.models import Category
 
 
@@ -108,7 +109,10 @@ def edit_category(request, category_slug):
         if not category_name:
             messages.error(request, "Category name cannot be empty.")
             return redirect("edit_category", category_slug=category.slug)
-
+        
+        if Category.objects.filter(category_name=category_name).exists():
+            messages.error(request, "A category with this name already exists.")
+            return redirect("add_category")
         if not new_slug:
             new_slug = slugify(category_name)
         else:

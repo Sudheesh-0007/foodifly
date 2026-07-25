@@ -15,6 +15,7 @@ class RegistrationForm(forms.ModelForm):
     confirm_password = forms.CharField(
         widget=forms.PasswordInput(attrs={"placeholder": ". . . . . . . . . . . ."})
     )
+    referral_code = forms.CharField(max_length=10,required=False,)
 
     class Meta:
         model = Account

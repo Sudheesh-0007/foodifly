@@ -1,6 +1,9 @@
 from cloudinary.models import CloudinaryField
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
+import uuid
+import random
+import string
 
 
 class MyAccountManager(BaseUserManager):
@@ -53,10 +56,37 @@ class Account(AbstractBaseUser):
     is_active = models.BooleanField(default=False)
     is_superadmin = models.BooleanField(default=False)
 
+    referral_code = models.CharField(
+        max_length=10,
+        null=True,
+        blank=True,
+    )
+    referred_by = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="referrals",
+    )
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username", "first_name", "last_name"]
 
     objects = MyAccountManager()
+
+    def generate_referral_code(self):
+        while True:
+            code = "".join(random.choices(string.ascii_uppercase + string.digits, k=8))
+
+            if not Account.objects.filter(referral_code=code).exists():
+                return code
+
+    def save(self, *args, **kwargs):
+
+        if not self.referral_code:
+            self.referral_code = self.generate_referral_code()
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.email
@@ -100,3 +130,24 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.city}"
+
+
+class Referral(models.Model):
+
+    referrer = models.ForeignKey(
+        Account,
+        related_name="referrals_made",
+        on_delete=models.CASCADE,
+    )
+
+    referred_user = models.OneToOneField(
+        Account,
+        related_name="referral_record",
+        on_delete=models.CASCADE,
+    )
+
+    reward_given = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.referrer.email} -> {self.referred_user.email}"

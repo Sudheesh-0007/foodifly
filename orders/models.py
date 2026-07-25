@@ -105,11 +105,14 @@ class OrderItem(models.Model):
     status = models.CharField(max_length=20, choices=ITEM_STATUS, default="Active")
 
     return_requested = models.BooleanField(default=False)
+    refund_processed = models.BooleanField(default=False)
+    
     return_reason = models.TextField(blank=True, null=True)
     return_status = models.CharField(
         max_length=20, choices=RETURN_STATUS, default="Not Requested"
     )
     coupon_discount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    stock_restored = models.BooleanField(default=False)
 
     def __str__(self):
 

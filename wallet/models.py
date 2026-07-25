@@ -1,6 +1,6 @@
 # Create your models here.
 from django.db import models
-
+import uuid
 from accounts.models import Account
 
 
@@ -33,6 +33,12 @@ class WalletTransaction(models.Model):
     description = models.CharField(max_length=255)
     transaction_id = models.CharField(max_length=50, unique=True, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.transaction_id:
+            self.transaction_id = uuid.uuid4().hex[:12].upper()
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.transaction_type} - ₹{self.amount}"
