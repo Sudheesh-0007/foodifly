@@ -66,6 +66,8 @@ def coupon_list(request):
 
 def add_coupon(request):
 
+    context = {"form_data": {},}
+
     if request.method == "POST":
 
         code = request.POST.get("code", "").strip().upper()
@@ -76,9 +78,11 @@ def add_coupon(request):
         maximum_discount = request.POST.get("maximum_discount")
         valid_from = request.POST.get("valid_from")
         valid_to = request.POST.get("valid_to")
+
         form_data = request.POST
-        context = {
-        "form_data": form_data}
+        
+        context = {"form_data": form_data}
+        
         if Coupon.objects.filter(code=code).exists():
 
             messages.error(request, "Coupon code already exists.")
@@ -116,6 +120,7 @@ def add_coupon(request):
             discount_type == "FIXED"
             and Decimal(minimum_amount) <= Decimal(discount_value)
         ):
+            
 
             messages.error(
                 request,
