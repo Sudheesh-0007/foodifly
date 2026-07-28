@@ -231,9 +231,11 @@ SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 
-# RAZORPAY_KEY_ID = "rzp_test_SxQKipX4UqqYSS"
-# RAZORPAY_KEY_SECRET = "sQux32sMUEkkb1P66Fo8MV4E"
+
 
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
 RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET")
 SOCIALACCOUNT_ADAPTER = "accounts.adapter.CustomSocialAccountAdapter"
+
+# verification link to expire in 3 minutes
+PASSWORD_RESET_TIMEOUT = 180

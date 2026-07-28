@@ -14,9 +14,10 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.decorators.cache import never_cache
+from django.contrib.auth import authenticate, login as auth_login
 
 from .forms import AddressForm, RegistrationForm, UserForm, UserProfileForm
-from .models import Account, Address, UserProfile,Referral
+from .models import Account, Address, UserProfile, Referral
 
 
 def register(request):
@@ -33,14 +34,12 @@ def register(request):
             referred_by = None
             if referral_code:
                 try:
-                    referred_by = Account.objects.get(
-                        referral_code=referral_code
-                    )
+                    referred_by = Account.objects.get(referral_code=referral_code)
 
                 except Account.DoesNotExist:
                     form.add_error("referral_code", "Invalid referral code.")
                     return render(request, "accounts/register.html", {"form": form})
-            
+
             user = Account.objects.create_user(
                 first_name=first_name,
                 last_name=last_name,
@@ -72,7 +71,14 @@ def register(request):
                 },
             )
             to_email = email
-            send_email = EmailMessage(mail_subject, message, to=[to_email])
+
+            send_email = EmailMessage(
+                subject=mail_subject,
+                body=message,
+                to=[to_email],
+            )
+
+            send_email.content_subtype = "html"
             send_email.send()
             messages.success(
                 request,
@@ -89,8 +95,46 @@ def register(request):
     return render(request, "accounts/register.html", context)
 
 
-from django.contrib.auth import authenticate, login as auth_login
-from django.contrib import messages
+def resend_verification(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+
+        try:
+            user = Account.objects.get(email=email)
+
+            if user.is_active:
+                messages.info(request, "Your account is already verified.")
+                return redirect("login")
+
+            current_site = get_current_site(request)
+
+            message = render_to_string(
+                "accounts/account_varification_email.html",
+                {
+                    "user": user,
+                    "domain": current_site,
+                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                    "token": default_token_generator.make_token(user),
+                },
+            )
+
+            send_email = EmailMessage(
+                "Verify your account",
+                message,
+                to=[user.email],
+            )
+            send_email.content_subtype = "html"
+            send_email.send()
+
+            messages.success(request, "A new verification email has been sent.")
+            return redirect("login")
+
+        except Account.DoesNotExist:
+            messages.error(request, "No account found with this email.")
+            return redirect("resend_verification")
+
+    return render(request, "accounts/resend_verification.html")
+
 
 def login(request):
     if request.method == "POST":
@@ -107,7 +151,7 @@ def login(request):
             messages.warning(
                 request,
                 "Your email address has not been verified. "
-                "Please check your inbox and verify your account before logging in."
+                "Please check your inbox and verify your account before logging in.",
             )
             return redirect("login")
 
@@ -147,7 +191,11 @@ def activate(request, uidb64, token):
         return redirect("login")
     else:
         messages.error(request, "Invalid activation link")
-        return redirect("register")
+        return render(
+            request,
+            "accounts/verification_expired.html",
+            {"user": user},
+        )
 
 
 def forgotPassword(request):
@@ -169,6 +217,7 @@ def forgotPassword(request):
             )
             to_email = email
             send_email = EmailMessage(mail_subject, message, to=[to_email])
+            send_email.content_subtype = "html"
             send_email.send()
 
             messages.success(
@@ -241,8 +290,11 @@ def activate_user_from_social(sender, request, sociallogin, **kwargs):
     if user and user.id and not user.is_active:
         user.is_active = True
         user.save()
-    
-from orders.models import Order,OrderItem
+
+
+from orders.models import Order, OrderItem
+
+
 @login_required(login_url="login")
 @never_cache
 def user_dashboard(request):
@@ -397,7 +449,6 @@ def edit_profile(request):
     else:
         user_form = UserForm(instance=request.user)
         profile_form = UserProfileForm(instance=userprofile)
-        
 
     context = {
         "user_form": user_form,
@@ -459,7 +510,6 @@ def add_address(request):
 
             return redirect("address")
 
-
     else:
 
         form = AddressForm()
@@ -503,7 +553,6 @@ def edit_address(request, id):
             if next_page == "checkout":
                 return redirect("checkout")
             return redirect("address")
-
 
     else:
         form = AddressForm(instance=address)

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    /* 1. Flexbox layout fix to force the footer to the bottom */
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        background-color: #f8f9fa;
+    }
+
+    /* Container wrapping the template content */
+    .page-wrapper {
+        flex: 1 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 1rem;
+    }
+
+    /* 2. Custom Card Styling */
+    .expired-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        max-width: 480px;
+        width: 100%;
+        padding: 2.5rem 2rem;
+        text-align: center;
+    }
+
+    /* Icon Badge */
+    .expired-icon-wrapper {
+        width: 64px;
+        height: 64px;
+        background-color: #fff3cd;
+        color: #856404;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Typography */
+    .expired-card h2 {
+        color: #1a1a1a;
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .expired-card p {
+        color: #6c757d;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+    /* Action Button */
+    .btn-custom-success {
+        background-color: #198754;
+        border-color: #198754;
+        color: #ffffff;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        width: 100%;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .btn-custom-success:hover {
+        background-color: #146c43;
+        border-color: #13653f;
+        box-shadow: 0 4px 12px rgba(25, 135, 84, 0.25);
+        transform: translateY(-1px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="expired-card">
+        
+        <!-- Status Icon -->
+        <div class="expired-icon-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
+                <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976c.383.086.76.2 1.122.341zm2.009 1.002a7 7 0 0 0-.822-.523l.465-.885c.334.175.652.374.953.595zm1.536 1.62a7 7 0 0 0-.585-.733l.666-.747c.25.223.483.46.699.711zm1.205 2.164a7 7 0 0 0-.29-.983l.91-.41c.14.363.255.74.342 1.124zM.034 8.588a8 8 0 0 1 .022-.588H1a7 7 0 0 0 .106.774l-.972.222c-.06-.264-.092-.53-.1-.808zm.081-2.02a8 8 0 0 1 .341-1.122l.915.408a7 7 0 0 0-.292.98l-.964-.266zm.802-1.996a8 8 0 0 1 .595-.953l.763.645a7 7 0 0 0-.522.822zm1.282-1.55a8 8 0 0 1 .711-.699l.605.798a7 7 0 0 0-.603.593zM8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3.5A.5.5 0 0 1 8 8V4z"/>
+                <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401.907A7.97 7.97 0 0 0 0 8a8 8 0 1 0 8-8 7.97 7.97 0 0 0-3.093.621L4.5 0H.5zM15 8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+            </svg>
+        </div>
+
+        <h2>Verification Link Expired</h2>
+
+        <p>
+            Your email verification link has expired.<br>
+            Click the button below to receive a new verification email.
+        </p>
+
+        <form method="POST" action="{% url 'resend_verification' %}">
+            {% csrf_token %}
+
+            <input
+                type="hidden"
+                name="email"
+                value="{{ user.email }}"
+            >
+
+            <button type="submit" class="btn btn-custom-success">
+                Resend Verification Email
+            </button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}
