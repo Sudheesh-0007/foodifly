@@ -224,8 +224,9 @@ def activate_user_from_social(sender, request, sociallogin, **kwargs):
     if user and user.id and not user.is_active:
         user.is_active = True
         user.save()
-
-@login_required(login_url="login")
+    
+from orders.models import Order,OrderItem
+from django.db.models import Sum
 @login_required(login_url="login")
 @never_cache
 def user_dashboard(request):
