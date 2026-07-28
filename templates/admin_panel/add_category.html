@@ -30,19 +30,37 @@
                 
                 <div class="mb-4">
                     <label class="custom-label">CATEGORY NAME</label>
-                    <input type="text" name="category_name" id="categoryNameInput" class="form-control custom-input" placeholder="e.g. Artisanal Cheeses" required>
-                </div>
+<input
+    type="text"
+    name="category_name"
+    id="categoryNameInput"
+    class="form-control custom-input"
+    placeholder="e.g. Artisanal Cheeses"
+    value="{{ category_name|default:'' }}"
+    required
+>                </div>
 
                 <div class="mb-4">
                     <label class="custom-label">URL SLUG</label>
-                    <input type="text" name="slug" id="slugInput" class="form-control custom-input mb-1" placeholder="e.g. artisanal-cheeses">
-                    <small class="text-muted" style="font-size: 0.75rem;">Auto-generated from the name.</small>
+<input
+    type="text"
+    name="slug"
+    id="slugInput"
+    class="form-control custom-input mb-1"
+    placeholder="e.g. artisanal-cheeses"
+    value="{{ slug|default:'' }}"
+>                    <small class="text-muted" style="font-size: 0.75rem;">Auto-generated from the name.</small>
                 </div>
 
                 <div class="mb-1">
                     <label class="custom-label">DESCRIPTION</label>
-                    <textarea name="description" class="form-control custom-input" rows="6" placeholder="Describe the category..."></textarea>
-                </div>
+<textarea
+    name="description"
+    class="form-control custom-input"
+    rows="6"
+    placeholder="Describe the category..."
+>{{ description|default:'' }}</textarea>         
+       </div>
                 
             </div>
         </div>

@@ -66,19 +66,42 @@ def add_category(request):
         category_name = request.POST.get("category_name")
         description = request.POST.get("description")
         slug = request.POST.get("slug")
+        category_name = request.POST.get("category_name", "").strip()
 
         if not slug:
             slug = slugify(category_name)
 
-        if Category.objects.filter(category_name=category_name).exists():
+        if Category.objects.filter(category_name__iexact=category_name).exists():
             messages.error(request, "A category with this name already exists.")
-            return redirect("add_category")
+            context = {
+                "category_name": category_name,
+                "slug": slug,
+                "description": description,
+            }
+
+            return render(request, "admin_panel/add_category.html", context)
+
+        if not category_name:
+            messages.error(request, "Category name cannot be empty.")
+            context = {
+                "category_name": category_name,
+                "slug": slug,
+                "description": description,
+            }
+
+            return render(request, "admin_panel/add_category.html", context)
 
         if Category.objects.filter(slug=slug).exists():
             messages.error(
                 request, "This URL slug is already in use. Please choose another."
             )
-            return redirect("add_category")
+            context = {
+                "category_name": category_name,
+                "slug": slug,
+                "description": description,
+            }
+
+            return render(request, "admin_panel/add_category.html", context)
 
         category = Category.objects.create(
             category_name=category_name,
@@ -108,11 +131,18 @@ def edit_category(request, category_slug):
 
         if not category_name:
             messages.error(request, "Category name cannot be empty.")
-            return redirect("edit_category", category_slug=category.slug)
-        
-        if Category.objects.filter(category_name=category_name).exists():
-            messages.error(request, "A category with this name already exists.")
-            return redirect("add_category")
+
+            context = {
+                "category": category,
+                "form_data": {
+                    "category_name": category_name,
+                    "slug": new_slug,
+                    "description": description,
+                    "status": status,
+                },
+            }
+            return render(request, "admin_panel/edit_category.html", context)
+
         if not new_slug:
             new_slug = slugify(category_name)
         else:
@@ -126,13 +156,31 @@ def edit_category(request, category_slug):
             messages.error(
                 request, f'A category named "{category_name}" already exists.'
             )
-            return redirect("edit_category", category_slug=category.slug)
+            context = {
+                "category": category,
+                "form_data": {
+                    "category_name": category_name,
+                    "slug": new_slug,
+                    "description": description,
+                    "status": status,
+                },
+            }
+            return render(request, "admin_panel/edit_category.html", context)
 
         if Category.objects.filter(slug=new_slug).exclude(id=category.id).exists():
             messages.error(
                 request, "This URL slug is already in use by another category."
             )
-            return redirect("edit_category", category_slug=category.slug)
+            context = {
+                "category": category,
+                "form_data": {
+                    "category_name": category_name,
+                    "slug": new_slug,
+                    "description": description,
+                    "status": status,
+                },
+            }
+            return render(request, "admin_panel/edit_category.html", context)
 
         category.category_name = category_name
         category.slug = new_slug
