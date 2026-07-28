@@ -44,59 +44,85 @@
 
         <div class="col-md-7 right-panel">
             <div class="form-container">
-                {% include "includes/alerts.html" %}
+  
                 <h2 class="form-title">Create Account</h2>
                 <p class="form-subtitle">Enter your details to begin your culinary journey.</p>
-
+{% if form.non_field_errors %}
+<div class="alert alert-danger">
+    {% for error in form.non_field_errors %}
+        <div>{{ error }}</div>
+    {% endfor %}
+</div>
+{% endif %}
                 <form action="{% url 'register'%}" method="POST"  >
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="input-wrapper">
-                                <label for="firstName" class="custom-label">First Name</label>
-                                {% comment %} <input type="text" class="custom-input" id="firstName" name="first_name" placeholder="Jean" required> {% endcomment %}
-                                 {{ form.first_name }}
-                            </div>
+<div class="input-wrapper">
+    <label for="firstName" class="custom-label">First Name</label>
+    {{ form.first_name }}
+    {% for error in form.first_name.errors %}
+        <small class="text-danger d-block mt-1">{{ error }}</small>
+    {% endfor %}
+</div>
                         </div>
                         <div class="col-md-6">
-                            <div class="input-wrapper">
-                                <label for="lastName" class="custom-label">Last Name</label>
-                                {{ form.last_name }}
-                            </div>
+<div class="input-wrapper">
+    <label for="lastName" class="custom-label">Last Name</label>
+    {{ form.last_name }}
+    {% for error in form.last_name.errors %}
+        <small class="text-danger d-block mt-1">{{ error }}</small>
+    {% endfor %}
+</div>
                         </div>
                     </div>
 
-                    <div class="input-wrapper">
-                        <label for="email" class="custom-label">Email Address</label>
-                        {{ form.email }}
-                        <div class="verified-badge">
-                            {% comment %} <i class="bi bi-patch-check-fill"></i>  {% endcomment %}
-                        </div>
-                    </div>
+<div class="input-wrapper">
+    <label for="email" class="custom-label">Email Address</label>
+    {{ form.email }}
 
-                    <div class="input-wrapper">
-                        <label for="phone" class="custom-label">Phone Number</label>
-                        <span class="phone-prefix"></span>
-                        {{ form.phone_number }}
-                    </div>
+    {% for error in form.email.errors %}
+        <small class="text-danger d-block mt-1">{{ error }}</small>
+    {% endfor %}
+</div>
+<div class="input-wrapper">
+    <label for="phone" class="custom-label">Phone Number</label>
+    {{ form.phone_number }}
+
+    {% for error in form.phone_number.errors %}
+        <small class="text-danger d-block mt-1">{{ error }}</small>
+    {% endfor %}
+</div>
 
 <div class="input-wrapper position-relative">
     <label for="id_password" class="custom-label">Password</label>
     {{ form.password }}
-    <i class="bi bi-eye-slash toggle-password position-absolute" onclick="togglePassword('id_password', this)"></i>
+    <i class="bi bi-eye-slash toggle-password position-absolute"
+       onclick="togglePassword('id_password', this)"></i>
+
+    {% for error in form.password.errors %}
+        <small class="text-danger d-block mt-1">{{ error }}</small>
+    {% endfor %}
 </div>
 
 <div class="input-wrapper position-relative">
     <label for="id_confirm_password" class="custom-label">Confirm Password</label>
     {{ form.confirm_password }}
-    <i class="bi bi-eye-slash toggle-password position-absolute" onclick="togglePassword('id_confirm_password', this)"></i>
+    <i class="bi bi-eye-slash toggle-password position-absolute"
+       onclick="togglePassword('id_confirm_password', this)"></i>
+
+    {% for error in form.confirm_password.errors %}
+        <small class="text-danger d-block mt-1">{{ error }}</small>
+    {% endfor %}
 </div>
+
 <label>Referral Code (Optional)</label>
 
 <input
     type="text"
     name="referral_code"
     class="form-control"
+    value="{{ form.referral_code.value|default:'' }}"
 >
 
                     <button type="submit" class="btn-submit">Complete Enrollment</button>
@@ -120,9 +146,7 @@
     </a>
 
 </div>
-                     {{ form.email.errors }}
-                     {{ form.non_field_errors }}
-                     {{ form.password.errors }}
+
                      <br>
                       <a href="{% provider_login_url 'google' %}" class="btn btn-google w-100 mb-5 d-flex justify-content-center align-items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="16px" height="16px" class="me-2">

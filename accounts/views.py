@@ -38,8 +38,8 @@ def register(request):
                     )
 
                 except Account.DoesNotExist:
-                    messages.error(request, "Invalid referral code.")
-                    return redirect("register")
+                    form.add_error("referral_code", "Invalid referral code.")
+                    return render(request, "accounts/register.html", {"form": form})
             
             user = Account.objects.create_user(
                 first_name=first_name,

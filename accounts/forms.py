@@ -28,33 +28,40 @@ class RegistrationForm(forms.ModelForm):
         ]
 
     def clean(self):
-        cleaned_data = super(RegistrationForm, self).clean()
+        cleaned_data = super().clean()
+
         password = cleaned_data.get("password")
         confirm_password = cleaned_data.get("confirm_password")
-        phone = self.cleaned_data.get("phone_number")
-        first_name = self.cleaned_data.get("first_name")
+        phone = cleaned_data.get("phone_number")
+        first_name = cleaned_data.get("first_name")
+        last_name = cleaned_data.get("last_name")
 
         if password != confirm_password:
-            raise forms.ValidationError("Password Does Not Match")
-        try:
-            validate_password(password)
-        except ValidationError as e:
-            self.add_error("password", e)
+            self.add_error("confirm_password", "Passwords do not match")
 
-        if phone and not phone.isdigit():
-            raise forms.ValidationError("Phone number must contain only digits")
+        if password:
+            try:
+                validate_password(password)
+            except ValidationError as e:
+                self.add_error("password", e.messages[0])
 
-        if len(phone) != 10:
-            raise forms.ValidationError("Phone number must be 10 digits")
+        if phone:
+            if not phone.isdigit():
+                self.add_error("phone_number", "Phone number must contain only digits")
+            elif len(phone) != 10:
+                self.add_error("phone_number", "Phone number must be 10 digits")
+            elif phone[0] not in ["6", "7", "8", "9"]:
+                self.add_error("phone_number", "Enter a valid phone number")
 
-        if phone and phone[0] not in ["6", "7", "8", "9"]:
-            raise forms.ValidationError("Enter valid Phone number")
+        if last_name:
+            if not last_name.isalpha():
+                self.add_error("last_name", "last name should contain only letters")
+        if first_name:
+            if not first_name.isalpha():
+                self.add_error("first_name", "First name should contain only letters")
+            elif len(first_name) < 3:
+                self.add_error("first_name", "First name must be at least 3 characters")
 
-        if not first_name.isalpha():
-            raise forms.ValidationError("First name should contain only letters")
-
-        if len(first_name) < 3:
-            raise forms.ValidationError("First name must be at least 3 characters")
         return cleaned_data
 
     def __init__(self, *args, **kwargs):
