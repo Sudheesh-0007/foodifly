@@ -89,19 +89,36 @@ def register(request):
     return render(request, "accounts/register.html", context)
 
 
+from django.contrib.auth import authenticate, login as auth_login
+from django.contrib import messages
+
 def login(request):
     if request.method == "POST":
         email = request.POST["email"]
         password = request.POST["password"]
 
-        user = auth.authenticate(email=email, password=password)
+        try:
+            user = Account.objects.get(email=email)
+        except Account.DoesNotExist:
+            messages.error(request, "Invalid email or password.")
+            return redirect("login")
+
+        if not user.is_active:
+            messages.warning(
+                request,
+                "Your email address has not been verified. "
+                "Please check your inbox and verify your account before logging in."
+            )
+            return redirect("login")
+
+        user = authenticate(email=email, password=password)
 
         if user is not None:
-            auth.login(request, user)
+            auth_login(request, user)
             return redirect("home")
-        else:
-            messages.error(request, "Invalid login credentials")
-            return redirect("login")
+
+        messages.error(request, "Invalid email or password.")
+        return redirect("login")
 
     return render(request, "accounts/login.html")
 
@@ -226,7 +243,6 @@ def activate_user_from_social(sender, request, sociallogin, **kwargs):
         user.save()
     
 from orders.models import Order,OrderItem
-from django.db.models import Sum
 @login_required(login_url="login")
 @never_cache
 def user_dashboard(request):
