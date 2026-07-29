@@ -11,6 +11,86 @@ from django.utils import timezone
 
 from .models import Coupon, CouponUsage
 
+from decimal import Decimal
+from datetime import datetime, date
+
+def validate_coupon_data(request, form_data, coupon=None):
+    context = {"form_data": form_data}
+
+    code = form_data.get("code", "").strip().upper()
+    discount_type = form_data.get("discount_type")
+    discount_value = form_data.get("discount_value")
+    minimum_amount = form_data.get("minimum_amount")
+    maximum_discount = form_data.get("maximum_discount")
+    valid_from = form_data.get("valid_from")
+    valid_to = form_data.get("valid_to")
+
+    if not code:
+        return False, "Coupon code is required.", context
+
+    duplicate = Coupon.objects.filter(code__iexact=code)
+
+    if coupon:
+        duplicate = duplicate.exclude(id=coupon.id)
+
+    if duplicate.exists():
+        return False, "Coupon code already exists.", context
+
+    try:
+        discount_value = Decimal(discount_value)
+        minimum_amount = Decimal(minimum_amount)
+        maximum_discount = (
+            Decimal(maximum_discount)
+            if maximum_discount else None
+        )
+    except:
+        return False, "Please enter valid numeric values.", context
+
+    if discount_value <= 0:
+        return False, "Discount value must be greater than zero.", context
+
+    if minimum_amount <= 0:
+        return False, "Minimum purchase amount must be greater than zero.", context
+
+    if maximum_discount and maximum_discount <= 0:
+        return False, "Maximum discount must be greater than zero.", context
+
+    if discount_type == "PERCENTAGE" and discount_value > Decimal("100"):
+        return False, "Percentage discount cannot exceed 100%.", context
+
+    if (
+        discount_type == "FIXED"
+        and minimum_amount <= discount_value
+    ):
+        return (
+            False,
+            "For a flat amount coupon, the minimum purchase amount must be greater than the discount amount.",
+            context,
+        )
+
+    try:
+        valid_from = datetime.strptime(valid_from, "%Y-%m-%d").date()
+        valid_to = datetime.strptime(valid_to, "%Y-%m-%d").date()
+    except ValueError:
+        return False, "Please enter valid dates.", context
+
+    if valid_from < date.today():
+        return False, "Valid From date cannot be in the past.", context
+
+    if valid_to <= valid_from:
+        return False, "Valid To date must be after Valid From date.", context
+
+    cleaned_data = {
+        "code": code,
+        "discount_type": discount_type,
+        "discount_value": discount_value,
+        "minimum_amount": minimum_amount,
+        "maximum_discount": maximum_discount,
+        "valid_from": valid_from,
+        "valid_to": valid_to,
+    }
+
+    return True, cleaned_data, context
 
 @staff_member_required(login_url="admin_login")
 def coupon_list(request):
@@ -66,90 +146,30 @@ def coupon_list(request):
 
 def add_coupon(request):
 
-    context = {"form_data": {},}
-
     if request.method == "POST":
 
-        code = request.POST.get("code", "").strip().upper()
-        discount_type = request.POST.get("discount_type")
-        discount_value = request.POST.get("discount_value")
-        minimum_amount = request.POST.get("minimum_amount")
+        is_valid, result, context = validate_coupon_data(
+            request,
+            request.POST,
+        )
 
-        maximum_discount = request.POST.get("maximum_discount")
-        valid_from = request.POST.get("valid_from")
-        valid_to = request.POST.get("valid_to")
-
-        form_data = request.POST
-        
-        context = {"form_data": form_data}
-        
-        if Coupon.objects.filter(code=code).exists():
-
-            messages.error(request, "Coupon code already exists.")
-
-            return redirect("add_coupon")
-
-        if Decimal(discount_value) <= 0:
-
-            messages.error(request, "Discount value must be greater than zero.")
-
-            return redirect("add_coupon")
-
-        if Decimal(minimum_amount) <= 0:
-
-            messages.error(request, "Minimum amount must be greater than zero.")
-
-            return redirect("add_coupon")
-
-        if maximum_discount:
-
-            if Decimal(maximum_discount) <= 0:
-
-                messages.error(request, "Maximum discount must be greater than zero.")
-
-                return redirect("add_coupon")
-
-        if valid_from >= valid_to:
-
-            messages.error(request, "Valid To date must be after Valid From date.")
-
-            return redirect("add_coupon")
-        print(discount_type)
-        # Flat coupon validation
-        if (
-            discount_type == "FIXED"
-            and Decimal(minimum_amount) <= Decimal(discount_value)
-        ):
-            
-
-            messages.error(
+        if not is_valid:
+            messages.error(request, result)
+            return render(
                 request,
-                "For a flat amount coupon, the minimum purchase amount must be greater than the discount amount.",
+                "admin_panel/coupon/add_coupon.html",
+                context,
             )
 
-            return render(request, "admin_panel/coupon/add_coupon.html",context)
-
         Coupon.objects.create(
-            code=code,
-            discount_type=discount_type,
-            discount_value=discount_value,
-            minimum_amount=minimum_amount,
-            maximum_discount=maximum_discount or None,
-            valid_from=valid_from,
-            valid_to=valid_to,
+            **result,
             is_active=True,
         )
 
         messages.success(request, "Coupon created successfully.")
-
         return redirect("coupon_list")
 
-
-    return render(
-        request,
-        "admin_panel/coupon/add_coupon.html", context ,
-    )
-
+    return render(request, "admin_panel/coupon/add_coupon.html")
 
 @login_required
 def apply_coupon(request):
@@ -206,7 +226,10 @@ def apply_coupon(request):
     tax = total * Decimal("0.10")
 
     grand_total = total + tax - discount
-
+    request.session["checkout_data"] = {
+        **request.session.get("checkout_data", {}),
+        "coupon_code": coupon.code,
+    }
     return JsonResponse(
         {
             "success": True,
@@ -219,74 +242,40 @@ def apply_coupon(request):
 
 
 def edit_coupon(request, coupon_id):
-
     coupon = get_object_or_404(Coupon, id=coupon_id)
 
     if request.method == "POST":
 
-        code = request.POST.get("code", "").strip().upper()
-        discount_type = request.POST.get("discount_type")
-        discount_value = request.POST.get("discount_value")
-        minimum_amount = request.POST.get("minimum_amount")
-        maximum_discount = request.POST.get("maximum_discount")
-        valid_from = request.POST.get("valid_from")
-        valid_to = request.POST.get("valid_to")
+        is_valid, result, context = validate_coupon_data(
+            request,
+            request.POST,
+            coupon=coupon,
+        )
 
-        if Coupon.objects.filter(code=code).exclude(id=coupon.id).exists():
+        if not is_valid:
+            messages.error(request, result)
+            return render(
+                request,
+                "admin_panel/coupon/edit_coupon.html",
+                {
+                    "coupon": coupon,
+                    **context,
+                },
+            )
 
-            messages.error(request, "Coupon code already exists.")
-
-            return redirect("edit_coupon", coupon.id)
-
-        if Decimal(discount_value) <= 0:
-
-            messages.error(request, "Discount value must be greater than zero.")
-
-            return redirect("edit_coupon", coupon.id)
-
-        if Decimal(minimum_amount) <= 0:
-
-            messages.error(request, "Minimum amount must be greater than zero.")
-
-            return redirect("edit_coupon", coupon.id)
-
-        if maximum_discount:
-
-            if Decimal(maximum_discount) <= 0:
-
-                messages.error(request, "Maximum discount must be greater than zero.")
-
-                return redirect("edit_coupon", coupon.id)
-
-        if valid_from >= valid_to:
-
-            messages.error(request, "Valid To must be greater than Valid From.")
-
-            return redirect("edit_coupon", coupon.id)
-
-        coupon.code = code
-        coupon.discount_type = discount_type
-        coupon.discount_value = discount_value
-        coupon.minimum_amount = minimum_amount
-        coupon.maximum_discount = maximum_discount or None
-        coupon.valid_from = valid_from
-        coupon.valid_to = valid_to
+        coupon.code = result["code"]
+        coupon.discount_type = result["discount_type"]
+        coupon.discount_value = result["discount_value"]
+        coupon.minimum_amount = result["minimum_amount"]
+        coupon.maximum_discount = result["maximum_discount"]
+        coupon.valid_from = result["valid_from"]
+        coupon.valid_to = result["valid_to"]
 
         coupon.save()
 
         messages.success(request, "Coupon updated successfully.")
-
         return redirect("coupon_list")
-
-    context = {
-        "coupon": coupon,
-    }
-
-    return render(
-        request,
-        "admin_panel/coupon/edit_coupon.html",
-        context,
-    )
+    return render(request,"admin_panel/coupon/edit_coupon.html",{"coupon": coupon,},)
 
 
 def toggle_coupon_status(request, coupon_id):

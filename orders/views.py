@@ -135,6 +135,11 @@ def checkout(request):
     shipping = Decimal("0.00")
     coupon = None
     coupon_discount = Decimal("0.00")
+    checkout_data = request.session.get("checkout_data", {})
+
+    coupon_code = checkout_data.get("coupon_code", "")
+    address_id = checkout_data.get("address_id")
+    payment_method = checkout_data.get("payment_method")
 
     try:
         cart = Cart.objects.get(user=request.user)
@@ -216,9 +221,7 @@ def checkout(request):
 
         grand_total = total + tax + shipping
 
-        checkout_data = request.session.get("checkout_data", {})
 
-        coupon_code = checkout_data.get("coupon_code", "")
 
         if coupon_code:
 
@@ -239,9 +242,13 @@ def checkout(request):
             try:
                 address_id = request.POST.get("address")
                 payment_method = request.POST.get("payment_method")
-
                 coupon_code = request.POST.get("coupon_code")
 
+                request.session["checkout_data"] = {
+                    "coupon_code": coupon_code,
+                    "address_id": address_id,
+                    "payment_method": payment_method,
+                }
                 coupon, coupon_discount = get_coupon_details(coupon_code, total)
 
                 grand_total = calculate_grand_total(
@@ -254,6 +261,7 @@ def checkout(request):
                     grand_total = Decimal("0.00")
 
                 if not address_id:
+
                     messages.error(request, "Please select a shipping address.")
                     return redirect("checkout")
 
@@ -304,6 +312,7 @@ def checkout(request):
                     coupon, coupon_discount = get_coupon_details(coupon_code, total)
                     create_order_items(order, cart_items)
                     cart_items.delete()
+                    request.session.pop("checkout_data", None)
                     mark_coupon_used(request.user, coupon)
 
                     messages.success(request, "Order placed successfully.")
@@ -326,8 +335,9 @@ def checkout(request):
                     )
 
                     request.session["checkout_data"] = {
-                        "address_id": address.id,
                         "coupon_code": coupon_code,
+                        "address_id": address.id,
+                        "payment_method": payment_method,
                         "coupon_discount": str(coupon_discount),
                         "total": str(total),
                         "tax": str(tax),
@@ -418,6 +428,8 @@ def checkout(request):
             "coupon": coupon,
             "coupon_code": coupon_code,
             "coupon_discount": coupon_discount,
+            "selected_address": address_id,
+            "selected_payment": payment_method,
         }
 
         return render(request, "orders/checkout.html", context)

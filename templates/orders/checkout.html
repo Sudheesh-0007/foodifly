@@ -38,12 +38,14 @@
     type="hidden"
     id="hiddenCouponCode"
     name="coupon_code"
+    value="{{ coupon_code }}"
 >
 
 <input
     type="hidden"
     id="hiddenCouponDiscount"
     name="coupon_discount"
+    value="{{ coupon_discount }}"
 >
 
             <div class="col-lg-7">
@@ -74,15 +76,17 @@
                                 class="selectable-card d-flex align-items-start p-3 mb-3"
                             >
 
-                                <input
-                                    type="radio"
-                                    name="address"
-                                    value="{{ address.id }}"
-                                    class="form-check-input me-3 mt-1"
-                                    {% if forloop.first %}
-                                    checked
-                                    {% endif %}
-                                >
+<input
+    type="radio"
+    name="address"
+    value="{{ address.id }}"
+    class="form-check-input me-3 mt-1"
+    {% if selected_address == address.id|stringformat:"s" %}
+        checked
+    {% elif not selected_address and forloop.first %}
+        checked
+    {% endif %}
+>
 
                                 <div class="flex-grow-1">
 
@@ -213,13 +217,17 @@
 
                         <div class="d-flex align-items-center">
 
-                            <input
-                                type="radio"
-                                name="payment_method"
-                                value="COD"
-                                class="form-check-input me-3"
-                                checked
-                            >
+<input
+    type="radio"
+    name="payment_method"
+    value="COD"
+    class="form-check-input me-3"
+    {% if selected_payment == "COD" %}
+        checked
+    {% elif not selected_payment %}
+        checked
+    {% endif %}
+>
 
                             <span class="fw-bold">
 
@@ -243,12 +251,15 @@
 
                         <div class="d-flex align-items-center">
 
-                            <input
-                                type="radio"
-                                name="payment_method"
-                                value="RAZORPAY"
-                                class="form-check-input me-3"
-                            >
+<input
+    type="radio"
+    name="payment_method"
+    value="RAZORPAY"
+    class="form-check-input me-3"
+    {% if selected_payment == "RAZORPAY" %}
+        checked
+    {% endif %}
+>
 
                             <span class="fw-bold">
 
@@ -272,12 +283,15 @@
 
                         <div class="d-flex align-items-center">
 
-                            <input
-                                type="radio"
-                                name="payment_method"
-                                value="WALLET"
-                                class="form-check-input me-3"
-                            >
+<input
+    type="radio"
+    name="payment_method"
+    value="WALLET"
+    class="form-check-input me-3"
+    {% if selected_payment == "WALLET" %}
+        checked
+    {% endif %}
+>
 
                             <span class="fw-bold">
 
@@ -470,7 +484,7 @@
     id="couponDiscount"
     class="text-success fw-bold"
 >
-    -₹0.00
+-₹{{ coupon_discount|floatformat:2 }}
 </span>
 
 </div>
@@ -878,12 +892,30 @@ document
 
         } else {
 
-            message.className =
-                "text-danger mt-2 d-block";
+    message.className =
+        "text-danger mt-2 d-block";
 
-            message.innerText =
-                data.message;
-        }
+    message.innerText =
+        data.message;
+
+    document.getElementById("couponDiscount").innerText =
+        "-₹0.00";
+
+    document.getElementById("modalCouponDiscount").innerText =
+        "-₹0.00";
+
+    document.getElementById("modalCouponCode").innerText =
+        "-";
+
+    document.getElementById("hiddenCouponCode").value =
+        "";
+
+    document.getElementById("hiddenCouponDiscount").value =
+        "";
+
+    document.getElementById("couponCode").value =
+        "";
+}
 
     });
 
