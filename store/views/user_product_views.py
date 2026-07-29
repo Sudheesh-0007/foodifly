@@ -8,6 +8,7 @@ from offers.utils import get_offer_price
 from reviews.models import Review
 from store.models import Product, Variant
 from wishlist.models import WishlistItem
+from orders.models import OrderItem
 
 
 def shop(request):
@@ -184,6 +185,15 @@ def product_detail(request, slug):
     if selected_variant and selected_variant.stock < 5:
         low_stock = True
 
+    can_review = False
+
+    if request.user.is_authenticated:
+        can_review = OrderItem.objects.filter(
+            order__user=request.user,
+            order__status="Delivered",
+            product=product,
+        ).exists()    
+
     context = {
         "product": product,
         "variants": variants,
@@ -197,6 +207,7 @@ def product_detail(request, slug):
         "offer": offer,
         "reviews": reviews,
         "is_in_wishlist": is_in_wishlist,
+        "can_review": can_review,
     }
 
     return render(request, "store/product_detail.html", context)

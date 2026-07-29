@@ -407,6 +407,7 @@
                     Customer Appreciation
                 </h3>
 
+{% if can_review %}
 <a
     class="small text-decoration-none text-brown fw-bold"
     data-bs-toggle="collapse"
@@ -417,50 +418,53 @@
 >
     WRITE A REVIEW
 </a>
+{% endif %}
 
         
 </div>
 
 
-    <div class="collapse mt-4" id="reviewForm">
+{% if can_review %}
+
+<div class="collapse mt-4" id="reviewForm">
+
 <form action="{% url 'submit_review' product.id %}" method="POST">
 
     {% csrf_token %}
 
     <div class="mb-3">
 
+        <div class="rating-stars mb-3">
 
-<div class="rating-stars mb-3">
+            <label class="form-label">
+                Rating
+            </label>
 
-    <label class="form-label">
-        Rating
-    </label>
+            <div class="star-rating">
 
-    <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5"
+                {% if user_review and user_review.rating == 5 %}checked{% endif %} required>
+                <label for="star5">★</label>
 
-<input type="radio" id="star5" name="rating" value="5"
-{% if user_review and user_review.rating == 5 %}checked{% endif %} required>
-<label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4"
+                {% if user_review and user_review.rating == 4 %}checked{% endif %}>
+                <label for="star4">★</label>
 
-<input type="radio" id="star4" name="rating" value="4"
-{% if user_review and user_review.rating == 4 %}checked{% endif %}>
-<label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3"
+                {% if user_review and user_review.rating == 3 %}checked{% endif %}>
+                <label for="star3">★</label>
 
-<input type="radio" id="star3" name="rating" value="3"
-{% if user_review and user_review.rating == 3 %}checked{% endif %}>
-<label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2"
+                {% if user_review and user_review.rating == 2 %}checked{% endif %}>
+                <label for="star2">★</label>
 
-<input type="radio" id="star2" name="rating" value="2"
-{% if user_review and user_review.rating == 2 %}checked{% endif %}>
-<label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1"
+                {% if user_review and user_review.rating == 1 %}checked{% endif %}>
+                <label for="star1">★</label>
 
-<input type="radio" id="star1" name="rating" value="1"
-{% if user_review and user_review.rating == 1 %}checked{% endif %}>
-<label for="star1">★</label>
+            </div>
 
-    </div>
-
-</div>
+        </div>
 
     </div>
 
@@ -470,27 +474,31 @@
             Review
         </label>
 
-<textarea
-    name="review"
-    rows="4"
-    class="form-control"
-    required
->{{ user_review.review|default:'' }}</textarea>
+        <textarea
+            name="review"
+            rows="4"
+            class="form-control"
+            required
+        >{{ user_review.review|default:'' }}</textarea>
 
     </div>
-<button
-    type="submit"
-    class="btn btn-dark"
->
-    {% if user_review %}
-        Update Review
-    {% else %}
-        Submit Review
-    {% endif %}
-</button>
+
+    <button
+        type="submit"
+        class="btn btn-dark"
+    >
+        {% if user_review %}
+            Update Review
+        {% else %}
+            Submit Review
+        {% endif %}
+    </button>
+
 </form>
+
 </div>
 
+{% endif %}
 
            {% for review in reviews %}
 
