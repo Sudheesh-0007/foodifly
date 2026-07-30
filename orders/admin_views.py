@@ -100,9 +100,6 @@ def update_order_status(request, order_id):
                 refund_amount = order.grand_total
 
 
-
-
-
                 wallet.balance += refund_amount
                 wallet.save(update_fields=["balance"])
 

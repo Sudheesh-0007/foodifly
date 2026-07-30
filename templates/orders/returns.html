@@ -399,55 +399,57 @@
                             </td>
 
                             <!-- ACTION -->
+<td class="text-end">
 
-                            <td class="text-end">
+    <div class="d-flex justify-content-end align-items-center gap-2">
 
-                                <form
-                                    method="POST"
-                                    action="{% url 'update_return_status' item.id %}"
-                                >
+        <a
+            href="{% url 'admin_order_details' item.order.id %}"
+            class="btn btn-sm btn-outline-dark"
+        >
+            <i class=" bi-eye "></i>
+    
+        </a>
 
-                                    {% csrf_token %}
+        <form
+            method="POST"
+            action="{% url 'update_return_status' item.id %}"
+        >
 
-                                    <select
-                                        name="status"
-                                        class="form-select return-status-select"
-                                        onchange="this.form.submit()"
-                                    >
+            {% csrf_token %}
 
-                                        <option value="">
+            <select
+                name="status"
+                class="form-select return-status-select"
+                onchange="this.form.submit()"
+            >
+                <option value="">Select Action</option>
 
-                                            Select Action
+                <option
+                    value="Approved"
+                    {% if item.return_status == "Approved" %}
+                        selected
+                    {% endif %}
+                >
+                    Approve
+                </option>
 
-                                        </option>
+                <option
+                    value="Rejected"
+                    {% if item.return_status == "Rejected" %}
+                        selected
+                    {% endif %}
+                >
+                    Reject
+                </option>
 
-                                        <option
-                                            value="Approved"
-                                            {% if item.return_status == "Approved" %}
-                                                selected
-                                            {% endif %}
-                                        >
+            </select>
 
-                                            Approve
+        </form>
 
-                                        </option>
+    </div>
 
-                                        <option
-                                            value="Rejected"
-                                            {% if item.return_status == "Rejected" %}
-                                                selected
-                                            {% endif %}
-                                        >
-
-                                            Reject
-
-                                        </option>
-
-                                    </select>
-
-                                </form>
-
-                            </td>
+</td>
 
                         </tr>
 
