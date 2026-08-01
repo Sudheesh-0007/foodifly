@@ -162,8 +162,7 @@
 
                         <!-- ADD TO CART -->
 
-                        {% if item.variant.stock > 0 %}
-
+                        {% if item.variant.stock > 0 and item.variant.is_active and item.product.category.is_active and item.product.isActive %}
                         <form
                             method="POST"
                             action="{% url 'add_cart' item.product.id %}"

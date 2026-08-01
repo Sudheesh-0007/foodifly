@@ -347,13 +347,14 @@
 
     <table class="items-table">
         <thead>
-            <tr>
-                <th style="width: 45%;">Product Description</th>
-                <th style="width: 15%; text-align: center;">Variant</th>
-                <th style="width: 10%; text-align: center;">Qty</th>
-                <th style="width: 15%; text-align: right;">Unit Price</th>
-                <th style="width: 15%; text-align: right;">Total Price</th>
-            </tr>
+<tr>
+    <th style="width: 35%;">Product Description</th>
+    <th style="width: 12%; text-align:center;">Variant</th>
+    <th style="width: 8%; text-align:center;">Qty</th>
+    <th style="width: 15%; text-align:right;">Unit Price</th>
+    <th style="width: 15%; text-align:right;">Total Price</th>
+    <th style="width: 15%; text-align:center;">Status</th>
+</tr>
         </thead>
    <tbody>
 
@@ -377,6 +378,24 @@
 
     <td class="text-right">
         ₹{{ item.total_price }}
+    </td>
+
+    <td class="text-center">
+
+        {% if item.status == "Cancelled" %}
+
+            <span style="color:#c00000;font-weight:bold;">
+                Cancelled
+            </span>
+
+        {% else %}
+
+            <span style="color:#137333;font-weight:bold;">
+                {{ item.status }}
+            </span>
+
+        {% endif %}
+
     </td>
 
 </tr>
@@ -425,6 +444,25 @@
 </tr>
             </table>
         </div>
+        
+{% if order.status == "Cancelled" or order_items %}
+        {% for item in order_items %}
+            {% if item.status == "Cancelled" %}
+
+            <p>
+                <strong>
+                    Refunded:
+                </strong>
+
+                {{ item.product.name }}
+
+                -
+                ₹{{ item.total_price|floatformat:2 }}+ Tax
+            </p>
+
+            {% endif %}
+        {% endfor %}
+{% endif %}
     </div>
 
     <div class="footer">

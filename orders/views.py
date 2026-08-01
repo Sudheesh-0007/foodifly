@@ -620,7 +620,7 @@ def download_invoice(request, order_id):
 
     order = get_object_or_404(Order, id=order_id, user=request.user)
 
-    order_items = OrderItem.objects.filter(order=order).exclude(status="Cancelled")
+    order_items = OrderItem.objects.filter(order=order)
     template_path = "orders/invoice.html"
     total = int(order.total_amount)
     tax = total * Decimal("0.10")
@@ -772,7 +772,7 @@ def cancel_order_item(request, item_id):
     order_item.status = "Cancelled"
     order_item.save()
 
-    if order.payment_method in ["RAZORPAY", "WALLET", "COD"]:
+    if order.payment_method in ["RAZORPAY", "WALLET"]:
 
         wallet = Wallet.objects.get(user=order.user)
 
@@ -807,24 +807,10 @@ def cancel_order_item(request, item_id):
         status="Active",
     )
 
-    subtotal = sum(item.total_price for item in active_items)
-
-    tax = subtotal * Decimal("0.10")
-
-    remaining_coupon = sum(item.coupon_discount for item in active_items)
-
-    grand_total = subtotal + tax - remaining_coupon
-
-    if grand_total < 0:
-        grand_total = Decimal("0.00")
-
-    order.total_amount = subtotal
-    order.tax = tax
-    order.grand_total = grand_total
 
     if not active_items.exists():
         order.status = "Cancelled"
-        if order.payment_method in ["RAZORPAY", "WALLET", "COD"]:
+        if order.payment_method in ["RAZORPAY", "WALLET",]:
             order.payment_status = "Refunded"
     order.save()
 

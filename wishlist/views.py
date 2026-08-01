@@ -83,6 +83,7 @@ def wishlist_page(request):
         item.offer_price = offer_price
         item.offer = offer
     paginator = Paginator(wishlist_items, 5)
+    
 
     page = request.GET.get("page")
 

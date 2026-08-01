@@ -57,7 +57,7 @@ def add_cart(request, product_id):
 
     WishlistItem.objects.filter(wishlist__user=request.user, variant=variant).delete()
     messages.success(request, "Product added to cart")
-    return redirect("product_detail", slug=product.slug)
+    return redirect("cart")
 
 
 @custom_login_required
