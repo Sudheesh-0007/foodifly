@@ -35,7 +35,7 @@ class="btn btn-outline-light-custom text-nowrap"
     </div>
 
     <div class="row g-3 mb-4">
-        <div class="col-6 col-sm-4 col-xl-2">
+        <div class="col-6 col-sm-4 col-xl-4">
             <div class="metric-card p-3 bg-white rounded-4 border">
                 <div class="icon-shape bg-mint mb-3"><i class="bi bi-currency-dollar text-mint-dark"></i></div>
                 <span class="text-uppercase x-small text-muted fw-bold d-block mb-1">Total Sales</span>
@@ -43,7 +43,7 @@ class="btn btn-outline-light-custom text-nowrap"
                 <span class="x-small text-success fw-medium"><i class="bi bi-arrow-up-right me-1"></i>12% vs last period</span>
             </div>
         </div>
-        <div class="col-6 col-sm-4 col-xl-2">
+        <div class="col-6 col-sm-4 col-xl-4">
             <div class="metric-card p-3 bg-white rounded-4 border">
                 <div class="icon-shape bg-orange mb-3"><i class="bi bi-bag-check text-orange-dark"></i></div>
                 <span class="text-uppercase x-small text-muted fw-bold d-block mb-1">Total Orders</span>
@@ -51,38 +51,38 @@ class="btn btn-outline-light-custom text-nowrap"
                 <span class="x-small text-success fw-medium"><i class="bi bi-arrow-up-right me-1"></i>8% vs last period</span>
             </div>
         </div>
-        <div class="col-6 col-sm-4 col-xl-2">
+        {% comment %} <div class="col-6 col-sm-4 col-xl-2">
             <div class="metric-card p-3 bg-white rounded-4 border">
                 <div class="icon-shape bg-blue mb-3"><i class="bi bi-people text-blue-dark"></i></div>
                 <span class="text-uppercase x-small text-muted fw-bold d-block mb-1">Total Users</span>
                 <h4 class="fw-bold text-dark mb-1">{{ total_users }}</h4>
                 <span class="x-small text-success fw-medium"><i class="bi bi-arrow-up-right me-1"></i>15% vs last period</span>
             </div>
-        </div>
-        <div class="col-6 col-sm-4 col-xl-2">
+        </div> {% endcomment %}
+        {% comment %} <div class="col-6 col-sm-4 col-xl-2">
             <div class="metric-card p-3 bg-white rounded-4 border">
                 <div class="icon-shape bg-coral-light mb-3"><i class="bi bi-box-seam text-coral-dark"></i></div>
                 <span class="text-uppercase x-small text-muted fw-bold d-block mb-1">Total Products</span>
                 <h4 class="fw-bold text-dark mb-1">{{ total_products }}</h4>
                 <span class="x-small text-success fw-medium"><i class="bi bi-arrow-up-right me-1"></i>5% vs last period</span>
             </div>
-        </div>
-        <div class="col-6 col-sm-4 col-xl-2">
+        </div> {% endcomment %}
+        {% comment %} <div class="col-6 col-sm-4 col-xl-2">
             <div class="metric-card p-3 bg-white rounded-4 border">
                 <div class="icon-shape bg-slate mb-3"><i class="bi bi-grid-1x2 text-slate-dark"></i></div>
                 <span class="text-uppercase x-small text-muted fw-bold d-block mb-1">Total Categories</span>
                 <h4 class="fw-bold text-dark mb-1">{{ total_categories }}</h4>
                 <span class="x-small text-success fw-medium"><i class="bi bi-arrow-up-right me-1"></i>3% vs last period</span>
             </div>
-        </div>
-        <div class="col-6 col-sm-4 col-xl-2">
+        </div> {% endcomment %}
+        {% comment %} <div class="col-6 col-sm-4 col-xl-2">
             <div class="metric-card p-3 bg-white rounded-4 border">
                 <div class="icon-shape bg-pink mb-3"><i class="bi bi-ticket-perforated text-pink-dark"></i></div>
                 <span class="text-uppercase x-small text-muted fw-bold d-block mb-1">Total Coupons</span>
                 <h4 class="fw-bold text-dark mb-1">{{ total_coupons }}</h4>
                 <span class="x-small text-danger fw-medium"><i class="bi bi-arrow-down-left me-1"></i>2% vs last period</span>
             </div>
-        </div>
+        </div> {% endcomment %}
     </div>
     {% include "includes/alerts.html" %}
 
