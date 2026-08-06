@@ -5,6 +5,16 @@
     --card-bg-light: #f6f5f0;
     --border-color: #eae9e2;
 }
+.cancelled-step .node-icon{
+    background:#dc3545;
+    color:#fff;
+    border-color:#dc3545;
+}
+
+.cancelled-step .node-label{
+    color:#dc3545;
+    font-weight:600;
+}
 
 body { background-color: #fdfbf7; font-family: 'Inter', sans-serif; }
 

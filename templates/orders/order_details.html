@@ -161,9 +161,39 @@
         ></div>
     </div>
 
-    <div class="d-flex justify-content-between position-relative z-index-2">
+    {% if order.status == "Cancelled" %}
 
-        <div class="step-node completed">
+<div class="d-flex justify-content-between position-relative z-index-2">
+
+    <div class="step-node completed">
+        <div class="node-icon">
+            <i class="bi bi-check"></i>
+        </div>
+        <span class="node-label">PENDING</span>
+    </div>
+
+    <div class="step-node completed">
+        <div class="node-icon">
+            <i class="bi bi-box-seam"></i>
+        </div>
+        <span class="node-label">CONFIRMED</span>
+    </div>
+
+    <div class="step-node completed active cancelled-step">
+        <div class="node-icon">
+            <i class="bi bi-x-circle"></i>
+        </div>
+        <span class="node-label">CANCELLED</span>
+    </div>
+
+</div>
+
+{% else %}
+
+<div class="d-flex justify-content-between position-relative z-index-2">
+
+    <div class="step-node completed">
+
             <div class="node-icon"><i class="bi bi-check"></i></div>
             <span class="node-label">PENDING</span>
         </div>
@@ -194,6 +224,7 @@
         </div>
 
     </div>
+    {% endif %}
 </div>
 
                     <!-- INFO -->
