@@ -352,11 +352,7 @@ Open the application in your browser:
 http://127.0.0.1:8000/
 ```
 ---
-## ssh -i D:\PROJECTS\Foodifly-key.pem ubuntu@43.205.212.47
-## sudo systemctl restart gunicorn
-## sudo nano /etc/systemd/system/gunicorn.service
-## sudo nano /etc/nginx/sites-available/foodifly
-## sudo systemctl reload nginx
+
 
 ## Author
 
